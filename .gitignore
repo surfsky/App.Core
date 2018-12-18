@@ -1,0 +1,5 @@
+/obj
+/bin/Debug/*.pdb
+/bin/Debug/EntityFramework.SqlServer.xml
+/bin/Debug/EntityFramework.xml
+/bin/Debug/EntityFramework.Extended.xml

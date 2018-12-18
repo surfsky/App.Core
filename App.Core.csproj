@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C887D0A1-20F6-44DA-87DF-EA8D45ACE744}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>App</RootNamespace>
+    <AssemblyName>App.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.Extended, Version=6.0.0.0, Culture=neutral, PublicKeyToken=05b7e29bdd433584, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.Extended.6.1.0.168\lib\net45\EntityFramework.Extended.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\App.Schedule\bin\Debug\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.JScript" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\App.Schedule\bin\Debug\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ThoughtWorks.QRCode, Version=1.0.2774.19990, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\ThoughtWorks.QRCode.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Database\DbHelper.cs" />
+    <Compile Include="Data\BytesExtension.cs" />
+    <Compile Include="Data\FileHelper.cs" />
+    <Compile Include="Data\HexEncoding.cs" />
+    <Compile Include="Draw\VerifyCodeDrawer.cs" />
+    <Compile Include="Interop\CsEvaluator.cs" />
+    <Compile Include="Interop\Evaluator.cs" />
+    <Compile Include="Interop\JsEvaluator.cs" />
+    <Compile Include="IO.cs" />
+    <Compile Include="Reflections\MethodInvoker.cs" />
+    <Compile Include="Model\RegexValidationAttribute.cs" />
+    <Compile Include="Reflections\TypeBuilder.cs" />
+    <Compile Include="ThreadHelper.cs" />
+    <Compile Include="Net\SocketClient.cs" />
+    <Compile Include="Net\SocketData.cs" />
+    <Compile Include="ThreadPond.cs" />
+    <Compile Include="Web\AuthHelper.cs" />
+    <Compile Include="Web\CookieHelper.cs" />
+    <Compile Include="Data\DateTimeHelper.cs" />
+    <Compile Include="Math\DESEncrypt.cs" />
+    <Compile Include="Draw\DrawHelper.cs" />
+    <Compile Include="Linq\EFExtension.cs" />
+    <Compile Include="Math\EncryptHelper.cs" />
+    <Compile Include="Data\EnumHelper.cs" />
+    <Compile Include="Data\ExcelHelper.cs" />
+    <Compile Include="Convertor.cs" />
+    <Compile Include="Net\HttpHelper.cs" />
+    <Compile Include="Interfaces.cs" />
+    <Compile Include="Data\JsonConverters.cs" />
+    <Compile Include="Data\Jsonlizer.cs" />
+    <Compile Include="Linq\LinqExtension.cs" />
+    <Compile Include="Linq\LinqToSql.cs" />
+    <Compile Include="Math\MathHelper.cs" />
+    <Compile Include="Math\PasswordHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflections\ReflectionHelper.cs" />
+    <Compile Include="Data\RegexHelper.cs" />
+    <Compile Include="Web\ResourceHelper.cs" />
+    <Compile Include="Web\ScriptHelper.cs" />
+    <Compile Include="Data\SerializeHelper.cs" />
+    <Compile Include="Data\StringHelper.cs" />
+    <Compile Include="UIAttribute.cs" />
+    <Compile Include="Web\Asp.cs" />
+    <Compile Include="Web\Url.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+    <None Include="README.md" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
