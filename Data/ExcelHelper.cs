@@ -14,14 +14,14 @@ namespace App.Core
     public class ExcelHelper
     {
         // 导出Excel文件
-        public static void Export<T>(IList<T> objs, string fileName = "Export.xls")
+        public static void Export<T>(IList<T> objs, string fileName = "Export.xls", bool showFieldDescription=false)
         {
             fileName = HttpUtility.UrlEncode(fileName, System.Text.Encoding.UTF8);
             HttpContext.Current.Response.ClearContent();
             HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
             HttpContext.Current.Response.ContentType = "application/vnd.ms-excel; charset=utf-8";
             HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment;filename=" + fileName);
-            HttpContext.Current.Response.Write(ToExcelXml<T>(objs)); // 还是用xml吧，每个字段都是字符串类型，避免客户输入不同格式的数据
+            HttpContext.Current.Response.Write(ToExcelXml<T>(objs, showFieldDescription)); // 还是用xml吧，每个字段都是字符串类型，避免客户输入不同格式的数据
             HttpContext.Current.Response.End();
         }
 
@@ -38,7 +38,7 @@ namespace App.Core
         }
 
         // 输出 Excel Xml
-        public static string ToExcelXml<T>(IList<T> objs)
+        public static string ToExcelXml<T>(IList<T> objs, bool showFieldDescription=false)
         {
             var type = typeof(T);
             var attrs = new UISetting(type).Settings;
@@ -59,10 +59,13 @@ namespace App.Core
             sb.AppendLine("   </Row>");
 
             // 输出标题
-            sb.AppendLine("   <Row>");
-            foreach (var attr in attrs)
-                sb.AppendLine("    <Cell><Data ss:Type=\"String\">" + attr.FullTitle + "</Data></Cell>");
-            sb.AppendLine("   </Row>");
+            if (showFieldDescription)
+            {
+                sb.AppendLine("   <Row>");
+                foreach (var attr in attrs)
+                    sb.AppendLine("    <Cell><Data ss:Type=\"String\">" + attr.FullTitle + "</Data></Cell>");
+                sb.AppendLine("   </Row>");
+            }
 
 
             // 输出数据

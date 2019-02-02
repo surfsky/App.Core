@@ -53,7 +53,7 @@ namespace App.Core
         public static void CreateThumbnail(string sourceImagePath, string targetImagePath, int width, int height=-1)
         {
             string savePath = targetImagePath.IsEmpty() ? sourceImagePath : targetImagePath;
-            Image img = Image.FromFile(sourceImagePath);
+            Image img = Image.FromFile(sourceImagePath);   // 用LoadImage()反而会导致后面的 bmp.Save() 报错，先这样
             Image bmp = CreateThumbnail(img, width, height);
             img.Dispose();
             bmp.Save(savePath);
@@ -124,7 +124,7 @@ namespace App.Core
         }
 
 
-        // 反向
+        /// <summary>图片颜色反相叠加（未完成）</summary>
         public static Bitmap ReverseImage(Bitmap img, Bitmap img2, params Point[] points)
         {
             if (img == null || img2 == null)
@@ -137,7 +137,7 @@ namespace App.Core
             g.SmoothingMode = SmoothingMode.HighQuality;
             g.DrawImage(img, new Rectangle(0, 0, img.Width, img.Height));
 
-            // 设置图像绘制属性: 设置透明度
+            // 设置图像绘制属性: 设置反相叠加矩阵
             ImageAttributes imageAttributes = new ImageAttributes();
             float[][] colorMatrixElements = {
                 new float[] {-1.0f, 0.0f, 0.0f, 0.0f, 0.0f},
@@ -166,6 +166,26 @@ namespace App.Core
             return bmp;
         }
 
+        /// <summary>旋转图片</summary>
+        /// <param name="angle">角度（-360 到 360）</param>
+        public static Bitmap RotateImage(Bitmap bmp, float angle)
+        {
+            Bitmap returnBitmap = new Bitmap((int)(bmp.Width*1.5), (int)(bmp.Height*1.5));
+            Graphics g = Graphics.FromImage(returnBitmap);
+            g.InterpolationMode = InterpolationMode.NearestNeighbor;
+            g.TranslateTransform((float)bmp.Width / 2, (float)bmp.Height / 2);     // move rotation point to center of image
+            g.RotateTransform(angle);                                          // rotate
+            g.TranslateTransform(-(float)bmp.Width / 2, -(float)bmp.Height / 2);   // move image back
+            g.DrawImage(bmp, new Point(0, 0));
+            return returnBitmap;
+        }
+
+        /// <summary>三维贴图扭曲图片（未完成）</summary>
+        public static Bitmap TwistImage(Bitmap img, string model3DRes)
+        {
+            throw new NotImplementedException();
+            return img;
+        }
 
         /// <summary>正弦扭曲图片</summary>  
         /// <param name="img">图片路径</param>  
@@ -208,6 +228,8 @@ namespace App.Core
         }
 
 
+
+        //-----------------------------------------------
         /// <summary>将图片转化为 Base64 字符串</summary>
         public static string GetImageString(Image image)
         {

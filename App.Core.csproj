@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -69,11 +70,17 @@
     <Compile Include="Data\BytesExtension.cs" />
     <Compile Include="Data\FileHelper.cs" />
     <Compile Include="Data\HexEncoding.cs" />
-    <Compile Include="Draw\VerifyCodeDrawer.cs" />
+    <Compile Include="Draw\FontHelper.cs" />
+    <Compile Include="Draw\VerifyImageDrawer.cs" />
     <Compile Include="Interop\CsEvaluator.cs" />
     <Compile Include="Interop\Evaluator.cs" />
     <Compile Include="Interop\JsEvaluator.cs" />
     <Compile Include="IO.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Reflections\MethodInvoker.cs" />
     <Compile Include="Model\RegexValidationAttribute.cs" />
     <Compile Include="Reflections\TypeBuilder.cs" />
@@ -114,6 +121,16 @@
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="README.md" />
+    <EmbeddedResource Include="Resources\Agent Red.TTF" />
+    <EmbeddedResource Include="Resources\Stencil ICG.ttf" />
+    <EmbeddedResource Include="Resources\Pusab.ttf" />
+    <None Include="Resources\PLEDG_KI.TTF" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

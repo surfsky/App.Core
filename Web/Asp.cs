@@ -30,7 +30,35 @@ namespace App.Core
             return uri.Host.ToLower() == Asp.Host.ToLower();
         }
 
-        // 在页面头部注册CSS
+        /// <summary>将虚拟路径转化为物理路径。等同于Server.MapPath()</summary>
+        public static string MapPath(string virtualPath)
+        {
+            return Server.MapPath(virtualPath);
+        }
+
+        /// <summary>URL 编码</summary>
+        public static string UrlEncode(string url)
+        {
+            return Server.UrlEncode(url);
+        }
+
+        /// <summary>URL 反编码</summary>
+        public static string UrlDecode(string url)
+        {
+            return Server.UrlDecode(url);
+        }
+
+        /// <summary>在页面头部注册移动端适配的meta语句</summary>
+        public static void RegistMobileMeta()
+        {
+            HtmlHead head = Page.Header;
+            HtmlMeta meta = new HtmlMeta();
+            meta.Name = "viewport";
+            meta.Content = "width=device-width, initial-scale=1.0";
+            head.Controls.AddAt(0, meta);
+        }
+
+        /// <summary>在页面头部注册CSS</summary>
         public static void RegistCSS(string url, bool appendOrInsert=true)
         {
             url = ResolveUrl(url);
@@ -45,7 +73,7 @@ namespace App.Core
                 header.Controls.AddAt(0, css);
         }
 
-        // 在页面头部注册脚本
+        /// <summary>在页面头部注册脚本</summary>
         public static void RegistScript(string url)
         {
             HtmlGenericControl script = new HtmlGenericControl("script");
@@ -54,10 +82,7 @@ namespace App.Core
             (HttpContext.Current.Handler as Page).Header.Controls.Add(script);
         }
 
-
-        /// <summary>
-        /// 创建POST表单并跳转页面
-        /// </summary>
+        /// <summary>创建POST表单并跳转页面</summary>
         public static void CreateFormAndPost(Page page, string url, Dictionary<string, string> data)
         {
             // 构建表单
@@ -101,6 +126,20 @@ namespace App.Core
             }
         }
 
+        /// <summary>获取客户端真实IP</summary>
+        public static string GetClientIP()
+        {
+            HttpRequest request = HttpContext.Current.Request;
+            return (request.ServerVariables["HTTP_VIA"] != null)
+                ? request.ServerVariables["HTTP_X_FORWARDED_FOR"].ToString()   // 使用代理，尝试去找原始地址
+                : request.ServerVariables["REMOTE_ADDR"].ToString()            // 
+                ;
+            //return request.UserHostAddress;
+        }
+
+        //-------------------------------------------
+        // Url
+        //-------------------------------------------
         /// <summary>获取 Url 路径（如 http://.../）</summary>
         public static string GetUrlPath(string url)
         {
@@ -140,43 +179,19 @@ namespace App.Core
             return uri.Query;
         }
 
-
-        /// <summary>获取客户端真实IP</summary>
-        public static string GetClientIP()
+        /// <summary>
+        /// 将 URL 转化为完整路径。如:
+        /// （1）../default.aspx 转化为 http://..../application1/default.aspx
+        /// （2）~/default.aspx 转化为 http://..../application1/default.aspx
+        /// </summary>
+        public static string ResolveFullUrl(string relativeUrl)
         {
-            HttpRequest request = HttpContext.Current.Request;
-            return (request.ServerVariables["HTTP_VIA"] != null)
-                ? request.ServerVariables["HTTP_X_FORWARDED_FOR"].ToString()   // 使用代理，尝试去找原始地址
-                : request.ServerVariables["REMOTE_ADDR"].ToString()            // 
-                ;
-            //return request.UserHostAddress;
+            if (relativeUrl.ToLower().StartsWith("http"))
+                return relativeUrl;
+            var url = new Control().ResolveUrl(relativeUrl);
+            return Asp.Host + url;
         }
 
-        // Session 相关
-        public static void SetSession(string name, object value)
-        {
-            SetSession(name, value, 20);
-        }
-
-        public static void SetSession(string name, object value, int expireMinutes)
-        {
-            HttpContext.Current.Session[name] = value;
-            HttpContext.Current.Session.Timeout = expireMinutes;
-        }
-
-        public static object GetSession(string name)
-        {
-            return HttpContext.Current.Session[name];
-        }
-
-        public static bool HasSession(string name)
-        {
-            return HttpContext.Current.Session[name] != null;
-        }
-
-        //-------------------------------------------
-        // Url 转换辅助函数
-        //-------------------------------------------
         /// <summary>
         /// 将 URL 转化为从根目录开始的路径。如:
         /// （1）../default.aspx 转化为 /application1/default.aspx
@@ -305,8 +320,32 @@ namespace App.Core
 
 
 
+        //-------------------------------------
+        // Session 相关
+        //-------------------------------------
+        public static void SetSession(string name, object value)
+        {
+            SetSession(name, value, 20);
+        }
+
+        public static void SetSession(string name, object value, int expireMinutes)
+        {
+            HttpContext.Current.Session[name] = value;
+            HttpContext.Current.Session.Timeout = expireMinutes;
+        }
+
+        public static object GetSession(string name)
+        {
+            return HttpContext.Current.Session[name];
+        }
+
+        public static bool HasSession(string name)
+        {
+            return HttpContext.Current.Session[name] != null;
+        }
+
         //------------------------------------------------------------
-        // 缓存数据
+        // 缓存相关
         //------------------------------------------------------------
         /// <summary>获取缓存对象（缓存有有效期，一旦失效，自动获取）</summary>
         public static T GetCachedData<T>(string key, Func<T> creator) where T : class

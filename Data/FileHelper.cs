@@ -68,12 +68,21 @@ namespace App.Core
             }
         }
 
+
         /// <summary>获取文件的MD5哈希信息</summary>
-        /// <param name="filePath">文件物理路径</param>
+        /// <param name="filePath"></param>
         /// <returns>十六进制字符串</returns>
         public static string GetFileMD5(string filePath)
         {
-            return EncryptionHelper.ToMD5(filePath);
+            var file = new FileStream(filePath, FileMode.Open);
+            MD5 md5 = new MD5CryptoServiceProvider();
+            byte[] bytes = md5.ComputeHash(file);
+            file.Close();
+
+            var sb = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i++)
+                sb.AppendFormat("{0:x2}", bytes[i]);
+            return sb.ToString();
         }
     }
 }
