@@ -12,9 +12,9 @@ using System.Text;
 namespace App.Core
 {
     /// <summary>
-    /// 绘图相关辅助方法
+    /// 画家。绘图相关辅助方法
     /// </summary>
-    public class DrawHelper
+    public static class Drawer
     {
         /// <summary>创建二维码图片</summary>
         /// <param name="text">文本</param>
@@ -34,9 +34,9 @@ namespace App.Core
             {
                 int s = bmp.Width / 5;
                 Image img = HttpHelper.GetServerOrNetworkImage(iconUrl);
-                img = DrawHelper.CreateThumbnail(img, s, s);
+                img = Drawer.CreateThumbnail(img, s, s);
                 var point = new Point((bmp.Width - s) / 2, (bmp.Height - s) / 2);
-                bmp = DrawHelper.MergeImage(bmp, (Bitmap)img, 0.95f, point);
+                bmp = Drawer.MergeImage(bmp, (Bitmap)img, 0.95f, point);
                 img.Dispose();
             }
             return bmp;
@@ -45,12 +45,12 @@ namespace App.Core
         /// <summary>加载图片。如果用Image.FromFile()方法的话会锁定图片，无法编辑、移动、删除。</summary>
         public static Image LoadImage(string path)
         {
-            var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            return Image.FromStream(fs);
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+                return Image.FromStream(stream);
         }
 
         /// <summary>绘制缩略图</summary>
-        public static void CreateThumbnail(string sourceImagePath, string targetImagePath, int width, int height=-1)
+        public static void CreateThumbnail(string sourceImagePath, string targetImagePath, int width, int? height=null)
         {
             string savePath = targetImagePath.IsEmpty() ? sourceImagePath : targetImagePath;
             Image img = Image.FromFile(sourceImagePath);   // 用LoadImage()反而会导致后面的 bmp.Save() 报错，先这样
@@ -60,19 +60,30 @@ namespace App.Core
             bmp.Dispose();
         }
 
+
         /// <summary>创建缩略图</summary>
-        public static Image CreateThumbnail(Image img, int width, int height=-1)
+        public static Image CreateThumbnail(string filePath, int w, int? h)
+        {
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                var img = Image.FromStream(stream);
+                return CreateThumbnail(img, w, h);
+            }
+        }
+
+        /// <summary>创建缩略图</summary>
+        public static Image CreateThumbnail(Image img, int width, int? height=null)
         {
             if (img == null) return null;
             // 计算图片的尺寸
-            if (height == -1)
+            if (height == null)
                 height = img.Height * width / img.Width;
 
             // 绘制Bitmap新实例
-            Bitmap bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            Bitmap bmp = new Bitmap(width, height.Value, PixelFormat.Format32bppArgb);
             Graphics g = Graphics.FromImage(bmp);
             g.Clear(Color.Transparent);
-            g.DrawImage(img, new Rectangle(0, 0, width, height));
+            g.DrawImage(img, new Rectangle(0, 0, width, height.Value));
             g.Dispose();
 
             return bmp;
@@ -180,11 +191,10 @@ namespace App.Core
             return returnBitmap;
         }
 
-        /// <summary>三维贴图扭曲图片（未完成）</summary>
-        public static Bitmap TwistImage(Bitmap img, string model3DRes)
+        /// <summary>TODO:三维贴图扭曲图片（未完成）</summary>
+        public static Bitmap TwistImage3D(Bitmap img, string model3DRes)
         {
             throw new NotImplementedException();
-            return img;
         }
 
         /// <summary>正弦扭曲图片</summary>  
@@ -231,7 +241,7 @@ namespace App.Core
 
         //-----------------------------------------------
         /// <summary>将图片转化为 Base64 字符串</summary>
-        public static string GetImageString(Image image)
+        public static string ToBase64(this Image image)
         {
             if (image == null)
                 return "";
@@ -243,7 +253,7 @@ namespace App.Core
         }
 
         /// <summary>从 Base64 字符串中创建图像</summary>
-        public static Image GetImageFromString(string base64Image)
+        public static Image ToImage(this string base64Image)
         {
             try
             {
@@ -257,5 +267,19 @@ namespace App.Core
             }
         }
 
+        /// <summary>将图像转换为字节数组</summary>
+        public static byte[] ToBytes(this Image img)
+        {
+            if (img == null)
+                return null;
+            else
+            {
+                MemoryStream ms = new MemoryStream();
+                img.Save(ms, ImageFormat.Png);
+                byte[] bytes = ms.ToArray();
+                ms.Close();
+                return bytes;
+            }
+        }
     }
 }

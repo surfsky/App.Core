@@ -207,6 +207,7 @@ namespace App.Core
         // 读写属性
         //------------------------------------------------
         /// <summary>获取对象的属性值。也可考虑用dynamic实现。</summary>
+        /// <param name="propertyName">属性名。可考虑用nameof()表达式来实现强类型。</param>
         public static object GetPropertyValue(this object obj, string propertyName)
         {
             Type type = obj.GetType();
@@ -214,34 +215,65 @@ namespace App.Core
             return pi.GetValue(obj);
         }
 
-        /// <summary>设置对象的属性值。也可考虑用dynamic实现。</summary>
+        /// <summary>设置对象的属性值。</summary>
+        public static void SetPropertyValue(this object obj, string propertyName, object propertyValue)
+        {
+            PropertyInfo pi = obj.GetType().GetProperty(propertyName);
+            Type type = pi.PropertyType;
+            Type propertyType = type.GetRealType();
+            var valueType = propertyValue?.GetType().GetRealType();
+
+            // 比较属性的类型和值的类型, 如果一致就直接赋值, 不一致就转化为文本再处理
+            if (propertyType == valueType)
+                pi.SetValue(obj, propertyValue, null);
+            else
+            {
+                var txt = propertyValue.ToText();
+                if (propertyValue.IsEnum())
+                    txt = ((int)propertyValue).ToString();
+                else if (propertyType == typeof(DateTime))
+                    txt = string.Format("{0:yyyy-MM-dd HH:mm:ss}", propertyValue);
+                SetPropertyValue(obj, propertyName, txt);
+            }
+        }
+
+        /// <summary>设置对象的属性值（用文本，转化为相应的数据类型），需要测试，给非空类型赋予可空数据会出错的</summary>
         public static void SetPropertyValue(this object obj, string propertyName, string propertyValue)
         {
-            Type type = obj.GetType();
-            PropertyInfo pi = type.GetProperty(propertyName);
-            object v = propertyValue;
+            PropertyInfo pi = obj.GetType().GetProperty(propertyName);
+            Type type = pi.PropertyType;
+            if (type == typeof(string))
+            {
+                pi.SetValue(obj, propertyValue, null);
+                return;
+            }
 
-            // 值类型判断。将字符串转化为对应的值类型。
-            if (pi.PropertyType == typeof(bool))      v = (propertyValue == "") ? false          : Boolean.Parse(propertyValue);
-            if (pi.PropertyType == typeof(Int16))     v = (propertyValue == "") ? (Int16)0       : Int16.Parse(propertyValue);
-            if (pi.PropertyType == typeof(Int32))     v = (propertyValue == "") ? (Int32)0       : Int32.Parse(propertyValue);
-            if (pi.PropertyType == typeof(Int64))     v = (propertyValue == "") ? (Int32)0       : Int64.Parse(propertyValue);
-            if (pi.PropertyType == typeof(float))     v = (propertyValue == "") ? (float)0       : float.Parse(propertyValue);
-            if (pi.PropertyType == typeof(double))    v = (propertyValue == "") ? (double)0      : double.Parse(propertyValue);
-            if (pi.PropertyType == typeof(decimal))   v = (propertyValue == "") ? (decimal)0     : decimal.Parse(propertyValue);
-            if (pi.PropertyType == typeof(DateTime))  v = (propertyValue == "") ? new DateTime() : DateTime.Parse(propertyValue);
-            if (pi.PropertyType == typeof(bool?))     v = (propertyValue == "") ? null           : new bool?(Boolean.Parse(propertyValue));
-            if (pi.PropertyType == typeof(Int16?))    v = (propertyValue == "") ? null           : new Int16?(Int16.Parse(propertyValue));
-            if (pi.PropertyType == typeof(Int32?))    v = (propertyValue == "") ? null           : new Int32?(Int32.Parse(propertyValue));
-            if (pi.PropertyType == typeof(Int64?))    v = (propertyValue == "") ? null           : new Int64?(Int64.Parse(propertyValue));
-            if (pi.PropertyType == typeof(float?))    v = (propertyValue == "") ? null           : new float?(float.Parse(propertyValue));
-            if (pi.PropertyType == typeof(double?))   v = (propertyValue == "") ? null           : new double?(double.Parse(propertyValue));
-            if (pi.PropertyType == typeof(decimal?))  v = (propertyValue == "") ? null           : new decimal?(decimal.Parse(propertyValue));
-            if (pi.PropertyType == typeof(DateTime?)) v = (propertyValue == "") ? null           : new DateTime?(DateTime.Parse(propertyValue));
+            // 将字符串转化为对应的值类型
+            Type realType = type.GetRealType();
+            object value = propertyValue;
+            if      (type == typeof(bool))                 value = propertyValue.ParseBool() ?? false;
+            else if (type == typeof(Int64))                value = propertyValue.ParseLong() ?? 0;
+            else if (type == typeof(Int32))                value = propertyValue.ParseInt() ?? 0;
+            else if (type == typeof(Int16))                value = propertyValue.ParseShort() ?? 0;
+            else if (type == typeof(DateTime))             value = propertyValue.ParseDate() ?? new DateTime();
+            else if (type == typeof(float))                value = propertyValue.ParseFloat() ?? 0.0;
+            else if (type == typeof(double))               value = propertyValue.ParseDouble() ?? 0.0;
+            else if (type == typeof(decimal))              value = propertyValue.ParseDecimal() ?? (decimal)0.0;
+            else if (type == typeof(bool?))                value = propertyValue.ParseBool();
+            else if (type == typeof(Int64?))               value = propertyValue.ParseLong();
+            else if (type == typeof(Int32?))               value = propertyValue.ParseInt();
+            else if (type == typeof(Int16?))               value = propertyValue.ParseShort();
+            else if (type == typeof(DateTime?))            value = propertyValue.ParseDate();
+            else if (type == typeof(float?))               value = propertyValue.ParseFloat();
+            else if (type == typeof(double?))              value = propertyValue.ParseDouble();
+            else if (type == typeof(decimal?))             value = propertyValue.ParseDecimal();
+            else if (type.IsEnum)                          value = propertyValue.ParseEnum(realType);
+            else if (type.IsNullable() && realType.IsEnum) value = propertyValue.ParseEnum(realType);
 
-            //
-            pi.SetValue(obj, v, null);
+            // 赋值
+            pi.SetValue(obj, value, null);
         }
+
 
 
         /// <summary>获取对象的属性值（强类型版本）。var name = user.GetPropertyValue(t=> t.Name);</summary>
@@ -261,21 +293,54 @@ namespace App.Core
         //------------------------------------------------
         // Linq 强类型方法
         //------------------------------------------------
-        /// <summary>获取类的属性名。var name = GetPropertyName<User>(t => t.Dept.Name);</summary>
-        public static string GetPropertyName<T>(this Expression<Func<T, object>> expr)
+        /// <summary>获取表达式属性信息</summary>
+        public static PropertyInfo GetPropertyInfo<T>(this Expression<Func<T, object>> expr)
         {
-            return GetPropertyName(expr.Body);
+            return GetPropertyInfo(expr.Body);
         }
 
+        /// <summary>获取表达式属性信息</summary>
+        public static PropertyInfo GetPropertyInfo(this Expression expr)
+        {
+            if (expr is LambdaExpression)
+                expr = (expr as LambdaExpression).Body;
+
+            // 一元操作符: array.Length, Convert(t.CreatDt)
+            if (expr is UnaryExpression)
+            {
+                var expr1 = (UnaryExpression)expr;
+                var expr2 = (MemberExpression)expr1.Operand;
+                return GetPropertyInfo(expr2);
+            }
+            // 成员操作符： t.Dept.Name : body=t.Dept, member=Name
+            if (expr is MemberExpression)
+            {
+                var expr1 = (MemberExpression)expr;
+                if (expr1.Expression is MemberExpression)
+                    return GetPropertyInfo(expr1.Expression);
+                else
+                    return expr1.Member as PropertyInfo;
+            }
+            return null;
+        }
+
+
         /// <summary>获取表达式属性名。var name = GetPropertyName<User>(t => t.Dept.Name);</summary>
-        public static string GetPropertyName(this Expression expr)
+        public static string GetExpressionName<T>(this Expression<Func<T, object>> expr)
+        {
+            return GetExpressionName(expr.Body);
+        }
+
+
+        /// <summary>获取表达式属性名。var name = GetPropertyName<User>(t => t.Dept.Name);</summary>
+        public static string GetExpressionName(this Expression expr)
         {
             // 一元操作符: array.Length, Convert(t.CreatDt)
             if (expr is UnaryExpression)
             {
                 var expr1 = (UnaryExpression)expr;
                 var expr2 = (MemberExpression)expr1.Operand;
-                return GetPropertyName(expr2);
+                return GetExpressionName(expr2);
             }
             // 成员操作符： t.Dept.Name => body=t.Dept, member=Name
             if (expr is MemberExpression)
@@ -283,7 +348,7 @@ namespace App.Core
                 var expr1 = (MemberExpression)expr;
                 var name = expr1.Member.Name;
                 if (expr1.Expression is MemberExpression)
-                    return GetPropertyName(expr1.Expression) + "." + name;
+                    return GetExpressionName(expr1.Expression) + "." + name;
                 else
                     return name;
             }

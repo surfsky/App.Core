@@ -22,7 +22,7 @@ namespace App.Core
         }
 
         /// <summary>当前登录用户名</summary>
-        public static string GetIdentityName()
+        public static string GetLoginUserName()
         {
             return IsLogin() ? HttpContext.Current.User.Identity.Name : "";
         }
@@ -48,17 +48,16 @@ namespace App.Core
         public static IPrincipal Login(string user, string[] roles, DateTime expiration)
         {
             Logout();
-            //ClearAuthCookie();
             return CreateCookieTicket(user, roles, "", FormsAuthentication.FormsCookieName, expiration);
         }
         public static IPrincipal CreateCookieTicket(string user, string[] roles, string domain, string cookieName, DateTime expiration)
         {
             // ticket
-            FormsAuthenticationTicket ticket = CreateTicket(user, roles, expiration);
+            var ticket = CreateTicket(user, roles, expiration);
 
             // cookie
-            string ticketString = FormsAuthentication.Encrypt(ticket);
-            HttpCookie cookie = new HttpCookie(cookieName, ticketString);
+            var ticketString = FormsAuthentication.Encrypt(ticket);
+            var cookie = new HttpCookie(cookieName, ticketString);
             cookie.Expires = expiration;
             cookie.Domain = domain;
             HttpContext.Current.Response.Cookies.Add(cookie);
@@ -75,13 +74,14 @@ namespace App.Core
         /// <summary>从cookie中读取验票并设置当前用户</summary>
         public static IPrincipal LoadCookiePrincipal()
         {
-            string user;
-            string[] roles;
+            // 获取鉴权Cookie值
             string cookieName = FormsAuthentication.FormsCookieName;
-            HttpCookie authCookie = HttpContext.Current.Request.Cookies[cookieName];
-            if (authCookie != null)
+            string cookieValue = CookieHelper.FindCookie(cookieName);
+
+            // 解析Cookie
+            if (cookieValue.IsNotEmpty())
             {
-                FormsAuthenticationTicket authTicket = ParseTicket(authCookie.Value, out user, out roles);
+                FormsAuthenticationTicket authTicket = ParseTicket(cookieValue, out string user, out string[] roles);
                 HttpContext.Current.User = new GenericPrincipal(new FormsIdentity(authTicket), roles);
                 return HttpContext.Current.User;
             }
@@ -106,8 +106,9 @@ namespace App.Core
         private static void ClearAuthCookie()
         {
             string cookieName = FormsAuthentication.FormsCookieName;
-            HttpContext.Current.Request.Cookies[cookieName].Expires = System.DateTime.Now;
-            //HttpContext.Current.Request.Cookies.Clear();
+            var cookie = HttpContext.Current.Request.Cookies[cookieName];
+            if (cookie != null)
+                cookie.Expires = System.DateTime.Now;
         }
 
         public static void RediretToLoginPage()

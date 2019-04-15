@@ -12,16 +12,14 @@ namespace App.Core
 		private const int saltLength = 4;
         public PasswordHelper() { }
 
-        /// <summary>
-        /// 对比用户明文密码是否和加密后密码一致
-        /// </summary>
+        /// <summary>对比用户明文密码是否和加密后密码一致</summary>
         /// <param name="dbPassword">数据库中单向加密后的密码</param>
-        /// <param name="userPassword">用户明文密码</param>
+        /// <param name="planPassword">用户明文密码</param>
         /// <returns></returns>
-		public static bool ComparePasswords(string dbPassword, string userPassword)
+		public static bool Compare(string dbPassword, string planPassword)
 		{
 			byte[] dbPwd = Convert.FromBase64String(dbPassword);
-			byte[] hashedPwd = HashString(userPassword);
+			byte[] hashedPwd = HashString(planPassword);
 			if(dbPwd.Length == 0 || hashedPwd.Length == 0 || dbPwd.Length != hashedPwd.Length + saltLength)
 				return false;
 

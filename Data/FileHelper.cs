@@ -13,6 +13,12 @@ namespace App.Core
     /// </summary>
     public class FileHelper
     {
+        /// <summary>读取文件到字节数组</summary>
+        public static byte[] GetBytes(string filePath)
+        {
+            return File.ReadAllBytes(filePath);
+        }
+
         /// <summary>该文件是否是图片（根据扩展名）</summary>
         public static bool IsImageFile(string fileName)
         {
@@ -20,7 +26,7 @@ namespace App.Core
             if (ext.IsEmpty())
                 return false;
 
-            string[] exts = new string[] { ".jpg", ".png", ".gif", ".jpeg", ".bmp" };
+            string[] exts = new string[] { ".jpg", ".png", ".gif", ".jpeg", ".bmp", ".tif" };
             return exts.Contains(ext);
         }
 

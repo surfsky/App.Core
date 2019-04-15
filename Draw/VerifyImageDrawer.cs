@@ -125,7 +125,7 @@ namespace App.Core
             }
 
             // 扭曲
-            bmp = DrawHelper.TwistImage(bmp);
+            bmp = Core.Drawer.TwistImage(bmp);
 
             // 反相部分区域（未完成）
             /*
@@ -176,7 +176,7 @@ namespace App.Core
             g2.FillRegion(brush, region);     // 填充一半底部
 
             // 旋转
-            bitmap = DrawHelper.RotateImage(bitmap, angle);
+            bitmap = Core.Drawer.RotateImage(bitmap, angle);
 
             // 绘制到目标位置
             g.DrawImageUnscaled(bitmap, (int)x, (int)y);

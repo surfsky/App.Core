@@ -10,6 +10,17 @@ namespace App.Core
     /// </summary>
     public static class MathHelper
     {
+        /// <summary>计算两个GPS坐标的距离</summary>
+        public static double CalcGPSDistance(double x1, double y1, double x2, double y2)
+        {
+            // https://blog.csdn.net/java_zhaoyanli/article/details/45973499
+            double jd = 102834.74258026089786013677476285;
+            double wd = 111712.69150641055729984301412873;
+            double b = Math.Abs((x2 - x1) * jd);
+            double a = Math.Abs((y2 - y1) * wd);
+            return Math.Sqrt((a * a + b * b)) / 1000.0;
+        }
+
         //--------------------------------------------------
         // 数字处理
         //--------------------------------------------------

@@ -39,28 +39,33 @@ namespace App.Core
         /// <summary>打印到调试窗口</summary>
         public static void Trace(string format, params object[] args)
         {
-            System.Diagnostics.Trace.WriteLine(string.Format(format, args));
+            System.Diagnostics.Trace.WriteLine(GetText(format, args));
         }
+
 
         /// <summary>打印到控制台窗口</summary>
         public static void Console(string format, params object[] args)
         {
-            System.Console.WriteLine(string.Format(format, args));
+            System.Console.WriteLine(GetText(format, args));
         }
 
         /// <summary>打印到调试窗口</summary>
         public static void Debug(string format, params object[] args)
         {
-            System.Diagnostics.Debug.WriteLine(string.Format(format, args));
+            System.Diagnostics.Debug.WriteLine(GetText(format, args));
         }
 
         /// <summary>打印到所有输出窗口</summary>
-        public static void Print(string format, params object[] args)
+        public static void Write(string format, params object[] args)
         {
-            var msg = string.Format(format, args);
-            Trace(msg);
-            Console(msg);
-            //Debug(msg);
+            Trace(format, args);
+            Console(format, args);
+            //Debug(format, args);
+        }
+
+        public static string GetText(string format, object[] args)
+        {
+            return (args.Length == 0) ? format : string.Format(format, args);
         }
     }
 }

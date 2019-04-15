@@ -78,7 +78,7 @@ namespace App.Core
     /// <summary>
     /// 正则表达式辅助类。包含常用的正则表达式字符串和正则表达式使用示例
     /// </summary>
-    public class RegexHelper
+    public static class RegexHelper
     {
         //------------------------------
         // Replicate
@@ -222,7 +222,7 @@ namespace App.Core
         ///     "${year}-${day}-${month}"
         /// );
         /// </example>
-        public static string Replace(string text, string matchRegex, string replaceRegex)
+        public static string ReplaceRegex(this string text, string matchRegex, string replaceRegex)
         {
             return Regex.Replace(text, matchRegex, replaceRegex);
         }

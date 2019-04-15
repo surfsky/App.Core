@@ -22,7 +22,8 @@ namespace App.Core
         [UI("日期选择")]     DatePicker,
         [UI("时间选择")]     TimePicker,
         [UI("日期时间选择")] DateTimePicker,
-        [UI("图片")]         Image
+        [UI("图片")]         Image,
+        [UI("枚举下拉框")]   EnumDropDownList
     }
 
     /// <summary>
@@ -108,7 +109,7 @@ namespace App.Core
         public int Height { get; set; } = 50;
 
         /// <summary>编辑控件</summary>
-        public EditorType Editor { get; set; } = Core.EditorType.Auto;
+        public EditorType Editor { get; set; } = EditorType.Auto;
 
         /// <summary>编辑控件扩展信息</summary>
         public string EditorData { get; set; } = "";
@@ -184,6 +185,7 @@ namespace App.Core
                 if (attr == null)
                     attr = new UIAttribute(prop.Name);
                 attr.Field = prop;
+                attr.Type = attr.Type ?? prop.PropertyType;  // 编辑器的数据来源类型
                 attrs.Add(attr);
             }
             return attrs;
@@ -218,7 +220,13 @@ namespace App.Core
         //--------------------------------------------
         // Get UIAttribute property
         //--------------------------------------------
-        /// <summary>获取文本说明（来自 UIAttribute 或 DescriptionAttribute）</summary>
+        /// <summary>获取字段说明</summary>
+        public static string GetDescription(this PropertyInfo info)
+        {
+            return GetDescription(info as MemberInfo);
+        }
+
+        /// <summary>获取字段说明（来自 UIAttribute 或 DescriptionAttribute）</summary>
         static string GetDescription(this MemberInfo info)
         {
             if (info != null)
@@ -250,10 +258,10 @@ namespace App.Core
 
 
         /// <summary>获取属性的文本说明。UIExtension.GetDescription<Product>(t => t.Name)</summary>
-        public static string GetDescription<T>(Expression<Func<T, object>> expression)
+        public static string GetDescription<T>(this Expression<Func<T, object>> expression)
         {
             Type type = typeof(T);
-            string propertyName = (expression.Body as MemberExpression)?.Member.Name;
+            string propertyName = ReflectionHelper.GetExpressionName(expression);
             return GetDescription(type, propertyName);
         }
 
@@ -261,7 +269,7 @@ namespace App.Core
         public static string GetDescription<T>(this T t, Expression<Func<T, object>> expression)
         {
             Type type = typeof(T);
-            string propertyName = ReflectionHelper.GetPropertyName(expression);
+            string propertyName = ReflectionHelper.GetExpressionName(expression);
             return GetDescription(type, propertyName);
         }
 
@@ -324,10 +332,13 @@ namespace App.Core
         public int ID { get; set; }
         public string Title { get; set; }
         public Type ModelType { get; set; }
-        public List<UIAttribute> Settings { get; set; }
+        public List<UIAttribute> Items { get; set; }
 
 
         // 构造函数
+        public UISetting()
+        {
+        }
         public UISetting(Type type, string title = "", int id = -1)
         {
             var attr = ReflectionHelper.GetAttribute<UIAttribute>(type);
@@ -346,7 +357,7 @@ namespace App.Core
             //
             this.ID = id;
             this.ModelType = type;
-            this.Settings = type.GetUIAttributes();
+            this.Items = type.GetUIAttributes();
         }
 
         /// <summary>从xml文件中加载</summary>

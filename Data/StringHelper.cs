@@ -15,33 +15,6 @@ namespace App.Core
     /// </summary>
     public static class StringHelper
     {
-        //--------------------------------------------------
-        // 为空
-        //--------------------------------------------------
-        /// <summary>字符串是否为空</summary>
-        public static bool IsEmpty(this string txt)
-        {
-            return String.IsNullOrEmpty(txt);
-        }
-
-        /// <summary>字符串是否为空</summary>
-        public static bool IsNotEmpty(this string txt)
-        {
-            return !String.IsNullOrEmpty(txt);
-        }
-
-        /// <summary>对象是否为空或为空字符串</summary>
-        public static bool IsEmpty(this object o)
-        {
-            return (o == null) ? true : o.ToString().IsEmpty();
-        }
-
-        /// <summary>对象是否为空或为空字符串</summary>
-        public static bool IsNotEmpty(this object o)
-        {
-            return !o.IsEmpty();
-        }
-
         /// <summary>获取字符串 MD5 哈希值（32位）</summary>
         /// <param name="text"></param>
         /// <returns>字符串MD5哈希值的十六进制字符串</returns>
@@ -169,6 +142,14 @@ namespace App.Core
                 return text.Substring(0, l);
             else
                 return text.Substring(0, n);
+        }
+
+        /// <summary>裁掉尾部的匹配字符串</summary>
+        public static string TrimEnd(this string text, string match)
+        {
+            if (text.IsEmpty()) return "";
+            var reg = string.Format("{0}$", match);
+            return  Regex.Replace(text, reg, "", RegexOptions.IgnoreCase);
         }
 
         /// <summary>获取遮罩文本（XXXXXXXXXX****XXXX）</summary>

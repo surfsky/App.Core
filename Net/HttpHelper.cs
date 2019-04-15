@@ -53,15 +53,7 @@ namespace App.Core
             return sb.ToString();
         }
 
-        /// <summary>获取Http响应文本</summary>
-        public static string GetResponseText(HttpWebResponse response)
-        {
-            string encoding = response.ContentEncoding;
-            if (encoding == null || encoding.Length < 1)
-                encoding = "UTF-8";
-            var reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(encoding));
-            return reader.ReadToEnd();
-        }
+
 
         //---------------------------------------------------------
         // Get 方法
@@ -78,51 +70,64 @@ namespace App.Core
             // 返回
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             response.Cookies = cookieContainer.GetCookies(response.ResponseUri);
-            return GetResponseText(response);
+            return response.ToText();
         }
 
 
         //---------------------------------------------------------
         // Post方法
         //---------------------------------------------------------
-        /// <summary>Post 查询字符串</summary>
-        public static string Post(string url, string queryString, Encoding encoding = null, string contentType = null, CookieContainer cookieContainer = null)
-        {
-            encoding = encoding ?? Encoding.UTF8;
-            byte[] bytes = queryString.IsEmpty() ? new byte[0] : encoding.GetBytes(queryString);
-            return Post(url, bytes, contentType, cookieContainer);
-        }
-
-        /// <summary>Post Json 字符串</summary>
-        public static string PostJson(string url, string jsonString, Encoding encoding = null, CookieContainer cookieContainer = null)
-        {
-            return Post(url, jsonString, encoding, "application/json", cookieContainer);
-        }
-
-        /// <summary>Post 字典</summary>
+        /// <summary>Post 文本字典（会拼装成QueryString的形式）</summary>
         public static string Post(string url, Dictionary<string, string> data, Encoding encoding = null, string contentType = null, CookieContainer cookieContainer = null)
         {
             return Post(url, ToQueryString(data), encoding, contentType, cookieContainer);
         }
 
+        /// <summary>Post Json 字符串</summary>
+        public static string PostJson(string url, string json, Encoding encoding = null, CookieContainer cookieContainer = null)
+        {
+            return Post(url, json, encoding, "application/json", cookieContainer);
+        }
+
+        /// <summary>Post (查询）字符串</summary>
+        public static string Post(string url, string text, Encoding encoding = null, string contentType = null, CookieContainer cookieContainer = null)
+        {
+            byte[] bytes = text.ToBytes(encoding);
+            return Post(url, bytes, contentType, cookieContainer);
+        }
+
+
         /// <summary>POST 字节数组</summary>
         public static string Post(string url, byte[] bytes, string contentType = null, CookieContainer cookieContainer = null)
+        {
+            MemoryStream stream = ToStream(bytes);
+            return Post(url, stream, contentType, cookieContainer).ToText();
+        }
+
+        /// <summary>将文本转化为流</summary>
+        public static MemoryStream ToStream(this string text, Encoding encoding = null)
+        {
+            return text.ToBytes(encoding).ToStream();
+        }
+
+        /// <summary>将字节数组转化为流</summary>
+        public static MemoryStream ToStream(this byte[] bytes)
         {
             MemoryStream stream = new MemoryStream();
             stream.Write(bytes, 0, bytes.Length);
             stream.Seek(0, SeekOrigin.Begin);
-            return Post(url, stream, contentType, cookieContainer);
+            return stream;
         }
 
         /// <summary>Post 文件</summary>
         public static string PostFile(string url, string filePath, CookieContainer cookieContainer = null)
         {
             var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Read);
-            return Post(url, fileStream, null, cookieContainer);
+            return Post(url, fileStream, null, cookieContainer).ToText();
         }
 
         /// <summary>Post 字节流</summary>
-        public static string Post(string url, Stream stream = null, string contentType = null, CookieContainer cookieContainer = null)
+        public static HttpWebResponse Post(string url, Stream stream = null, string contentType = null, CookieContainer cookieContainer = null)
         {
             // 参数
             cookieContainer = cookieContainer ?? new CookieContainer();
@@ -156,9 +161,27 @@ namespace App.Core
             // 返回
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             response.Cookies = cookieContainer.GetCookies(response.ResponseUri);
-            return GetResponseText(response);
+            return response;
         }
 
+        /// <summary>获取 Http 响应文本</summary>
+        public static string ToText(this HttpWebResponse response)
+        {
+            string encoding = response.ContentEncoding;
+            if (encoding == null || encoding.Length < 1)
+                encoding = "UTF-8";
+            var reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(encoding));
+            return reader.ReadToEnd();
+        }
+
+        /// <summary>获取 Http 响应图片</summary>
+        public static Image ToImage(this HttpWebResponse response)
+        {
+            using (var stream = response.GetResponseStream())
+            {
+                return new Bitmap(stream);
+            }
+        }
 
         ///------------------------------------------------------------
         /// Post MultipartForm Http 协议 (multipart/form-data) 辅助方法。
@@ -223,16 +246,11 @@ namespace App.Core
         /// 服务器端处理
         ///------------------------------------------------------------
         /// <summary>获取post上来的数据</summary>
-        public static string GetPostString(HttpRequest request, Encoding encoding=null)
+        public static string GetPostText(HttpRequest request, Encoding encoding=null)
         {
-            Stream stream = request.InputStream;
-            int n = (int)stream.Length;
-            byte[] bytes = new byte[n];
-            stream.Read(bytes, 0, n);
-            stream.Close();
-
-            encoding = encoding ?? Encoding.UTF8;
-            return encoding.GetString(bytes);
+            if (encoding == null) encoding = Encoding.UTF8;
+            var reader = new StreamReader(request.InputStream, encoding);
+            return reader.ReadToEnd();
         }
 
 
@@ -260,10 +278,10 @@ namespace App.Core
         // 获取网络图片
         //------------------------------------------------------------
         /// <summary>获取网络图片的缩略图</summary>
-        public static Image GetThumbnail(string url, int w, int h = -1)
+        public static Image GetThumbnail(string url, int w, int? h = null)
         {
             Image img = HttpHelper.GetServerOrNetworkImage(url);
-            return DrawHelper.CreateThumbnail(img, w, h);
+            return Drawer.CreateThumbnail(img, w, h);
         }
 
         /// <summary>获取服务器或网络图片</summary>
@@ -273,7 +291,7 @@ namespace App.Core
             if (url.StartsWith("~/") || url.StartsWith(".") || url.StartsWith("/"))
             {
                 if (Asp.IsWeb() && Asp.IsLocalFile(url))
-                    return DrawHelper.LoadImage(Asp.Server.MapPath(url));
+                    return Drawer.LoadImage(Asp.Server.MapPath(url));
             }
             else
                 return HttpHelper.GetNetworkImage(url);
@@ -296,6 +314,7 @@ namespace App.Core
                 return null;
             }
         }
+
 
         //------------------------------------------------------------
         // 输出

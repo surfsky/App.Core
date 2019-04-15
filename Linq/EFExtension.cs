@@ -118,7 +118,7 @@ namespace App.Core
             return query.SortBy(keySelector, ascend).Page(pageIndex, pageSize);
         }
 
-        /// <summary>排序</summary>
+        /// <summary>排序（可指定升降序）</summary>
         /// <example>q.SortBy(t => t.Name, true);</example>
         public static IQueryable<T> SortBy<T, TKey>(this IQueryable<T> query, Expression<Func<T, TKey>> keySelector, bool ascend = true)
         {

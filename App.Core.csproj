@@ -66,12 +66,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Convertor.list.cs" />
+    <Compile Include="Convertor.xml.cs" />
     <Compile Include="Database\DbHelper.cs" />
     <Compile Include="Data\BytesExtension.cs" />
+    <Compile Include="Serialization\DynamicXml.cs" />
     <Compile Include="Data\FileHelper.cs" />
     <Compile Include="Data\HexEncoding.cs" />
+    <Compile Include="Serialization\Xmlizer.cs" />
     <Compile Include="Draw\FontHelper.cs" />
     <Compile Include="Draw\VerifyImageDrawer.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="Interop\CsEvaluator.cs" />
     <Compile Include="Interop\Evaluator.cs" />
     <Compile Include="Interop\JsEvaluator.cs" />
@@ -88,6 +93,8 @@
     <Compile Include="Net\SocketClient.cs" />
     <Compile Include="Net\SocketData.cs" />
     <Compile Include="ThreadPond.cs" />
+    <Compile Include="Web\Asp.IO.cs" />
+    <Compile Include="Web\Asp.Data.cs" />
     <Compile Include="Web\AuthHelper.cs" />
     <Compile Include="Web\CookieHelper.cs" />
     <Compile Include="Data\DateTimeHelper.cs" />
@@ -100,8 +107,8 @@
     <Compile Include="Convertor.cs" />
     <Compile Include="Net\HttpHelper.cs" />
     <Compile Include="Interfaces.cs" />
-    <Compile Include="Data\JsonConverters.cs" />
-    <Compile Include="Data\Jsonlizer.cs" />
+    <Compile Include="Serialization\JsonConverters.cs" />
+    <Compile Include="Serialization\Jsonlizer.cs" />
     <Compile Include="Linq\LinqExtension.cs" />
     <Compile Include="Linq\LinqToSql.cs" />
     <Compile Include="Math\MathHelper.cs" />
@@ -111,7 +118,7 @@
     <Compile Include="Data\RegexHelper.cs" />
     <Compile Include="Web\ResourceHelper.cs" />
     <Compile Include="Web\ScriptHelper.cs" />
-    <Compile Include="Data\SerializeHelper.cs" />
+    <Compile Include="Serialization\SerializeHelper.cs" />
     <Compile Include="Data\StringHelper.cs" />
     <Compile Include="UIAttribute.cs" />
     <Compile Include="Web\Asp.cs" />
@@ -132,5 +139,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

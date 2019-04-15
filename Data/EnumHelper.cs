@@ -44,7 +44,13 @@ namespace App.Core
         /// <summary>判断一个对象是否是枚举类型</summary>
         public static bool IsEnum(this object value)
         {
-            return value.GetType().BaseType == typeof(Enum);
+            return value?.GetType().BaseType == typeof(Enum);
+        }
+
+        /// <summary>判断一个类型是否是枚举类型</summary>
+        public static bool IsEnum(this Type type)
+        {
+            return type?.BaseType == typeof(Enum);
         }
 
         /// <summary>获取枚举的值列表</summary>

@@ -41,7 +41,7 @@ namespace App.Core
         public static string ToExcelXml<T>(IList<T> objs, bool showFieldDescription=false)
         {
             var type = typeof(T);
-            var attrs = new UISetting(type).Settings;
+            var attrs = new UISetting(type).Items;
             var props = type.GetProperties();
 
             // 表开始
