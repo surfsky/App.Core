@@ -25,10 +25,10 @@ namespace App.Core
         // Xml
         //------------------------------------------
         /// <summary>解析XML字符串为对象</summary>
-        public static T ParseXml<T>(this string xml, string rootName) where T : class
+        public static T ParseXml<T>(this string xml) where T : class
         {
             var s = new Xmlizer();
-            return s.Parse<T>(xml, rootName);
+            return s.Parse<T>(xml);
         }
 
         /// <summary>将对象转化为 XML 字符串</summary>

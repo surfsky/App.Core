@@ -73,6 +73,7 @@
     <Compile Include="Serialization\DynamicXml.cs" />
     <Compile Include="Data\FileHelper.cs" />
     <Compile Include="Data\HexEncoding.cs" />
+    <Compile Include="Serialization\Enums.cs" />
     <Compile Include="Serialization\Xmlizer.cs" />
     <Compile Include="Draw\FontHelper.cs" />
     <Compile Include="Draw\VerifyImageDrawer.cs" />

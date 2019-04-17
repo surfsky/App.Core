@@ -137,6 +137,7 @@ namespace App.Core
         /// <summary>安全裁剪字符串</summary>
         public static string Clip(this string text, int n)
         {
+            if (text.IsEmpty()) return "";
             var l = text.Length;
             if (l <= n)
                 return text.Substring(0, l);
@@ -179,16 +180,16 @@ namespace App.Core
         /// <summary>转化为首字母小写字符串</summary>
         public static string ToLowCamel(this string text)
         {
-            if (string.IsNullOrEmpty(text))
-                return string.Empty;
+            if (text.IsEmpty())
+                return "";
             return text.Substring(0, 1).ToLower() + text.Substring(1);
         }
 
         /// <summary>转化为首字母大写字符串</summary>
         public static string ToHighCamel(this string text)
         {
-            if (string.IsNullOrEmpty(text))
-                return string.Empty;
+            if (text.IsEmpty())
+                return "";
             return text.Substring(0, 1).ToUpper() + text.Substring(1);
         }
     }

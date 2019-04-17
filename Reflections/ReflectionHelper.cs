@@ -155,10 +155,47 @@ namespace App.Core
         }
 
 
+        /// <summary>是否是列表</summary>
+        public static bool IsList(this Type type)
+        {
+            return type.GetInterface("IList") != null;
+        }
+
+        /// <summary>是否是字典</summary>
+        public static bool IsDict(this Type type)
+        {
+            return type.GetInterface("IDictionary") != null;
+        }
+
+
+        /// <summary>是否是泛型列表</summary>
+        public static bool IsGenericList(this Type type)
+        {
+            return type.IsGenericType && type.IsList();
+        }
+
+        /// <summary>是否是泛型字典</summary>
+        public static bool IsGenericDict(this Type type)
+        {
+            return type.IsGenericType && type.IsDict();
+        }
+
+        /// <summary>是否是匿名类</summary>
+        public static bool IsAnonymous(this Type type)
+        {
+            return type.Name.Contains("AnonymousType");
+        }
+
         /// <summary>是否是泛型类型</summary>
         public static bool IsGenericType(this Type type)
         {
             return type.IsGenericType;
+        }
+
+        /// <summary>是否是简单值类型: String + DateTime + 枚举 + 基元类型(Boolean， Byte， SByte， Int16， UInt16， Int32， UInt32， Int64， UInt64， IntPtr， UIntPtr， Char，Double，和Single)</summary>
+        public static bool IsSimpleType(this Type type)
+        {
+            return (type.IsPrimitive || type == typeof(string) || type == typeof(DateTime) || type.IsEnum);
         }
 
         /// <summary>是否是可空类型</summary>
