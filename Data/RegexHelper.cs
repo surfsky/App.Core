@@ -370,5 +370,58 @@ namespace App.Core
             }
             return false;
         }
+
+        //-------------------------------------------
+        // 用正则表达式解析Xml标签（仅供参考本类并没有用到）
+        //-------------------------------------------
+        /// <summary>获取标签列表</summary>
+        /// <param name="tagOrContent">获取整个标签还是内容部分</param>
+        /// <remarks>有问题：应该获取直接下属标签，而不必返回子级标签；否则若顺序错乱一下，就会取错标签了；</remarks>
+        public static List<string> GetXmlTags(string content, string tagName, bool tagOrContent)
+        {
+            var values = new List<string>();
+            if (content.IsNotEmpty())
+            {
+                var tagRegex = string.Format(@"<{0}[^>]*>([\s\S]*?)</\s*{0}>", tagName);
+                var matches = Regex.Matches(content, tagRegex, RegexOptions.IgnoreCase);
+                foreach (Match match in matches)
+                {
+                    var value = tagOrContent ? match.Value : GetXmlCDATAText(match.Groups[1].Value);
+                    values.Add(value);
+                }
+            }
+            return values;
+        }
+
+        /// <summary>获取标签</summary>
+        public static string GetXmlTag(string content, string tagName, bool tagOrContent)
+        {
+            var tags = GetXmlTags(content, tagName, tagOrContent);
+            return tags.Count > 0 ? tags[0] : null;
+        }
+
+        /// <summary>获取指定特性的值（如 Name="Kevin"）</summary>
+        public static string GetXmlTagAttribute(string content, string tagName, string attributeName)
+        {
+            var tagRegex = string.Format(@"<{0}.*{1}\s*=\s*['""]([^'""]*)['""][^>]*>", tagName, attributeName);
+            var match = Regex.Match(content, tagRegex, RegexOptions.IgnoreCase);
+            if (match.Success)
+                return match.Groups[1].Value;
+            return null;
+        }
+
+
+        /// <summary>解析CDATA内容（以<![CDATA[开头)</summary>
+        private static string GetXmlCDATAText(string txt)
+        {
+            var tagRegex = @"^<!\[CDATA\[(.*)\]\]>";
+            var match = Regex.Match(txt.TrimStart(), tagRegex, RegexOptions.IgnoreCase);
+            if (match.Success)
+                return match.Groups[1].Value;
+            else
+                return txt;
+        }
+
+
     }
 }

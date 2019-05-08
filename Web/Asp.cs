@@ -135,18 +135,6 @@ namespace App.Core
             return Server.MapPath(virtualPath);
         }
 
-        /// <summary>URL 编码</summary>
-        public static string UrlEncode(this string url)
-        {
-            return Server.UrlEncode(url);
-        }
-
-        /// <summary>URL 反编码</summary>
-        public static string UrlDecode(this string url)
-        {
-            return Server.UrlDecode(url);
-        }
-
         /// <summary>获取请求路径（去除查询字符串）</summary>
         public static string TrimQuerystring(this string url)
         {
@@ -179,6 +167,8 @@ namespace App.Core
         /// </summary>
         public static string ResolveFullUrl(string relativeUrl)
         {
+            if (relativeUrl.IsEmpty())
+                return "";
             if (relativeUrl.ToLower().StartsWith("http"))
                 return relativeUrl;
             var url = new Control().ResolveUrl(relativeUrl);

@@ -15,21 +15,6 @@ namespace App.Core
     /// </summary>
     public static class StringHelper
     {
-        /// <summary>获取字符串 MD5 哈希值（32位）</summary>
-        /// <param name="text"></param>
-        /// <returns>字符串MD5哈希值的十六进制字符串</returns>
-        public static string ToMD5(this string text, Encoding encoding = null)
-        {
-            encoding = encoding ?? Encoding.UTF8;
-            var md5 = new MD5CryptoServiceProvider();
-            byte[] bytes = md5.ComputeHash(encoding.GetBytes(text));
-
-            var sb = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i++)
-                sb.AppendFormat("{0:x2}", bytes[i]);
-            return sb.ToString();
-        }
-
 
         //--------------------------------------------------
         // 
@@ -63,66 +48,6 @@ namespace App.Core
                 return new int[0];
             else
                 return commaText.Split(',').Select(s => Convert.ToInt32(s)).ToArray();
-        }
-
-
-        /// <summary>去除HTML标签</summary>
-        public static string RemoveTag(this string html)
-        {
-            return Regex.Replace(html, "<[^>]*>", "");
-        }
-
-        /// <summary>去除脚本标签</summary>
-        public static string RemoveScriptTag(this string html)
-        {
-            return Regex.Replace(html, @"<script[^>]*?>.*?</script>", "", RegexOptions.IgnoreCase);  // 脚本标签块
-        }
-
-        /// <summary>去除脚本标签</summary>
-        public static string RemoveStyleTag(this string html)
-        {
-            return Regex.Replace(html, @"<style[^>]*?>.*?</style>", "", RegexOptions.IgnoreCase);    // 样式标签块
-        }
-
-        /// <summary>去除所有HTML痕迹（包括脚本、标签、注释、转义符等）</summary>
-        public static string RemoveHtml(this string html)
-        {
-            if (html.IsEmpty()) return "";
-
-            // 删除标签
-            html = Regex.Replace(html, @"<script[^>]*?>.*?</script>", "", RegexOptions.IgnoreCase);  // 脚本标签块
-            html = Regex.Replace(html, @"<style[^>]*?>.*?</style>", "", RegexOptions.IgnoreCase);    // 样式标签块
-            html = Regex.Replace(html, @"<(.[^>]*)>", "", RegexOptions.IgnoreCase);                  // 标签 <form> <div> </div> </form>
-            html = Regex.Replace(html, @"<!–.*", "", RegexOptions.IgnoreCase);                      // 注释头
-            html = Regex.Replace(html, @"–>", "", RegexOptions.IgnoreCase);                         // 注释尾
-
-            // 处理转义符
-            html = Regex.Replace(html, @"&(nbsp|#160);", " ", RegexOptions.IgnoreCase);              // 空格
-            html = Regex.Replace(html, @"&(quot|#34);", "\"", RegexOptions.IgnoreCase);              // "
-            html = Regex.Replace(html, @"&(amp|#38);", "&", RegexOptions.IgnoreCase);                // &
-            html = Regex.Replace(html, @"&(lt|#60);", "<", RegexOptions.IgnoreCase);                 // <
-            html = Regex.Replace(html, @"&(gt|#62);", ">", RegexOptions.IgnoreCase);                 // >
-            html = Regex.Replace(html, @"&(copy|#169);", "©", RegexOptions.IgnoreCase);              // 
-            html = Regex.Replace(html, @"&(reg|#174);", "®", RegexOptions.IgnoreCase);               // 
-            html = Regex.Replace(html, @"&(deg|#176);", "°", RegexOptions.IgnoreCase);              // 
-            //html = Regex.Replace(html, @"&(cent|#162);", "\xa2", RegexOptions.IgnoreCase);           // ￠
-            //html = Regex.Replace(html, @"&(pound|#163);", "\xa3", RegexOptions.IgnoreCase);          // ￡
-            //html = Regex.Replace(html, @"&(yen|#165);", "￥", RegexOptions.IgnoreCase);              // ￥
-            //html = Regex.Replace(html, @"&(middot|#183);", "·", RegexOptions.IgnoreCase);           // 
-            //html = Regex.Replace(html, @"&(sect|#167);", "§", RegexOptions.IgnoreCase);             // 
-            //html = Regex.Replace(html, @"&(para|#182);", "¶", RegexOptions.IgnoreCase);              // 
-            html = Regex.Replace(html, @"&#(\d+);", "", RegexOptions.IgnoreCase);                    // 未知转义符
-            //html = Regex.Replace(html, @"([\r\n])[\s]+", "", RegexOptions.IgnoreCase);               // 换行和空白符
-
-            //
-            html.Replace("<", "＜");
-            html.Replace(">", "＞");
-            html.Replace(" ", " ");
-            html.Replace("　", " ");
-            html.Replace("/'", "'");
-            //html.Replace("/"", """);
-            html = HttpUtility.HtmlEncode(html).Trim();
-            return html;
         }
 
         /// <summary>重复字符串</summary>
@@ -192,5 +117,115 @@ namespace App.Core
                 return "";
             return text.Substring(0, 1).ToUpper() + text.Substring(1);
         }
+
+
+        //--------------------------------------------------
+        // 正则表达式处理字符串
+        //--------------------------------------------------
+        /// <summary>去除 XML 标签（包含注释）</summary>
+        public static string RemoveTag(this string text)
+        {
+            if (text.IsEmpty()) return "";
+            text = Regex.Replace(text, "<[^>]*>", "");                                               // 标签
+            text = Regex.Replace(text, @"<!–.*", "", RegexOptions.IgnoreCase);                      // 注释头
+            text = Regex.Replace(text, @"–>", "", RegexOptions.IgnoreCase);                         // 注释尾
+            return text;
+        }
+
+        /// <summary>去除脚本标签块</summary>
+        public static string RemoveScriptBlock(this string text)
+        {
+            if (text.IsEmpty()) return "";
+            return Regex.Replace(text, @"<script[^>]*?>.*?</script>", "", RegexOptions.IgnoreCase);  // 脚本标签块
+        }
+
+        /// <summary>去除样式标签块</summary>
+        public static string RemoveStyleBlock(this string text)
+        {
+            if (text.IsEmpty()) return "";
+            return Regex.Replace(text, @"<style[^>]*?>.*?</style>", "", RegexOptions.IgnoreCase);    // 样式标签块
+        }
+
+        /// <summary>去除不可见的空白字符（[\t\n\r\f\v]）</summary>
+        public static string RemoveBlank(this string text)
+        {
+            if (text.IsEmpty()) return "";
+            return Regex.Replace(text, @"\s+", "", RegexOptions.IgnoreCase);
+        }
+
+        /// <summary>去除空白字符转义符（[\t\n\r\f\v]）</summary>
+        public static string RemoveBlankTranslator(this string text)
+        {
+            if (text.IsEmpty()) return "";
+            text = Regex.Replace(text, @"\\t+", "", RegexOptions.IgnoreCase);
+            text = Regex.Replace(text, @"\\n+", "", RegexOptions.IgnoreCase);
+            text = Regex.Replace(text, @"\\r+", "", RegexOptions.IgnoreCase);
+            text = Regex.Replace(text, @"\\f+", "", RegexOptions.IgnoreCase);
+            text = Regex.Replace(text, @"\\v+", "", RegexOptions.IgnoreCase);
+            return text;
+        }
+
+        /// <summary>瘦身：合并多个空白符为一个空格；去除头尾的空格</summary>
+        public static string Slim(this string text)
+        {
+            if (text.IsEmpty()) return "";
+            text = Regex.Replace(text, @"\s+", " ", RegexOptions.IgnoreCase);
+            text = Regex.Replace(text, @"\s+", " ", RegexOptions.IgnoreCase);
+            return text.Trim();
+        }
+
+        /// <summary>去除所有HTML痕迹（包括脚本、标签、注释、转义符等）</summary>
+        public static string RemoveHtml(this string text)
+        {
+            if (text.IsEmpty()) return "";
+
+            // 删除标签
+            text = Regex.Replace(text, @"<script[^>]*?>.*?</script>", "", RegexOptions.IgnoreCase);  // 脚本标签块
+            text = Regex.Replace(text, @"<style[^>]*?>.*?</style>", "", RegexOptions.IgnoreCase);    // 样式标签块
+            text = Regex.Replace(text, @"<(.[^>]*)>", "", RegexOptions.IgnoreCase);                  // 标签 <form> <div> </div> </form>
+            text = Regex.Replace(text, @"<!–.*", "", RegexOptions.IgnoreCase);                      // 注释头
+            text = Regex.Replace(text, @"–>", "", RegexOptions.IgnoreCase);                         // 注释尾
+
+            // 处理转义符
+            text = Regex.Replace(text, @"&(nbsp|#160);", " ", RegexOptions.IgnoreCase);              // 空格
+            text = Regex.Replace(text, @"&(quot|#34);", "\"", RegexOptions.IgnoreCase);              // "
+            text = Regex.Replace(text, @"&(amp|#38);", "&", RegexOptions.IgnoreCase);                // &
+            text = Regex.Replace(text, @"&(lt|#60);", "<", RegexOptions.IgnoreCase);                 // <
+            text = Regex.Replace(text, @"&(gt|#62);", ">", RegexOptions.IgnoreCase);                 // >
+            text = Regex.Replace(text, @"&(copy|#169);", "©", RegexOptions.IgnoreCase);              // 
+            text = Regex.Replace(text, @"&(reg|#174);", "®", RegexOptions.IgnoreCase);               // 
+            text = Regex.Replace(text, @"&(deg|#176);", "°", RegexOptions.IgnoreCase);              // 
+            //text = Regex.Replace(text, @"&(cent|#162);", "\xa2", RegexOptions.IgnoreCase);           // ￠
+            //text = Regex.Replace(text, @"&(pound|#163);", "\xa3", RegexOptions.IgnoreCase);          // ￡
+            //text = Regex.Replace(text, @"&(yen|#165);", "￥", RegexOptions.IgnoreCase);              // ￥
+            //text = Regex.Replace(text, @"&(middot|#183);", "·", RegexOptions.IgnoreCase);           // 
+            //text = Regex.Replace(text, @"&(sect|#167);", "§", RegexOptions.IgnoreCase);             // 
+            //text = Regex.Replace(text, @"&(para|#182);", "¶", RegexOptions.IgnoreCase);              // 
+            text = Regex.Replace(text, @"&#(\d+);", "", RegexOptions.IgnoreCase);                    // 未知转义符
+            //html = Regex.Replace(html, @"([\r\n])[\s]+", "", RegexOptions.IgnoreCase);               // 换行和空白符
+
+            //
+            text.Replace("<", "＜");
+            text.Replace(">", "＞");
+            text.Replace(" ", " ");
+            text.Replace("　", " ");
+            text.Replace("/'", "'");
+            //text.Replace("/"", """);
+            //text = HttpUtility.HtmlDecode(text);
+            return text.Trim();
+        }
+
+        /// <summary>进行Html编码。格式如：&amp;quot;Name&amp;quot;</summary>
+        public static string ToHtmlEncode(this string text)
+        {
+            return HttpUtility.HtmlEncode(text);
+        }
+
+        /// <summary>进行Html反编码。格式如：&quot;Name&quot;</summary>
+        public static string ToHtmlDecode(this string text)
+        {
+            return HttpUtility.HtmlDecode(text);
+        }
+
     }
 }

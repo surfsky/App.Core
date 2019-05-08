@@ -67,23 +67,32 @@ namespace App.Core
     /// </summary>
     /// <remarks>
     /// Author: surfsky.cnblogs.com
-    /// LastUpdate: 2019-04-18
+    /// LastUpdate: 2019-04-19
     /// 
-    /// [已实现]
-    ///     2019-10-22 实现XML输出（并改为非泛型版本，更为通用，很多情况我们并不知道要序列化的对象的类型）
-    ///         支持简单类型：字符串、值类型。
-    ///         支持List：<Persons><Person/>...<Person/></Persons>
-    ///         支持Dict：<Items><Item Key="a">value</Item>...<Item Key="b">value</Item></Items>
-    ///         支持Array：<Persons></Persons>
-    ///         支持Table：<Table><Row>...</Row></Table>
-    ///         支持类类型：<Object><PropertyName>,..</PropertyName></Object>
-    ///         可控输出格式: 时间、枚举
-    ///     2019-04-18 实现解析XML为对象
-    ///         支持简单类型：字符串、值类型
-    ///         支持List\Dict: 
-    ///         支持类类型：
-    ///         注意：
-    ///             现阶段仅支持属性标签方式（如<Person><Name>X</Name></Person>），不支持Attribute方式（如<Person Name="X"></Person>)
+    /// [功能]
+    /// 将对象序列化为 XML 输出
+    ///     支持的数据类型
+    ///         简单类型（字符串、时间、基数据类型）：直接输出文本
+    ///         简单值List：<Favorite><String>Math</String><String>Art</String></Favorite>
+    ///         对象List：<Persons><Person><Name>..</Name></Kevin><Person><Name>..</Name></Kevin></Persons>
+    ///         Dict：<Friends><GirlFriend><Name>..</Name></GirlFriend>GirlFriend><BoyFriend>...</BoyFriend></Friends>
+    ///         Table：<Incomes><Row><Name>Kevin</Name><Age>21</Age>...</Row></Incomes>
+    ///         类及结构体：<Person><Name>Kevin</Name><Age>10</Age></Object>
+    ///     格式控制
+    ///         时间
+    ///         枚举
+    ///         标签大小写格式
+    ///         是否忽略空值
+    ///         
+    /// 将 XML 文本解析为对象
+    ///     支持的数据类型
+    ///         简单类型（字符串、时间、基数据类型）
+    ///         简单值List
+    ///         对象List
+    ///         Dict: 
+    ///         类及结构体：
+    ///     注意：
+    ///         现阶段仅支持标签方式（如<Person><Name>X</Name></Person>），不支持Attribute方式（如<Person Name="X"></Person>)
     ///     
     /// [任务]
     /// 输出
@@ -95,9 +104,10 @@ namespace App.Core
     ///         [XmlDateTime("yyyy-MM-dd")]
     ///         [XmlTable("Row")]
     ///     优化输出格式控制
-    ///         构建一个 XmlDocument 对象，最后再根据格式参数再生成 xml 文本
-    ///     测试
-    ///         检测和避免无限循环引用
+    ///         重构输出代码，不直接输出文本
+    ///         而是构建一个 XmlDocument 对象，最后再根据格式参数再生成 xml 文本
+    ///     XML输出
+    ///         避免对象无限循环引用：维护一个List<Object>列表，保存复杂类型数据，若已经有引用了，则不输出该属性
     /// 
     /// 解析
     ///     支持Attribute
@@ -120,7 +130,8 @@ namespace App.Core
         /// <summary>是否插入渐进符</summary>
         public bool FormatIndent { get; set; } = false;
 
-
+        /// <summary>是否忽略空值</summary>
+        public bool IgnoreNull { get; set; } = true;
 
         //-------------------------------------------------
         // 构造析构
@@ -128,12 +139,15 @@ namespace App.Core
         /// <summary>Xml序列化</summary>
         /// <param name="xmlHead">XML文件头<?xml ... ?></param>
         /// <param name="useCData">是否需要CDATA包裹数据</param>
-        public Xmlizer(bool formatLowCamel=false, EnumFomatting formatEnum=EnumFomatting.Text, string formatDateTime="yyyy-MM-dd HH:mm:ss", bool formatIndent=false)
+        public Xmlizer(
+            bool formatLowCamel=false, EnumFomatting formatEnum=EnumFomatting.Text, string formatDateTime="yyyy-MM-dd HH:mm:ss", bool formatIndent=false,
+            bool ignoreNull=true)
         {
             this.FormatLowCamel = formatLowCamel;
             this.FormatEnum = formatEnum;
             this.FormatDateTime = formatDateTime;
             this.FormatIndent = formatIndent;
+            this.IgnoreNull = ignoreNull;
         }
 
         /// <summary>获取Camel格式名称</summary>
@@ -153,13 +167,26 @@ namespace App.Core
         }
 
         /// <summary>获取Xml安全文本（将特殊字符用CDATA解决）</summary>
-        static string GetXmlSafeText(object obj)
+        static string XmlTextEncode(string txt)
         {
             // "<" 字符和"&"字符对于XML来说是严格禁止使用的，可用转义符或CDATA解决
-            var txt = obj.ToString();
             if (txt.IndexOfAny(new char[] { '<', '&' }) != -1)
                 return string.Format("<![CDATA[ {0} ]]>", txt);
             return txt;
+        }
+
+        /// <summary>XML标签名称编码</summary>
+        static string XmlTagEncode(string txt)
+        {
+            if (txt.IndexOfAny(new char[] { '<', '&', '/', '>' }) != -1)
+                return txt.ToUrlEncode();
+            return txt;
+        }
+
+        /// <summary>XML标签名称反解码</summary>
+        static string XmlTagDecode(string txt)
+        {
+            return txt.ToUrlDecode();
         }
 
 
@@ -171,52 +198,47 @@ namespace App.Core
         /// <param name="rootName">根节点名称</param>
         /// <param name="ignoreNull">是否跳过空元素</param>
         /// <param name="addXmlHead">是否添加xml头部</param>
-        public string ToXml(object o, string rootName="", bool ignoreNull=true, bool addXmlHead=false)
+        public string ToXml(object o, string rootName="", bool addXmlHead=false)
         {
             var sb = new StringBuilder();
             if (rootName.IsEmpty())
                 rootName = GetTagName(o.GetType());
             if (addXmlHead)
                 sb.AppendFormat("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n");
-            WriteObject(sb, o, rootName, ignoreNull);
+            sb.AppendFormat("<{0}>", rootName);
+            WriteInner(sb, o, rootName);
+            sb.AppendFormat("</{0}>", rootName);
             return sb.ToString();
         }
 
 
-        /// <summary>将对象序列化为 XML</summary>
-        private void WriteObject(StringBuilder sb, object o, string tagName="", bool ignoreNull=true)
+        /// <summary>输出对象的内部 XML文本（不输出外部标签）</summary>
+        private void WriteInner(StringBuilder sb, object o, string tagName="", bool ignoreNull=true)
         {
-            // 对象为空处理
-            tagName = GetCamelName(tagName);
-            if (o == null)
-            {
-                if (!ignoreNull && tagName.IsNotEmpty())
-                    sb.AppendFormat("<{0}/>", tagName);
-                return;
-            }
-
-            // 获取对象的类型
+            if (o == null) return;
+            // 根据类型进行输出（简单类型直接输出文本；复杂类型输出复杂Xml；顺序不要轻易调整；）
             var type = o.GetType().GetRealType();
-            if (tagName.IsEmpty())
-                tagName = GetTagName(type);
+            if (o is string)               WriteString(sb, o);
+            else if (o is DateTime)        WriteDateTime(sb, o);
+            else if (type.IsPrimitive)     WriteValue(sb, o);
+            else if (type.IsEnum)          WriteEnum(sb, o);
+            else
+            {
+                tagName = GetCamelName(tagName);
+                if (tagName.IsEmpty())
+                    tagName = GetTagName(type);
 
-            // 根据类型进行输出（注意顺序不可颠倒）
-            sb.AppendFormat("<{0}>", tagName);
-            if (o is string)              WriteString(sb, o);
-            else if (o is DateTime)       WriteDateTime(sb, o);
-            else if (type.IsEnum)         WriteEnum(sb, o);
-            else if (o is DataTable)      WriteDataTable(sb, o);
-            else if (o is IDictionary)    WriteDict(sb, o);
-            else if (o is IEnumerable)    WriteList(sb, o);
-            else if (type.IsValueType)    WriteValue(sb, o);
-            else                          WriteClass(sb, o);
-            sb.AppendFormat("</{0}>", tagName);
+                if (o is DataTable)        WriteDataTable(sb, o);
+                else if (o is IDictionary) WriteDict(sb, o);
+                else if (o is IEnumerable) WriteList(sb, o);
+                else                       WriteClass(sb, o);
+            }
         }
 
         /// <summary>输出字符串类型数据</summary>
         private static void WriteString(StringBuilder sb, object obj)
         {
-            sb.Append(GetXmlSafeText(obj));
+            sb.Append(XmlTextEncode(obj.ToText()));
         }
 
         /// <summary>输出枚举类型数据</summary>
@@ -244,18 +266,26 @@ namespace App.Core
         private void WriteList(StringBuilder sb, object obj)
         {
             foreach (var item in (obj as IEnumerable))
-                WriteObject(sb, item, "");
+            {
+                var node = SerializationNode.FromType(item.GetType());
+                // 无论简单类型还是复杂类型，列表元素输出都要加上类型名。格式如：<Person>...</Person> or <String>...</String>
+                sb.AppendFormat("<{0}>", node.Name);
+                WriteInner(sb, item, "");
+                sb.AppendFormat("</{0}>", node.Name);
+            }
         }
 
         /// <summary>输出字典类型数据</summary>
+        /// <param name="keyValueMode">健值模式还是Item模式</param>
         private void WriteDict(StringBuilder sb, object obj)
         {
             var dict = (obj as IDictionary);
             foreach (var key in dict.Keys)
             {
-                sb.AppendFormat("<Item Key=\"{0}\">", key);
-                WriteObject(sb, dict[key], "");
-                sb.AppendFormat("</Item>");
+                var tag = XmlTagEncode(key.ToText());
+                sb.AppendFormat("<{0}>", tag);
+                WriteInner(sb, dict[key], "");
+                sb.AppendFormat("</{0}>", tag);
             }
         }
 
@@ -269,8 +299,10 @@ namespace App.Core
                 sb.AppendFormat("<Row>");
                 foreach (DataColumn col in cols)
                 {
-                    var columnName = col.ColumnName;
-                    WriteObject(sb, row[columnName], columnName);
+                    var tag = col.ColumnName;
+                    sb.AppendFormat("<{0}>", tag);
+                    WriteInner(sb, row[tag], tag);
+                    sb.AppendFormat("<{0}>", tag);
                 }
                 sb.AppendFormat("</Row>");
             }
@@ -288,9 +320,14 @@ namespace App.Core
                     || ReflectionHelper.GetAttribute<System.Xml.Serialization.XmlIgnoreAttribute>(property) != null
                     )
                     continue;
-
                 var subObj = property.GetValue(obj);
-                WriteObject(sb, subObj, property.Name);
+                if (subObj == null && this.IgnoreNull)
+                    continue;
+
+                var tag = property.Name;
+                sb.AppendFormat("<{0}>", tag);
+                WriteInner(sb, subObj, tag);
+                sb.AppendFormat("</{0}>", tag);
             }
         }
         #endregion
@@ -310,8 +347,8 @@ namespace App.Core
         public object Parse(string xml, Type type)
         {
             // 简单值类型直接解析
-            var tag = SerializationNode.FromType(type);
-            if (tag.Type == SerializationType.Simple)
+            var node = SerializationNode.FromType(type);
+            if (node.Type == SerializationType.Simple)
                 return xml.Parse(type);
 
             // 复杂类型再解析ML
@@ -388,21 +425,21 @@ namespace App.Core
 
         /// <summary>将xml解析为字典</summary>
         /// <remarks>
+        /// 格式如：
         ///     <Persons>
-        ///         <Persion Key="Kevin">content</Person>
-        ///         <Persion Key="Willion">content</Person>
+        ///         <Kevin>...</Kevin>
+        ///         <Willion>.....</Willion>
         ///     </Persons>
         /// </remarks>
         private object ParseNodeToDict(XmlNode node, Type type)
         {
             var tag = SerializationNode.FromType(type);
             var dict = Activator.CreateInstance(type) as IDictionary;
-            var nodes = node.SelectNodes("Item");
+            var nodes = node.ChildNodes;
             foreach (XmlNode subNode in nodes)
             {
-                var key = subNode.Attributes["Key"]?.Value;
-                var valueNode = subNode.FirstChild;
-                var item = ParseNode(valueNode, tag.ItemType);
+                var key = XmlTagDecode(subNode.Name);
+                var item = ParseNode(subNode, tag.ItemType);
                 dict.Add(key, item);
             }
             return dict;
@@ -426,56 +463,60 @@ namespace App.Core
         }
         #endregion
 
-
-        //-------------------------------------------
-        // 用正则表达式解析Xml标签（仅供参考本类并没有用到）
-        //-------------------------------------------
-        /// <summary>获取标签列表</summary>
-        /// <param name="tagOrContent">获取整个标签还是内容部分</param>
-        /// <remarks>有问题：应该获取直接下属标签，而不必返回子级标签；否则若顺序错乱一下，就会取错标签了；</remarks>
-        public static List<string> GetTags(string content, string tagName, bool tagOrContent)
-        {
-            var values = new List<string>();
-            if (content.IsNotEmpty())
-            {
-                var tagRegex = string.Format(@"<{0}[^>]*>([\s\S]*?)</\s*{0}>", tagName);
-                var matches = Regex.Matches(content, tagRegex, RegexOptions.IgnoreCase);
-                foreach (Match match in matches)
-                {
-                    var value = tagOrContent ? match.Value : GetCDATAValue(match.Groups[1].Value);
-                    values.Add(value);
-                }
-            }
-            return values;
-        }
-
-        /// <summary>获取标签</summary>
-        public static string GetTag(string content, string tagName, bool tagOrContent)
-        {
-            var tags = GetTags(content, tagName, tagOrContent);
-            return tags.Count > 0 ? tags[0] : null;
-        }
-
-        /// <summary>获取指定特性的值（如 Name="Kevin"）</summary>
-        public static string GetTagAttribute(string content, string tagName, string attributeName)
-        {
-            var tagRegex = string.Format(@"<{0}.*{1}\s*=\s*['""]([^'""]*)['""][^>]*>", tagName, attributeName);
-            var match = Regex.Match(content, tagRegex, RegexOptions.IgnoreCase);
-            if (match.Success)
-                return match.Groups[1].Value;
-            return null;
-        }
-
-        /// <summary>解析CDATA内容（以<![CDATA[开头)</summary>
-        private static string GetCDATAValue(string txt)
-        {
-            var tagRegex = @"^<!\[CDATA\[(.*)\]\]>";
-            var match = Regex.Match(txt.TrimStart(), tagRegex, RegexOptions.IgnoreCase);
-            if (match.Success)
-                return match.Groups[1].Value;
-            else
-                return txt;
-        }
-
     }
+
+    /* 测试代码
+    public enum Sex
+    {
+        Male,
+        Female
+    }
+    public class Person
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public DateTime? Birthday { get; set; }
+        public Sex? Sex { get; set; }
+        public string About { get; set; }
+        public Person Brother { get; set; }
+        public List<Person> Parents { get; set; }
+        public List<string> Favorites { get; set; }
+        public Dictionary<string, Person> Friends { get; set; }
+        public Dictionary<string, float> Scores { get; set; }
+
+        public Person() { }
+        public Person(string name) { this.Name = name; }
+
+        public static Person Demo()
+        {
+            var p = new Person();
+            p.Name = "Kevin";
+            p.Age = 21;
+            p.Birthday = DateTime.Now.AddYears(-21);
+            p.Sex = Tests.Sex.Male;
+            p.About = "<This is me>";
+            p.Brother = new Person() { Name = "Kevin's brother" };
+            p.Favorites = new List<string>() { "Art", "Computer" };
+            p.Parents = new List<Person>() { new Person("Monther"), new Person("Father") };
+            p.Scores = new Dictionary<string, float>()
+            {
+                {"Math", 99},
+                {"English", 100 }
+            };
+            p.Friends = new Dictionary<string, Person>()
+            {
+                {"GirlFriend", new Person("Cherry")},
+                {"BoyFriend", new Person("Bob") }
+            };
+            return p;
+        }
+    }
+    var p = Person.Demo();
+    var x = p.ToXml("Person");
+    Trace.Write(x);
+
+    var o1 = x.ParseXml<Person>();
+    Trace.Write(o1.ToJson());
+    */
+
 }

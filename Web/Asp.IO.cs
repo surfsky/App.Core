@@ -132,30 +132,41 @@ namespace App.Core
         /// <summary>打印异常信息</summary>
         public static string BuildExceptionInfo(Exception ex)
         {
+            if (ex == null)
+                return "";
+            if (ex.InnerException != null)
+                ex = ex.InnerException;
+
             var sb = new StringBuilder();
-            if (ex != null)
+            sb.AppendFormat("<h1>错误信息</h1>");
+            sb.AppendFormat("<BR/>时间：{0}&nbsp;", DateTime.Now);
+            sb.AppendFormat("<BR/>URL：{0}&nbsp;", Request.Url);
+            sb.AppendFormat("<BR/>来源：{0}&nbsp;", Request.UrlReferrer);
+            sb.AppendFormat("<BR/>错误：{0}", ex.Message);
+            sb.AppendFormat("<BR/>类名：{0}", ex.TargetSite.DeclaringType.FullName);
+            sb.AppendFormat("<BR/>方法：{0}", ex.TargetSite.Name);
+            sb.AppendFormat("<BR/>堆栈：<pre>{0}</pre>", ex.StackTrace);
+            /*
+            var st = new System.Diagnostics.StackTrace(ex, true);
+            foreach (var frame in st.GetFrames())
             {
-                sb.AppendFormat("<h1>错误信息</h1>");
-                sb.AppendFormat("<BR/>时间：{0}&nbsp;", DateTime.Now);
-                sb.AppendFormat("<BR/>URL：{0}&nbsp;", Request.Url);
-                sb.AppendFormat("<BR/>来源：{0}&nbsp;", Request.UrlReferrer);
-                sb.AppendFormat("<BR/>错误：{0}", ex.Message);
-                sb.AppendFormat("<BR/>类名：{0}", ex.TargetSite.DeclaringType.FullName);
-                sb.AppendFormat("<BR/>方法：{0}", ex.TargetSite.Name);
-                sb.AppendFormat("<BR/>堆栈：<pre>{0}</pre>", ex.StackTrace);
-                /*
-                var st = new System.Diagnostics.StackTrace(ex, true);
-                foreach (var frame in st.GetFrames())
-                {
-                    sb.AppendFormat("<BR/>{0}:{1}({2},{3})", 
-                        frame.GetFileName(), 
-                        frame.GetMethod().Name, 
-                        frame.GetFileLineNumber(), 
-                        frame.GetFileColumnNumber()
-                        );
-                }
-                */
+                sb.AppendFormat("<BR/>{0}:{1}({2},{3})", 
+                    frame.GetFileName(), 
+                    frame.GetMethod().Name, 
+                    frame.GetFileLineNumber(), 
+                    frame.GetFileColumnNumber()
+                    );
             }
+            */
+
+            // 内部异常信息
+            /*
+            if (ex.InnerException != null)
+            {
+                sb.AppendFormat("<h1>Inner Exception</h1>");
+                sb.Append(BuildExceptionInfo(ex.InnerException));
+            }
+            */
             return sb.ToString();
         }
 

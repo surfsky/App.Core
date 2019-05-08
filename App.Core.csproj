@@ -67,9 +67,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Convertor.list.cs" />
-    <Compile Include="Convertor.xml.cs" />
+    <Compile Include="Convertor.jsonxml.cs" />
     <Compile Include="Database\DbHelper.cs" />
     <Compile Include="Data\BytesExtension.cs" />
+    <Compile Include="Math\EncryptHelper.cs" />
     <Compile Include="Serialization\DynamicXml.cs" />
     <Compile Include="Data\FileHelper.cs" />
     <Compile Include="Data\HexEncoding.cs" />
@@ -102,7 +103,6 @@
     <Compile Include="Math\DESEncrypt.cs" />
     <Compile Include="Draw\DrawHelper.cs" />
     <Compile Include="Linq\EFExtension.cs" />
-    <Compile Include="Math\EncryptHelper.cs" />
     <Compile Include="Data\EnumHelper.cs" />
     <Compile Include="Data\ExcelHelper.cs" />
     <Compile Include="Convertor.cs" />

@@ -17,11 +17,44 @@ namespace App.Core
     /// </summary>
     public static partial class Asp
     {
+        //-------------------------------------
+        // Session 相关
+        //-------------------------------------
+        /// <summary>设置 Session 对象（含过期时间）</summary>
+        public static void SetSession(string name, object value, int? expireMinutes=null)
+        {
+            HttpContext.Current.Session[name] = value;
+            if (expireMinutes != null)  
+                HttpContext.Current.Session.Timeout = expireMinutes.Value;
+        }
+
+        /// <summary>获取 Session 对象</summary>
+        public static T GetSession<T>(string name) where T : class
+        {
+            if (HasSession(name))
+                return HttpContext.Current.Session[name] as T;
+            return null;
+        }
+
+        /// <summary>获取 Session 对象</summary>
+        public static object GetSession(string name)
+        {
+            return HttpContext.Current.Session[name];
+        }
+
+        /// <summary>是否有 Session 值</summary>
+        public static bool HasSession(string name)
+        {
+            return HttpContext.Current.Session[name] != null;
+        }
+
         //------------------------------------------------------------
         // 环境数据获取方法：Cache & Session & HttpContext & Application
-        // 若使用泛型方法存储简单值的数据，as 转化会有报错，故还是用非泛型方法，更通用一些。
         // 以下提供的泛型方法只针对类对象
         //------------------------------------------------------------
+        //
+        // Session
+        //
         /// <summary>获取Session数据（会话期有效）</summary>
         public static object GetSessionData(string key, Func<object> creator = null)
         {
@@ -44,6 +77,9 @@ namespace App.Core
             return HttpContext.Current.Session[key] as T;
         }
 
+        //
+        //  Context
+        //
         /// <summary>获取上下文数据（在每次请求中有效）</summary>
         public static object GetContextData(string key, Func<object> creator = null)
         {
@@ -60,6 +96,9 @@ namespace App.Core
             return HttpContext.Current.Items[key] as T;
         }
 
+        //
+        // Application
+        //
         /// <summary>清除 Application 数据</summary>
         public static void ClearApplicationData(string key)
         {
@@ -101,37 +140,6 @@ namespace App.Core
             return (T)Application[key];
         }
 
-
-
-        //-------------------------------------
-        // Session 相关
-        //-------------------------------------
-        /// <summary>设置 Session 对象（含过期时间）</summary>
-        public static void SetSession(string name, object value, int expireMinutes)
-        {
-            HttpContext.Current.Session[name] = value;
-            HttpContext.Current.Session.Timeout = expireMinutes;
-        }
-
-        /// <summary>获取 Session 对象</summary>
-        public static T GetSession<T>(string name) where T : class
-        {
-            if (HasSession(name))
-                return HttpContext.Current.Session[name] as T;
-            return null;
-        }
-
-        /// <summary>获取 Session 对象</summary>
-        public static object GetSession(string name)
-        {
-            return HttpContext.Current.Session[name];
-        }
-
-        /// <summary>是否有 Session 值</summary>
-        public static bool HasSession(string name)
-        {
-            return HttpContext.Current.Session[name] != null;
-        }
 
         //------------------------------------------------------------
         // 缓存相关

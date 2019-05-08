@@ -42,15 +42,14 @@ namespace App.Core
         /// <summary>相对于根目录的绝对路径。如 /Pages/Default.aspx</summary>
         public string AbsolutePath { get; set; }
 
-        /// <summary>除了查询字符串外的部分。如 http://a.b.com/Pages/Default.aspx</summary>
-        public string Path { get; set; } = "";
+        /// <summary>除了查询字符串外的c纯路径。如 http://a.b.com/Pages/Default.aspx</summary>
+        public string PurePath { get; set; } = "";
 
         /// <summary>文件名称。如 Default.aspx</summary>
         public string FileName { get; set; }
 
         /// <summary>文件扩展名（小写）。如 .aspx</summary>
         public string FileExtesion { get; set; }
-
 
         //---------------------------------------
         // 查询字符串操作
@@ -72,7 +71,9 @@ namespace App.Core
         {
             get
             {
-                return _dict[key];
+                if (_dict.Keys.Contains(key))
+                    return _dict[key];
+                return null;
             }
             set { _dict[key] = value; }
         }
@@ -85,11 +86,16 @@ namespace App.Core
         }
 
         /// <summary>是否具有查询字符串值</summary>
-        public bool HasQueryString(string key)
+        public bool Has(string key)
         {
             return _dict.Keys.Contains(key);
         }
 
+        /// <summary>转化为查询字符串。如http://../page.aspx?a=x&b=x</summary>
+        public override string ToString()
+        {
+            return string.Format("{0}?{1}", this.PurePath, this.QueryString).TrimEnd('?');
+        }
 
 
         //---------------------------------------
@@ -104,23 +110,36 @@ namespace App.Core
             try
             {
                 // 分离路径和查询字符串部分
+                var queryString = "";
                 int n = url.IndexOf('?');
                 if (n == -1)
-                    this.Path = url;
+                {
+                    // 无问号但有等于号，认为该字符串就是querystring
+                    // 无问号且无等于号，认为该字符串就是purepath
+                    if (url.IndexOf('=') != -1)   queryString = url;
+                    else                          this.PurePath = url;
+                }
                 else
-                    this.Path = url.Substring(0, n);
+                {
+                    this.PurePath = url.Substring(0, n);
+                    queryString = url.Substring(n + 1);
+                }
+
+                // 解析参数部分
+                _dict = queryString.ParseQueryDict();
+
 
                 // 分析前面的路径部分
-                int k = Path.LastIndexOf('.');
+                int k = PurePath.LastIndexOf('.');
                 if (k != -1)
-                    this.FileExtesion = Path.Substring(k).ToLower();
-                k = Path.LastIndexOf("/");
+                    this.FileExtesion = PurePath.Substring(k).ToLower();
+                k = PurePath.LastIndexOf("/");
                 if (k != -1)
-                    this.FileName = Path.Substring(k+1);
+                    this.FileName = PurePath.Substring(k+1);
 
                 // 解析协议、主机、端口、请求路径
                 Regex r = new Regex(@"^(?<proto>\w+)://(?<host>[^/:]+)(?<port>:\d+)(?<path>[\w\._/]+)", RegexOptions.Compiled);
-                Match m = r.Match(Path);
+                Match m = r.Match(PurePath);
                 if (m.Success)
                 {
                     this.Protocol = m.Result("${proto}");
@@ -128,21 +147,10 @@ namespace App.Core
                     this.Port = m.Result("${port}")?.TrimStart(':');
                     this.AbsolutePath = m.Result("${path}");
                 }
-
-                // 解析参数部分
-                if (n == -1)
-                    return;
-                var queryString = url.Substring(n + 1);
-                _dict = queryString.ParseQueryDict();
             }
             catch { }
         }
 
-        /// <summary>转化为查询字符串。如http://../page.aspx?a=x&b=x</summary>
-        public override string ToString()
-        {
-            return string.Format("{0}?{1}", this.Path, this.QueryString).TrimEnd('?');
-        }
 
 
     }

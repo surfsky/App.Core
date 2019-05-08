@@ -148,24 +148,6 @@ namespace App.Core
         }
 
 
-        /// <summary>将XML字符串转为Json字符串（慎用，层次和属性都有差异）</summary>
-        /// <example>
-        /// "<Person><Name>Kevin</Name><Age>21</Age></Person>"  -> {"Person":{"Name":"Kevin","Age":"21"}}
-        /// </example>
-        public static string ParseJson(this string xml)
-        {
-            var doc = new XmlDocument();
-            doc.LoadXml(xml);
-            return JsonConvert.SerializeXmlNode(doc, Newtonsoft.Json.Formatting.Indented, true);
-        }
-
-        /// <summary>将 Json 字符串解析为动态对象</summary>
-        public static dynamic ParseDynamic(this string json)
-        {
-            return JsonConvert.DeserializeObject<dynamic>(json);
-        }
-
-
 
         //--------------------------------------------------
         // 类型互相转换

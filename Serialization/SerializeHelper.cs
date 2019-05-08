@@ -22,6 +22,8 @@ namespace App.Core
         /// <summary>OBJECT -> JSON</summary>
         public static string ToJson(this object obj, JsonSerializerSettings settings = null)
         {
+            if (obj == null)
+                return "";
             settings = settings ?? GetDefaultJsonSettings();
             return JsonConvert.SerializeObject(obj, settings);
         }
@@ -53,21 +55,21 @@ namespace App.Core
         }
 
         /// <summary>JSON -> OBJECT</summary>
-        public static object ToObject(this string txt, Type type, JsonSerializerSettings settings = null)
+        public static object ParseJson(this string txt, Type type, JsonSerializerSettings settings = null)
         {
             settings = settings ?? GetDefaultJsonSettings();
             return JsonConvert.DeserializeObject(txt, type, settings);
         }
 
         /// <summary>JSON -> OBJECT</summary>
-        public static T ToObject<T>(this string txt, JsonSerializerSettings settings = null)
+        public static T ParseJson<T>(this string txt, JsonSerializerSettings settings = null)
         {
             settings = settings ?? GetDefaultJsonSettings();
             return JsonConvert.DeserializeObject<T>(txt, settings);
         }
 
-        /// <summary>Json 字符串转换为 JObject 对象。可用 JObject["Name1"]["Name2"] 来获取节点值</summary>
-        public static JObject ToJObject(this string json)
+        /// <summary>Json 字符串转换为 JObject 对象。可用 JObject["Name1"]["Name2"].ToString() 来获取节点值</summary>
+        public static JObject ParseJObject(this string json)
         {
             return JObject.Parse(json);
         }
