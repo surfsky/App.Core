@@ -117,9 +117,12 @@ namespace App.Core
         //------------------------------------------------------------
         // 收集客户端和服务器的信息
         //------------------------------------------------------------
-        /// <summary>获取错误信息并组织为 Html</summary>
+        /// <summary>获取web请求信息，并组织成html</summary>
         public static string BuildRequestHtml(Exception ex=null)
         {
+            if (!Asp.IsWeb)
+                return "";
+
             var sb = new StringBuilder();
             sb.Append(BuildExceptionInfo(ex));
             sb.Append(BuildRequestCoreInfo());
@@ -140,8 +143,8 @@ namespace App.Core
             var sb = new StringBuilder();
             sb.AppendFormat("<h1>错误信息</h1>");
             sb.AppendFormat("<BR/>时间：{0}&nbsp;", DateTime.Now);
-            sb.AppendFormat("<BR/>URL：{0}&nbsp;", Request.Url);
-            sb.AppendFormat("<BR/>来源：{0}&nbsp;", Request.UrlReferrer);
+            sb.AppendFormat("<BR/>URL：{0}&nbsp;", Request?.Url);
+            sb.AppendFormat("<BR/>来源：{0}&nbsp;", Request?.UrlReferrer);
             sb.AppendFormat("<BR/>错误：{0}", ex.Message);
             sb.AppendFormat("<BR/>类名：{0}", ex.TargetSite.DeclaringType.FullName);
             sb.AppendFormat("<BR/>方法：{0}", ex.TargetSite.Name);

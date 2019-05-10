@@ -132,10 +132,10 @@ namespace App.Core
             return text.IsEmpty() ? null : new bool?(Boolean.Parse(text));
         }
 
-        /// <summary>解析查询字符串为字典</summary>
-        public static Dictionary<string, string> ParseQueryDict(this string text)
+        /// <summary>解析查询字符串（如id=1&name=Kevin）为字典</summary>
+        public static SafeDictionary<string, string> ParseDict(this string text)
         {
-            var dict = new Dictionary<string, string>();
+            var dict = new SafeDictionary<string, string>();
             var regex = new Regex(@"(^|&)?(\w+)=([^&]+)(&|$)?", RegexOptions.Compiled);
             var matches = regex.Matches(text);
             foreach (Match match in matches)
@@ -153,7 +153,7 @@ namespace App.Core
         // 类型互相转换
         //--------------------------------------------------
         /// <summary>将可空对象转化为字符串</summary>
-        public static string ToText(this object o, string format="{0}")
+            public static string ToText(this object o, string format="{0}")
         {
             return string.Format(format, o);
         }

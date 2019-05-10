@@ -8,6 +8,24 @@ using System.Threading.Tasks;
 namespace App.Core
 {
     /// <summary>
+    /// 可安全访问的字典。对于dict["key"], 如果键不存在则返回null，而不报异常
+    /// </summary>
+    public class SafeDictionary<TKey, TValue> : Dictionary<TKey, TValue>
+    {
+        /// <summary>获取或设置查询字符串成员</summary>
+        public new TValue this[TKey key]
+        {
+            get
+            {
+                if (this.Keys.Contains(key))
+                    return base[key];
+                return default(TValue);
+            }
+            set { base[key] = value; }
+        }
+    }
+
+    /// <summary>
     /// URL 辅助操作类，可以自由修改 QueryString 各部分。
     /// </summary>
     /// <example>
@@ -20,16 +38,12 @@ namespace App.Core
     /// </example>
     public class Url
     {
-        /// <summary>查询字符串字典</summary>
-        private Dictionary<string, string> _dict = new Dictionary<string, string>();
-        public Dictionary<string,string> Dict
-        {
-            get { return _dict; }
-        }
-
         //---------------------------------------
         // 公开属性
         //---------------------------------------
+        /// <summary>查询字符串字典</summary>
+        public SafeDictionary<string, string> Dict { get; set; }
+
         /// <summary>协议。如 https</summary>
         public string Protocol { get; set; }
 
@@ -60,8 +74,8 @@ namespace App.Core
             get
             {
                 var sb = new StringBuilder();
-                foreach (var key in _dict.Keys)
-                    sb.AppendFormat("{0}={1}&", key, _dict[key]);
+                foreach (var key in Dict.Keys)
+                    sb.AppendFormat("{0}={1}&", key, Dict[key]);
                 return sb.ToString().TrimEnd('&');
             }
         }
@@ -69,26 +83,20 @@ namespace App.Core
         /// <summary>获取或设置查询字符串成员</summary>
         public string this[string key]
         {
-            get
-            {
-                if (_dict.Keys.Contains(key))
-                    return _dict[key];
-                return null;
-            }
-            set { _dict[key] = value; }
+            get {return Dict[key];}
+            set { Dict[key] = value; }
         }
 
         /// <summary>删除查询字符串成员</summary>
         public void Remove(string key)
         {
-            if (_dict.Keys.Contains(key))
-                _dict.Remove(key);
+            Dict.Remove(key);
         }
 
         /// <summary>是否具有查询字符串值</summary>
         public bool Has(string key)
         {
-            return _dict.Keys.Contains(key);
+            return Dict.Keys.Contains(key);
         }
 
         /// <summary>转化为查询字符串。如http://../page.aspx?a=x&b=x</summary>
@@ -126,8 +134,7 @@ namespace App.Core
                 }
 
                 // 解析参数部分
-                _dict = queryString.ParseQueryDict();
-
+                Dict = queryString.ParseDict();
 
                 // 分析前面的路径部分
                 int k = PurePath.LastIndexOf('.');

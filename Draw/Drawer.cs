@@ -12,7 +12,7 @@ using System.Text;
 namespace App.Core
 {
     /// <summary>
-    /// 画家。绘图相关辅助方法
+    /// 绘图相关辅助方法
     /// </summary>
     public static class Drawer
     {
@@ -27,19 +27,23 @@ namespace App.Core
             encoder.QRCodeScale = 24;  // 大小
             encoder.QRCodeVersion = 0; // 版本
             encoder.QRCodeErrorCorrect = QRCodeEncoder.ERROR_CORRECTION.M;
-            Bitmap bmp = encoder.Encode(text, Encoding.UTF8);
+            Image bmp = encoder.Encode(text, Encoding.UTF8);
+            return DrawIcon(bmp, iconUrl);
+        }
 
-            // 正中央放置小图标
-            if (!iconUrl.IsEmpty())
+        /// <summary>叠加绘制图标</summary>
+        public static Image DrawIcon(Image img, string iconUrl)
+        {
+            if (iconUrl.IsNotEmpty())
             {
-                int s = bmp.Width / 5;
-                Image img = HttpHelper.GetServerOrNetworkImage(iconUrl);
-                img = Drawer.CreateThumbnail(img, s, s);
-                var point = new Point((bmp.Width - s) / 2, (bmp.Height - s) / 2);
-                bmp = Drawer.MergeImage(bmp, (Bitmap)img, 0.95f, point);
-                img.Dispose();
+                var icon = HttpHelper.GetServerOrNetworkImage(iconUrl);
+                int s = img.Width / 5;
+                icon = Drawer.CreateThumbnail(icon, s, s);
+                var point = new Point((img.Width - s) / 2, (img.Height - s) / 2);
+                img = Drawer.MergeImage(img, (Bitmap)icon, 0.95f, point);
+                icon.Dispose();
             }
-            return bmp;
+            return img;
         }
 
         /// <summary>加载图片。如果用Image.FromFile()方法的话会锁定图片，无法编辑、移动、删除。</summary>
@@ -93,7 +97,7 @@ namespace App.Core
         /// 合并两张图片。第二张图片可指定不透明度以及粘贴位置。
         /// 注意 img 和 img2 在本函数中都没有释放，请自行Dispose。
         /// </summary>
-        public static Bitmap MergeImage(Bitmap img, Bitmap img2, float opacity, params Point[] points)
+        public static Image MergeImage(Image img, Image img2, float opacity, params Point[] points)
         {
             if (img == null || img2 == null)
                 return null;

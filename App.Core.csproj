@@ -101,7 +101,7 @@
     <Compile Include="Web\CookieHelper.cs" />
     <Compile Include="Data\DateTimeHelper.cs" />
     <Compile Include="Math\DESEncrypt.cs" />
-    <Compile Include="Draw\DrawHelper.cs" />
+    <Compile Include="Draw\Drawer.cs" />
     <Compile Include="Linq\EFExtension.cs" />
     <Compile Include="Data\EnumHelper.cs" />
     <Compile Include="Data\ExcelHelper.cs" />

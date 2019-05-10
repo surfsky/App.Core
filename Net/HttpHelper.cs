@@ -290,7 +290,7 @@ namespace App.Core
         {
             if (url.StartsWith("~/") || url.StartsWith(".") || url.StartsWith("/"))
             {
-                if (Asp.IsWeb() && Asp.IsLocalFile(url))
+                if (Asp.IsWeb)
                     return Drawer.LoadImage(Asp.Server.MapPath(url));
             }
             else

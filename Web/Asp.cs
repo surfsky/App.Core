@@ -27,11 +27,11 @@ namespace App.Core
         public static HttpApplicationState Application { get { return HttpContext.Current.Application; } }
         public static Page Page { get { return HttpContext.Current.Handler as Page; } }
         public static IPrincipal User { get { return HttpContext.Current.User; } }
-        public static string URL { get { return HttpContext.Current.Request.Url.ToString(); } }
+        public static string Url { get { return HttpContext.Current.Request.Url.ToString(); } }
 
 
         /// <summary>获取主机根路径</summary>
-        public static string Host
+        public static string Root
         {
             get
             {
@@ -43,21 +43,25 @@ namespace App.Core
             }
         }
 
-        /// <summary>获取客户端真实IP</summary>
-        public static string GetClientIP()
+        /// <summary>是否是网站运行环境</summary>
+        public static bool IsWeb
         {
-            HttpRequest request = HttpContext.Current.Request;
-            return (request.ServerVariables["HTTP_VIA"] != null)
-                ? request.ServerVariables["HTTP_X_FORWARDED_FOR"].ToString()   // 使用代理，尝试去找原始地址
-                : request.ServerVariables["REMOTE_ADDR"].ToString()            // 
-                ;
-            //return request.UserHostAddress;
+            get {return HttpContext.Current != null;}
         }
 
-        /// <summary>是否是网站运行环境</summary>
-        public static bool IsWeb()
+
+        /// <summary>获取客户端真实IP</summary>
+        public static string ClientIP
         {
-            return HttpContext.Current != null;
+            get
+            {
+                HttpRequest request = HttpContext.Current.Request;
+                return (request.ServerVariables["HTTP_VIA"] != null)
+                    ? request.ServerVariables["HTTP_X_FORWARDED_FOR"].ToString()   // 使用代理，尝试去找原始地址
+                    : request.ServerVariables["REMOTE_ADDR"].ToString()            // 
+                    ;
+                //return request.UserHostAddress;
+            }
         }
 
 
@@ -126,7 +130,7 @@ namespace App.Core
         {
             url = Asp.ResolveUrl(url);
             Uri uri = new Uri(url);
-            return uri.Host.ToLower() == Asp.Host.ToLower();
+            return uri.Host.ToLower() == Asp.Request.Url.Host.ToLower();
         }
 
         /// <summary>将虚拟路径转化为物理路径。等同于Server.MapPath()</summary>
@@ -172,7 +176,7 @@ namespace App.Core
             if (relativeUrl.ToLower().StartsWith("http"))
                 return relativeUrl;
             var url = new Control().ResolveUrl(relativeUrl);
-            return Asp.Host + url;
+            return Asp.Root + url;
         }
 
         /// <summary>
