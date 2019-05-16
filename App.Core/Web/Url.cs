@@ -8,24 +8,6 @@ using System.Threading.Tasks;
 namespace App.Core
 {
     /// <summary>
-    /// 可安全访问的字典。对于dict["key"], 如果键不存在则返回null，而不报异常
-    /// </summary>
-    public class SafeDictionary<TKey, TValue> : Dictionary<TKey, TValue>
-    {
-        /// <summary>获取或设置查询字符串成员</summary>
-        public new TValue this[TKey key]
-        {
-            get
-            {
-                if (this.Keys.Contains(key))
-                    return base[key];
-                return default(TValue);
-            }
-            set { base[key] = value; }
-        }
-    }
-
-    /// <summary>
     /// URL 辅助操作类，可以自由修改 QueryString 各部分。
     /// </summary>
     /// <example>
@@ -42,7 +24,7 @@ namespace App.Core
         // 公开属性
         //---------------------------------------
         /// <summary>查询字符串字典</summary>
-        public SafeDictionary<string, string> Dict { get; set; }
+        public FreeDictionary<string, string> Dict { get; set; }
 
         /// <summary>协议。如 https</summary>
         public string Protocol { get; set; }

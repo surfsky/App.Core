@@ -49,7 +49,6 @@ namespace App.Core
             get {return HttpContext.Current != null;}
         }
 
-
         /// <summary>获取客户端真实IP</summary>
         public static string ClientIP
         {

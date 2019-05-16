@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.CoreTests
+namespace App.Core.Tests
 {
     /// <summary>
     /// 性别枚举
     /// </summary>
-    public enum Sex
+    public enum SexType
     {
         Male,
         Female
@@ -23,7 +23,7 @@ namespace App.CoreTests
         public string Name { get; set; }
         public int Age { get; set; }
         public DateTime? Birthday { get; set; }
-        public Sex? Sex { get; set; }
+        public SexType? Sex { get; set; }
         public string About { get; set; }
         public Person Brother { get; set; }
         public List<Person> Parents { get; set; }
@@ -40,7 +40,7 @@ namespace App.CoreTests
             p.Name = "Kevin";
             p.Age = 21;
             p.Birthday = DateTime.Now.AddYears(-21);
-            p.Sex = CoreTests.Sex.Male;
+            p.Sex = SexType.Male;
             p.About = "<This is me>";
             p.Brother = new Person() { Name = "Kevin's brother" };
             p.Favorites = new List<string>() { "Art", "Computer" };

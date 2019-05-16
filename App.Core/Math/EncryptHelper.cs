@@ -64,7 +64,7 @@ namespace App.Core
         /// <param name="key">密钥</param>
         /// <param name="encoding">文本编码方式</param>
         /// <returns>异或加密后的文本</returns>
-        public static string XOR(string txt, string key, Encoding encoding = null)
+        public static string XOR(this string txt, string key, Encoding encoding = null)
         {
             encoding = encoding ?? Encoding.UTF8;
             byte[] ret = XOR(encoding.GetBytes(txt), encoding.GetBytes(key));
@@ -77,7 +77,7 @@ namespace App.Core
         /// <param name="src">源字节数组</param>
         /// <param name="key">密钥字节数组</param>
         /// <returns>加密后的字节数组（长度和源字节数组相同）</returns>
-        public static byte[] XOR(byte[] src, byte[] key)
+        public static byte[] XOR(this byte[] src, byte[] key)
         {
             byte[] ret = new byte[src.Length];
             for (int i = 0; i < src.Length; i++)

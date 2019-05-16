@@ -71,6 +71,7 @@
     <Compile Include="Database\DbHelper.cs" />
     <Compile Include="Data\BytesExtension.cs" />
     <Compile Include="Math\EncryptHelper.cs" />
+    <Compile Include="FreeDictionary.cs" />
     <Compile Include="Serialization\DynamicXml.cs" />
     <Compile Include="Data\FileHelper.cs" />
     <Compile Include="Data\HexEncoding.cs" />

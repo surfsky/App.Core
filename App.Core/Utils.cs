@@ -18,6 +18,15 @@ namespace App.Core
                 throw new Exception(failInfo);
         }
 
+        /// <summary>模拟VBA的 IIF 函数。逻辑如 var result = o.IIF(t=>t>0, "Positive", "Nagetive");</summary>
+        public static TResult IIF<TSource, TResult>(this TSource o, Func<TSource, bool> condition, TResult trueValue, TResult falseValue)
+        {
+            if (condition(o))
+                return trueValue;
+            else
+                return falseValue;
+        }
+
         //--------------------------------------------------
         // 为空
         //--------------------------------------------------

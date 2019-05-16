@@ -68,20 +68,27 @@ namespace App.Core
         }
 
 
-        /// <summary>字符串解析为枚举（支持枚举字符串或数字）</summary>
+        /// <summary>字符串解析为枚举（支持枚举字符串或数字，遇到）</summary>
         public static T? ParseEnum<T>(this string o) where T : struct
         {
             if (o.IsNotEmpty())
             {
-                if (RegexHelper.IsMatch(o, RegexHelper.Integer))
+                try
                 {
-                    int n = int.Parse(o);
-                    return (T)Enum.ToObject(typeof(T), n);
+                    if (RegexHelper.IsMatch(o, RegexHelper.Integer))
+                    {
+                        int n = int.Parse(o);
+                        return (T)Enum.ToObject(typeof(T), n);
+                    }
+                    else
+                    {
+                        Enum.TryParse<T>(o, true, out T result);
+                        return result;
+                    }
                 }
-                else
+                catch
                 {
-                    Enum.TryParse<T>(o, true, out T result);
-                    return result;
+                    return null;
                 }
             }
             return null;
@@ -89,7 +96,14 @@ namespace App.Core
 
         public static object ParseEnum(this string text, Type enumType)
         {
-            return text.IsEmpty() ? null : Enum.Parse(enumType, text, true);
+            try
+            {
+                return text.IsEmpty() ? null : Enum.Parse(enumType, text, true);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public static DateTime? ParseDate(this string text)
@@ -132,10 +146,10 @@ namespace App.Core
             return text.IsEmpty() ? null : new bool?(Boolean.Parse(text));
         }
 
-        /// <summary>解析查询字符串（如id=1&name=Kevin）为字典</summary>
-        public static SafeDictionary<string, string> ParseDict(this string text)
+        /// <summary>解析查询字符串（如id=1&amp;name=Kevin）为字典</summary>
+        public static FreeDictionary<string, string> ParseDict(this string text)
         {
-            var dict = new SafeDictionary<string, string>();
+            var dict = new FreeDictionary<string, string>();
             var regex = new Regex(@"(^|&)?(\w+)=([^&]+)(&|$)?", RegexOptions.Compiled);
             var matches = regex.Matches(text);
             foreach (Match match in matches)
@@ -153,8 +167,10 @@ namespace App.Core
         // 类型互相转换
         //--------------------------------------------------
         /// <summary>将可空对象转化为字符串</summary>
-            public static string ToText(this object o, string format="{0}")
+        public static string ToText(this object o, string format="")
         {
+            if (format != null && !format.Contains("{"))
+                format = "{0:" + format + "}";
             return string.Format(format, o);
         }
 

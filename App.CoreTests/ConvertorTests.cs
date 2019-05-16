@@ -7,8 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
-namespace App.CoreTests
+namespace App.Core.Tests
 {
+
+
     [TestClass()]
     public class ConvertorTests
     {
@@ -33,6 +35,56 @@ namespace App.CoreTests
                 </Parents>
             </Person>
             ";
+
+        [TestMethod()]
+        public void ToEnumTest()
+        {
+            object o;
+            ProductType type = ProductType.Repair;
+            o = type.GetDescription();
+            o = "Goods".ParseEnum<ProductType>();
+            o = "1".ParseEnum<ProductType>();
+        }
+
+        [TestMethod()]
+        public void ToTextTest()
+        {
+            string txt = null;
+            var info = txt.ToText("");
+
+            DateTime dt = DateTime.Now;
+            info = dt.ToText("{0:yyyy-MM-dd}");
+            info = dt.ToText("yyyy-MM-dd");
+
+            DateTime? dt2 = null;
+            info = dt2.ToText("yyyy-MM-dd");
+        }
+
+        [TestMethod()]
+        public void ToXmlTest()
+        {
+            // dict
+            var dict = new Dictionary<string, string>();
+            dict.Add("appId", "-----appid----");
+            dict.Add("appSecret", "----<appsecret----");
+            var xml = dict.ToXml();
+            var json = dict.ToJson();
+            xml = dict.ToXml();
+
+            // object
+            var o = new
+            {
+                ToUserName = "&ToUserName",
+                FromUserName = "<FromUserName",
+                CreateTime = DateTime.Now.ToTimeStamp(),
+                MsgType = "image",
+                Image = new
+                {
+                    MediaId = "123"
+                }
+            };
+            xml = o.ToXml("xml");
+        }
 
         [TestMethod()]
         public void ParseXmlTest()
@@ -79,23 +131,6 @@ namespace App.CoreTests
             int? age = o["age"].ToInt();
         }
 
-        [TestMethod()]
-        public void ToXmlTest()
-        {
-            var o = new
-            {
-                ToUserName = "ToUserName",
-                FromUserName = "FromUserName",
-                CreateTime = DateTime.Now.ToTimeStamp(),
-                MsgType = "image",
-                Image = new
-                {
-                    MediaId = "123"
-                }
-            };
-            var xml = o.ToXml("xml");
-
-        }
 
         [TestMethod()]
         public void ParseDictTest()
