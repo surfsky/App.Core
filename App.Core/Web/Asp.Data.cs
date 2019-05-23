@@ -189,26 +189,30 @@ namespace App.Core
         }
 
         /// <summary>设置缓存策略（使用context.Response.Cache来缓存输出）</summary>
-        public static void SetCachePolicy(HttpContext context, int cacheSeconds, bool varyByParams = true)
+        /// <remarks>
+        /// ashx 的页面缓存不允许写语句：<%@ OutputCache Duration="60" VaryByParam="*" %>  
+        /// 故可直接调用本方法实现缓存。
+        /// 参考：https://stackoverflow.com/questions/1109768/how-to-use-output-caching-on-ashx-handler
+        /// </remarks>
+        public static void SetCachePolicy(HttpContext context, int cacheSeconds, string varyByParam = "*", HttpCacheability cacheLocation = HttpCacheability.ServerAndPrivate)
         {
+            HttpCachePolicy cachePolicy = context.Response.Cache;
             if (cacheSeconds > 0)
             {
-                context.Response.Cache.SetCacheability(HttpCacheability.Server);
-                context.Response.Cache.SetExpires(DateTime.Now.AddSeconds((double)cacheSeconds));
-                context.Response.Cache.SetSlidingExpiration(false);
-                context.Response.Cache.SetValidUntilExpires(true);
-                if (varyByParams)
-                    context.Response.Cache.VaryByParams["*"] = true;
+                cachePolicy.SetCacheability(cacheLocation);
+                cachePolicy.SetExpires(DateTime.Now.AddSeconds((double)cacheSeconds));
+                cachePolicy.SetSlidingExpiration(false);
+                cachePolicy.SetValidUntilExpires(true);
+                if (varyByParam.IsNotEmpty())
+                    cachePolicy.VaryByParams[varyByParam] = true;
                 else
-                    context.Response.Cache.VaryByParams.IgnoreParams = true;
+                    cachePolicy.VaryByParams.IgnoreParams = true;
             }
             else
             {
-                context.Response.Cache.SetNoServerCaching();
-                context.Response.Cache.SetMaxAge(TimeSpan.Zero);
+                cachePolicy.SetNoServerCaching();
+                cachePolicy.SetMaxAge(TimeSpan.Zero);
             }
         }
-
-
     }
 }

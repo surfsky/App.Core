@@ -3,3 +3,7 @@
 /bin/Debug/EntityFramework.SqlServer.xml
 /bin/Debug/EntityFramework.xml
 /bin/Debug/EntityFramework.Extended.xml
+/App.Core/obj
+/App.Core/bin/Debug/*.pdb
+/App.CoreTests/obj
+/App.CoreTests/bin/Debug/*.pdb

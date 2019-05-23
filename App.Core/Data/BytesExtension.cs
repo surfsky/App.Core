@@ -82,20 +82,7 @@ namespace App.Core
             return bytes2.ToHexString();
         }
 
-        /// <summary>将字节数组转化为16进制文本</summary>
-        public static string ToHexString(this byte[] bytes, bool insertSpace = true)
-        {
-            if ((bytes == null) || (bytes.Length == 0))
-                return "";
-            else
-            {
-                string format = insertSpace ? "{0:X2} " : "{0:X2}";
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                    sb.Append(string.Format(format, bytes[i]));
-                return sb.ToString();
-            }
-        }
+
 
         //--------------------------------------------
         // int <-> bytes

@@ -66,8 +66,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Convertor.list.cs" />
-    <Compile Include="Convertor.jsonxml.cs" />
+    <Compile Include="Convertor.Encoder.cs" />
+    <Compile Include="Convertor.Parse.cs" />
+    <Compile Include="Convertor.List.cs" />
+    <Compile Include="Convertor.Json.cs" />
+    <Compile Include="Convertor.XML.cs" />
     <Compile Include="Database\DbHelper.cs" />
     <Compile Include="Data\BytesExtension.cs" />
     <Compile Include="Math\EncryptHelper.cs" />
@@ -75,7 +78,6 @@
     <Compile Include="Serialization\DynamicXml.cs" />
     <Compile Include="Data\FileHelper.cs" />
     <Compile Include="Data\HexEncoding.cs" />
-    <Compile Include="Serialization\Enums.cs" />
     <Compile Include="Serialization\Xmlizer.cs" />
     <Compile Include="Draw\FontHelper.cs" />
     <Compile Include="Draw\VerifyImageDrawer.cs" />
@@ -120,7 +122,7 @@
     <Compile Include="Data\RegexHelper.cs" />
     <Compile Include="Web\ResourceHelper.cs" />
     <Compile Include="Web\ScriptHelper.cs" />
-    <Compile Include="Serialization\SerializeHelper.cs" />
+    <Compile Include="Serialization\XmlSerializeHelper.cs" />
     <Compile Include="Data\StringHelper.cs" />
     <Compile Include="UIAttribute.cs" />
     <Compile Include="Web\Asp.cs" />
@@ -129,7 +131,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="README.md" />
     <EmbeddedResource Include="Resources\Agent Red.TTF" />
     <EmbeddedResource Include="Resources\Stencil ICG.ttf" />
     <EmbeddedResource Include="Resources\Pusab.ttf" />
@@ -140,11 +141,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="README.html">
-      <DependentUpon>README.md</DependentUpon>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

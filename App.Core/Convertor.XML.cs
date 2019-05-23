@@ -17,14 +17,14 @@ using System.Xml;
 namespace App.Core
 {
     /// <summary>
-    /// 类型转换-XML
+    /// 类型转换-XML（json转换请直接查看SerializationHelper)
     /// </summary>
     public static partial class Convertor
     {
         //------------------------------------------
-        // josn & xml
+        // xml
         //------------------------------------------
-        /// <summary>将XML字符串转为Json字符串（慎用，层次和属性都有差异）</summary>
+        /// <summary>将XML字符串转为Json字符串（慎用，层次和属性都可能有差异）</summary>
         /// <example>
         /// "<Person><Name>Kevin</Name><Age>21</Age></Person>"  -> {"Person":{"Name":"Kevin","Age":"21"}}
         /// </example>

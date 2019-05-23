@@ -59,8 +59,8 @@ namespace App.Core
             return sb.ToString();
         }
 
-        /// <summary>安全裁剪字符串</summary>
-        public static string Clip(this string text, int n)
+        /// <summary>安全裁剪字符串（可替代SubString()方法）</summary>
+        public static string SubText(this string text, int n)
         {
             if (text.IsEmpty()) return "";
             var l = text.Length;
@@ -215,17 +215,6 @@ namespace App.Core
             return text.Trim();
         }
 
-        /// <summary>进行Html编码。格式如：&amp;quot;Name&amp;quot;</summary>
-        public static string ToHtmlEncode(this string text)
-        {
-            return HttpUtility.HtmlEncode(text);
-        }
-
-        /// <summary>进行Html反编码。格式如：&quot;Name&quot;</summary>
-        public static string ToHtmlDecode(this string text)
-        {
-            return HttpUtility.HtmlDecode(text);
-        }
 
     }
 }

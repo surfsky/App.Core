@@ -17,7 +17,7 @@ using System.Xml;
 namespace App.Core
 {
     /// <summary>
-    /// 类型转换-列表操作（遍历、转换、过滤）
+    /// 类型转换-列表操作（遍历、转换、过滤）。类似.Select()方法，进行了转换操作
     /// </summary>
     public static partial class Convertor
     {

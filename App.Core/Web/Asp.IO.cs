@@ -59,7 +59,7 @@ namespace App.Core
 
 
         //------------------------------------------------------------
-        // 网站文件处理
+        // 输出文本
         //------------------------------------------------------------
         /// <summary>输出文本</summary>
         public static void WriteText(string text, string mimeType = @"text/html", string fileName = "", Encoding encoding = null, bool addMobileMeta = false)
@@ -74,10 +74,33 @@ namespace App.Core
             response.Write(text);
         }
 
+        /// <summary>输出文本</summary>
+        public static void WriteHtml(string text, Encoding encoding = null)
+        {
+            WriteText(text, "text/html", null);
+        }
+
+        /// <summary>输出Json</summary>
+        public static void WriteJson(string text, Encoding encoding = null)
+        {
+            WriteText(text, "text/json", null);
+        }
+
+        /// <summary>输出xml</summary>
+        public static void WriteXml(string text, Encoding encoding = null)
+        {
+            WriteText(text, "text/xml", null);
+        }
+
+
+
+        //------------------------------------------------------------
+        // 输出二进制文件
+        //------------------------------------------------------------
         /// <summary>输出文件</summary>
         public static void WriteFile(string filePath, string mimeType = "", string fileName = "")
         {
-            Asp.WriteBinary(File.ReadAllBytes(filePath), mimeType, fileName);
+            WriteBinary(File.ReadAllBytes(filePath), mimeType, fileName);
         }
 
         /// <summary>输出图像文件</summary>
@@ -86,25 +109,30 @@ namespace App.Core
             WriteBinary(image.ToBytes(), mimeType, fileName);
         }
 
+
         /// <summary>输出二进制文件</summary>
         public static void WriteBinary(byte[] bytes, string mimeType = "", string fileName = "")
         {
             var response = HttpContext.Current.Response;
             response.ClearContent();
             response.ContentType = mimeType;
-            if (!string.IsNullOrEmpty(fileName))
+            if (fileName.IsNotEmpty())
                 response.AddHeader("Content-Disposition", "attachment; filename=" + fileName);
             response.BinaryWrite(bytes);
         }
 
+        //------------------------------------------------------------
+        // 输出错误
+        //------------------------------------------------------------
         /// <summary>输出 HTTP 错误</summary>
         public static void WriteError(int errorCode, string info)
         {
             HttpContext context = HttpContext.Current;
             context.Response.StatusCode = errorCode;
-            context.Response.StatusDescription = info;
+            context.Response.StatusDescription = info.SubText(512);
             context.Response.End();
         }
+
 
         /// <summary>输出错误调试页面</summary>
         public static void WriteErrorHtml(Exception ex)
@@ -113,6 +141,8 @@ namespace App.Core
             HttpContext.Current.Server.ClearError();
             HttpContext.Current.Response.Write(txt);
         }
+
+
 
         //------------------------------------------------------------
         // 收集客户端和服务器的信息

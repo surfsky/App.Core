@@ -363,11 +363,11 @@ namespace App.Core
         /// <summary>从xml文件中加载</summary>
         public static UISetting LoadXml(string filePath)
         {
-            return SerializeHelper.LoadXml(filePath, typeof(UISetting)) as UISetting;
+            return XmlSerializeHelper.LoadXml(filePath, typeof(UISetting)) as UISetting;
         }
         public void SaveXml(string filePath)
         {
-            SerializeHelper.SaveXml(filePath, this);
+            XmlSerializeHelper.SaveXml(filePath, this);
         }
         //public static UISetting Demo()
         //{

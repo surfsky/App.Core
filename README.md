@@ -33,7 +33,7 @@ AppPlat 核心辅助类库（UI无关、平台无关）
     ToText()          : 对象转化为字符串，对象可以为空。可用于替代 ToString() 方法。
 
 ## Convertor
-    ToXXX()           : 转换对象类型，如 ToInt, ToEnum, ToXml, ToJson, ToMd5
+    ToXXX()           : 转换对象类型，如 ToInt, ToEnum, ToXml, ToJson, ToMd5, ToBase64, ToUrlEncode, ToHtmlEncode
     ParseXXX()        : 解析文本为对象，如 ParseInt, ParseEnum, ParseXml, ParseJson
     CastXXX()         : 遍历并转换数据类型，如 var items = array.CastInt();
     Take()            : 遍历并找到匹配的数据，如 var items = students.Take(t => t.Sex==Sex.Male);
@@ -93,5 +93,26 @@ AppPlat 核心辅助类库（UI无关、平台无关）
 
 
 
+## History
 
+2019-05-23
+
+    - 重构Convertor类
+        * 将各个分散的转换方法聚合在此类中
+        * 增加ToBase64(), ParseBase64() 方法
+    - 重构HttpHelper 类
+        * 给各个方法都增加了 headers 参数
+        * 删除方法 PostJson() 方法，请直接用 PostText() 方法
+            /// <summary>Post Json 字符串</summary>
+            public static string PostJson(string url, string json, Encoding encoding = null, CookieContainer cookieContainer = null, Dictionary<string, string> headers = null)
+            {
+                return Post(url, json, encoding, "application/json", cookieContainer, headers);
+            }
+        * 删除 PostDictionary 方法。不通用，容易混淆
+            /// <summary>Post 文本字典（会拼装成QueryString的形式）</summary>
+            public static string Post(string url, Dictionary<string, string> data, Encoding encoding = null, string contentType = null, CookieContainer cookieContainer = null, Dictionary<string, string> headers = null)
+            {
+                return Post(url, data.ToQueryString(), encoding, contentType, cookieContainer, headers);
+            }
+    - 将 HttpHelper 中服务器端处理方法移到 Asp 类中
 

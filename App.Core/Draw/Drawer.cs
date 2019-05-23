@@ -271,19 +271,5 @@ namespace App.Core
             }
         }
 
-        /// <summary>将图像转换为字节数组</summary>
-        public static byte[] ToBytes(this Image img)
-        {
-            if (img == null)
-                return null;
-            else
-            {
-                MemoryStream ms = new MemoryStream();
-                img.Save(ms, ImageFormat.Png);
-                byte[] bytes = ms.ToArray();
-                ms.Close();
-                return bytes;
-            }
-        }
     }
 }

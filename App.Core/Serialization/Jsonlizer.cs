@@ -16,6 +16,9 @@ namespace App.Core
     /// （1）是否序列化列表属性
     /// （2）是否限制属性的个数
     /// </summary>
+    /// <remarks>
+    /// 可考虑
+    /// </remarks>
     public class Jsonlizer
     {
         /// <summary> 对象转换为Json字符串</summary> 
