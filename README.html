@@ -101,7 +101,7 @@ var txt = EditorType.Auto.GetDescription(); // &quot;自动选择&quot;
 ```
 </code></pre>
 <h2 id="history">History</h2>
-<p>2019-05-23</p>
+<p>2019-05</p>
 <pre><code>- 重构Convertor类
     * 将各个分散的转换方法聚合在此类中
     * 增加ToBase64(), ParseBase64() 方法
@@ -120,6 +120,12 @@ var txt = EditorType.Auto.GetDescription(); // &quot;自动选择&quot;
             return Post(url, data.ToQueryString(), encoding, contentType, cookieContainer, headers);
         }
 - 将 HttpHelper 中服务器端处理方法移到 Asp 类中
+- 增加 EncrypHelper.ToHmacSHA256()
+- EncryptHelper 的以下方法迁移到 Convertor 类
+        ToByteString
+        ToByteSeperateString
+        ToBase64String
+        ToBase64Bytes
 </code></pre>
 
 

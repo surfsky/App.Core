@@ -19,47 +19,36 @@ namespace App.Core
         {
             encoding = encoding ?? Encoding.UTF8;
             var md5 = new MD5CryptoServiceProvider();
-            byte[] bytes = md5.ComputeHash(encoding.GetBytes(text));
-            return ToByteString(bytes);
+            var bytes = md5.ComputeHash(encoding.GetBytes(text));
+            return bytes.ToByteString();
         }
 
         /// <summary>获取字符串 SHA1 哈希值（40字符）,如：d3486ae9136e7856bc42212385ea797094475802</summary>
         public static string ToSHA1(this string text, Encoding encoding = null)
         {
             encoding = encoding ?? Encoding.UTF8;
-            SHA1 sha1 = new SHA1CryptoServiceProvider();
-            byte[] bytes = sha1.ComputeHash(encoding.GetBytes(text));
-            return ToByteString(bytes);
+            var sha1 = new SHA1CryptoServiceProvider();
+            var bytes = sha1.ComputeHash(encoding.GetBytes(text));
+            return bytes.ToByteString();
         }
 
-        /// <summary>按位转为 ASCII 字符串，如：86fb269d190d2c85f6e0468ceca42a20</summary>
-        public static string ToByteString(this byte[] bytes)
+        /// <summary>获取字符串 HmacSHA256 哈希值（40字符）</summary>
+        public static string ToHmacSHA256(this string text, string secret, Encoding encoding=null)
         {
-            var sb = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i++)
-                sb.AppendFormat("{0:x2}", bytes[i]);
-            return sb.ToString();
+            secret = secret ?? "";
+            encoding = encoding ?? Encoding.UTF8;
+            var hmacsha256 = new HMACSHA256(encoding.GetBytes(secret));
+            var bytes = hmacsha256.ComputeHash(encoding.GetBytes(text));
+            return bytes.ToByteString();
         }
 
-        /// <summary>按位大写输出，如"86-FB-26-9D-19-0D-2C-85-F6-E0-46-8C-EC-A4-2A-20"</summary>
-        public static string ToByteSeperateString(this byte[] bytes)
-        {
-            return BitConverter.ToString(bytes);
-        }
 
-        /// <summary>转化为Base64字符串编码，如"hvsmnRkNLIX24EaM7KQqIA=="</summary>
-        public static string ToBase64String(this byte[] bytes)
-        {
-            return Convert.ToBase64String(bytes);
-        }
 
 
         //-------------------------------------------------------------------------
         // 异或加密解密
         //-------------------------------------------------------------------------
-        /// <summary>
-        /// 循环异或加密（解密）
-        /// </summary>
+        /// <summary>循环异或加解密</summary>
         /// <param name="txt">原文本</param>
         /// <param name="key">密钥</param>
         /// <param name="encoding">文本编码方式</param>
@@ -71,9 +60,7 @@ namespace App.Core
             return encoding.GetString(ret);
         }
 
-        /// <summary>
-        /// 循环异或加密
-        /// </summary>
+        /// <summary>循环异或加密</summary>
         /// <param name="src">源字节数组</param>
         /// <param name="key">密钥字节数组</param>
         /// <returns>加密后的字节数组（长度和源字节数组相同）</returns>
@@ -114,9 +101,7 @@ namespace App.Core
             return Convert.ToBase64String(outputBuffer);
         }
 
-        /// <summary>
-        /// 用 DES 算法解密字符串
-        /// </summary>
+        /// <summary>用 DES 算法解密字符串</summary>
         /// <param name="text">要解密的文本</param>
         /// <param name="key">密钥：8或16字节</param>
         /// <returns>解密后的文本</returns>
@@ -177,9 +162,7 @@ namespace App.Core
             return new KeyValuePair<string, string>(publicKey, privateKey);
         }
 
-        /// <summary>
-        /// 使用公钥加密文本
-        /// </summary>
+        /// <summary>使用公钥加密文本</summary>
         /// <param name="txt"></param>
         /// <param name="publicKey"></param>
         /// <returns></returns>
@@ -195,9 +178,7 @@ namespace App.Core
             return System.Convert.ToBase64String(bEnc);
         }
 
-        /// <summary>
-        /// 使用私钥解密文本
-        /// </summary>
+        /// <summary>使用私钥解密文本</summary>
         /// <param name="txt"></param>
         /// <param name="privateKey"></param>
         /// <returns></returns>
@@ -217,9 +198,7 @@ namespace App.Core
         ///-------------------------------------------------------------------------
         /// 文件比较
         ///-------------------------------------------------------------------------
-        /// <summary>
-        /// 获取文件的Md5散列值
-        /// </summary>
+        /// <summary>获取文件的Md5散列值</summary>
         public static string FileHash(string filePath)
         {
             using (FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
@@ -234,9 +213,7 @@ namespace App.Core
             }
         }
 
-        /// <summary>
-        /// 使用md5散列值来比较两个文件是否相同。请自行捕捉异常。
-        /// </summary>
+        /// <summary>使用md5散列值来比较两个文件是否相同。请自行捕捉异常。</summary>
         /// <param name="srcFilename"></param>
         /// <param name="destFilename"></param>
         /// <returns></returns>

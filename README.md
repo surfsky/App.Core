@@ -95,7 +95,7 @@ AppPlat 核心辅助类库（UI无关、平台无关）
 
 ## History
 
-2019-05-23
+2019-05
 
     - 重构Convertor类
         * 将各个分散的转换方法聚合在此类中
@@ -115,4 +115,9 @@ AppPlat 核心辅助类库（UI无关、平台无关）
                 return Post(url, data.ToQueryString(), encoding, contentType, cookieContainer, headers);
             }
     - 将 HttpHelper 中服务器端处理方法移到 Asp 类中
-
+    - 增加 EncrypHelper.ToHmacSHA256()
+    - EncryptHelper 的以下方法迁移到 Convertor 类
+            ToByteString
+            ToByteSeperateString
+            ToBase64String
+            ToBase64Bytes

@@ -123,7 +123,22 @@ namespace App.Core
             return sb.ToString();
         }
 
-        /// <summary>转化为Base64字符串</summary>
+        /// <summary>按位转为 ASCII 字符串，如：86fb269d190d2c85f6e0468ceca42a20</summary>
+        public static string ToByteString(this byte[] bytes)
+        {
+            var sb = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i++)
+                sb.AppendFormat("{0:x2}", bytes[i]);
+            return sb.ToString();
+        }
+
+        /// <summary>按位大写输出，如"86-FB-26-9D-19-0D-2C-85-F6-E0-46-8C-EC-A4-2A-20"</summary>
+        public static string ToByteSeperateString(this byte[] bytes)
+        {
+            return BitConverter.ToString(bytes);
+        }
+
+        /// <summary>转化为Base64字符串编码，如"hvsmnRkNLIX24EaM7KQqIA=="</summary>
         public static string ToBase64String(this byte[] bytes)
         {
             return Convert.ToBase64String(bytes);
