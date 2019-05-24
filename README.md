@@ -1,4 +1,4 @@
-# 概述
+﻿# 概述
 
 AppPlat 核心辅助类库（UI无关、平台无关）
 
@@ -10,6 +10,15 @@ AppPlat 核心辅助类库（UI无关、平台无关）
     - Net        : 网络相关
     - Web        : Asp.net 网站相关（由于非常常用，就不分离出来了）
     - Utils      : 遍历扩展方法
+
+# Nuget Install
+
+```
+
+Nuget: install-package App.Corer
+```
+> 由于 App.Core nuget名称已经被用了，只能用App.Corer 了，注意区分
+
 
 # 备注
 
