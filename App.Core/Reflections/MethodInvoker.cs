@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App
+namespace App.Core
 {
     /// <summary>
     /// 方法操作辅助方法（调用方法）

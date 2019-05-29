@@ -359,19 +359,5 @@ namespace App.Core
             this.ModelType = type;
             this.Items = type.GetUIAttributes();
         }
-
-        /// <summary>从xml文件中加载</summary>
-        public static UISetting LoadXml(string filePath)
-        {
-            return XmlSerializeHelper.LoadXml(filePath, typeof(UISetting)) as UISetting;
-        }
-        public void SaveXml(string filePath)
-        {
-            XmlSerializeHelper.SaveXml(filePath, this);
-        }
-        //public static UISetting Demo()
-        //{
-        //    return new UISetting(typeof(User), "用户");
-        //}
     }
 }

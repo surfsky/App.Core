@@ -8,8 +8,9 @@ using System.Xml.Serialization;
 namespace App.Core
 {
     /// <summary>
-    /// Xml 序列化反序列化辅助类
+    /// Xml 序列化反序列化辅助类（使用微软官方的 XmlSerializer，使用时需要给类增加Xml相关attribue）
     /// </summary>
+    [Obsolete("推荐使用 App.Core.Xmlizer")]
     public static class XmlSerializeHelper
     {
         //------------------------------------------------
