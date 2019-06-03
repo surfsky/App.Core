@@ -28,22 +28,34 @@ namespace App.Core
         }
     }
 
-    /// <summary>
-    /// 自定义的请求头部处理，对于受限制头部（如Host, Referer等）可直接赋值而不报异常
-    /// </summary>
-    internal class FreeWebHeaders : WebHeaderCollection
-    {
-        public override void Add(string name, string value)
-        {
-            base.AddWithoutValidate(name, value);
-        }
-    }
 
     /// <summary>
     /// HTTP 操作相关（GET/POST/...)
     /// </summary>
     public static class HttpHelper
     {
+        ///------------------------------------------------------------
+        /// 解析返回对象（文本、图像等）
+        ///------------------------------------------------------------
+        /// <summary>获取 Http 响应文本</summary>
+        public static string ToText(this HttpWebResponse response)
+        {
+            string encoding = response.ContentEncoding;
+            if (encoding == null || encoding.Length < 1)
+                encoding = "UTF-8";
+            var reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(encoding));
+            return reader.ReadToEnd();
+        }
+
+        /// <summary>获取 Http 响应图片</summary>
+        public static Image ToImage(this HttpWebResponse response)
+        {
+            using (var stream = response.GetResponseStream())
+            {
+                return new Bitmap(stream);
+            }
+        }
+
 
         //---------------------------------------------------------
         // Get 方法
@@ -65,16 +77,26 @@ namespace App.Core
         }
 
         /// <summary>设置请求头</summary>
+        /// <remarks>
+        /// 限制标头要调用方法或属性进行设置，不然会报错：
+        /// Host由系统设置为当前主机信息。
+        /// Referer由 Referer 属性设置。
+        /// User-Agent由 UserAgent 属性设置。
+        /// Accept由 Accept 属性设置。
+        /// Connection由 Connection 属性和 KeepAlive 属性设置。
+        /// Range HTTP标头是通过AddRange来添加手工
+        /// If-Modified-Since HTTP标头通过IfModifiedSince 属性设置
+        /// Content-Length由 ContentLength 属性设置。
+        /// Content-Type由 ContentType 属性设置。
+        /// Expect由 Expect 属性设置。
+        /// Date由 Date属性设置，默认为系统的当前时间。
+        /// Transfer-Encoding由 TransferEncoding 属性设置（SendChunked 属性必须为 true）。
+        /// </remarks>
         static void SetRequestHeaders(HttpWebRequest request, Dictionary<string, string> headers)
         {
             if (headers == null)
                 return;
 
-            // 会报错“”
-            //FreeWebHeaders h = new FreeWebHeaders();
-            //foreach (var header in headers)
-            //    h.Add(header.Key, header.Value);
-            //request.Headers = h;
             foreach (var header in headers)
             {
                 var key = header.Key;
@@ -83,21 +105,6 @@ namespace App.Core
                     request.Headers.Add(key, value);
                 else
                 {
-                    /*
-                    手动设置限制标头：
-                    Host由系统设置为当前主机信息。
-                    Referer由 Referer 属性设置。
-                    User-Agent由 UserAgent 属性设置。
-                    Accept由 Accept 属性设置。
-                    Connection由 Connection 属性和 KeepAlive 属性设置。
-                    Range HTTP标头是通过AddRange来添加手工
-                    If-Modified-Since HTTP标头通过IfModifiedSince 属性设置
-                    Content-Length由 ContentLength 属性设置。
-                    Content-Type由 ContentType 属性设置。
-                    Expect由 Expect 属性设置。
-                    Date由 Date属性设置，默认为系统的当前时间。
-                    Transfer-Encoding由 TransferEncoding 属性设置（SendChunked 属性必须为 true）。
-                    */
                     var k = key.ToLower();
                     if (k == "host")            request.Host = value;
                     else if (k == "referer")    request.Referer = value;
@@ -175,27 +182,6 @@ namespace App.Core
             return response;
         }
 
-        ///------------------------------------------------------------
-        /// 解析返回对象（文本、图像等）
-        ///------------------------------------------------------------
-        /// <summary>获取 Http 响应文本</summary>
-        public static string ToText(this HttpWebResponse response)
-        {
-            string encoding = response.ContentEncoding;
-            if (encoding == null || encoding.Length < 1)
-                encoding = "UTF-8";
-            var reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(encoding));
-            return reader.ReadToEnd();
-        }
-
-        /// <summary>获取 Http 响应图片</summary>
-        public static Image ToImage(this HttpWebResponse response)
-        {
-            using (var stream = response.GetResponseStream())
-            {
-                return new Bitmap(stream);
-            }
-        }
 
 
 
@@ -207,12 +193,12 @@ namespace App.Core
         /// 来自Face++ 代码示例：https://console.faceplusplus.com.cn/documents/6329752
         ///------------------------------------------------------------
         /// <summary>Post MultipartForm</summary>
-        public static string PostMultipartForm(string url, Dictionary<string, object> data, Encoding encoding = null)
+        public static string PostMultipartForm(string url, Dictionary<string, object> data, Encoding encoding = null, CookieContainer cookieContainer = null, Dictionary<string, string> headers = null)
         {
             string boundary = string.Format("----------{0:N}", Guid.NewGuid()); // 分隔字符串
             string contentType = "multipart/form-data; boundary=" + boundary;   // multipart 请求类型
             byte[] bytes = BuildMultipartFormData(data, boundary, encoding);    // 将参数转化为字节数组
-            return Post(url, bytes, contentType, null);
+            return Post(url, bytes, contentType, cookieContainer, headers);
         }
 
         /// <summary>组装参数字典</summary>

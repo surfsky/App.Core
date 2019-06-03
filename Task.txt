@@ -30,3 +30,20 @@
                     else if (k == "connection")  request.Connection = value;
                 }
             }
+
+			
+    /// <summary>
+    /// 自定义的请求头部处理，对于受限制头部（如Host, Referer等）可直接赋值而不报异常
+    /// </summary>
+    internal class FreeWebHeaders : WebHeaderCollection
+    {
+        public override void Add(string name, string value)
+        {
+            base.AddWithoutValidate(name, value);
+        }
+    }
+	            // 会报错“”
+            //FreeWebHeaders h = new FreeWebHeaders();
+            //foreach (var header in headers)
+            //    h.Add(header.Key, header.Value);
+            //request.Headers = h;
