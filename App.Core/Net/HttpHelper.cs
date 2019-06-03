@@ -29,6 +29,17 @@ namespace App.Core
     }
 
     /// <summary>
+    /// 自定义的请求头部处理，对于受限制头部（如Host, Referer等）可直接赋值而不报异常
+    /// </summary>
+    internal class FreeWebHeaders : WebHeaderCollection
+    {
+        public override void Add(string name, string value)
+        {
+            base.AddWithoutValidate(name, value);
+        }
+    }
+
+    /// <summary>
     /// HTTP 操作相关（GET/POST/...)
     /// </summary>
     public static class HttpHelper
@@ -45,16 +56,56 @@ namespace App.Core
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "GET";
             request.CookieContainer = cookieContainer;
-            if (headers != null)
-            {
-                foreach (var header in headers)
-                    request.Headers.Add(header.Key, header.Value);
-            }
+            SetRequestHeaders(request, headers);
 
             // 返回
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             response.Cookies = cookieContainer.GetCookies(response.ResponseUri);
             return response.ToText();
+        }
+
+        /// <summary>设置请求头</summary>
+        static void SetRequestHeaders(HttpWebRequest request, Dictionary<string, string> headers)
+        {
+            if (headers == null)
+                return;
+
+            // 会报错“”
+            //FreeWebHeaders h = new FreeWebHeaders();
+            //foreach (var header in headers)
+            //    h.Add(header.Key, header.Value);
+            //request.Headers = h;
+            foreach (var header in headers)
+            {
+                var key = header.Key;
+                var value = header.Value;
+                if (!WebHeaderCollection.IsRestricted(key))
+                    request.Headers.Add(key, value);
+                else
+                {
+                    /*
+                    手动设置限制标头：
+                    Host由系统设置为当前主机信息。
+                    Referer由 Referer 属性设置。
+                    User-Agent由 UserAgent 属性设置。
+                    Accept由 Accept 属性设置。
+                    Connection由 Connection 属性和 KeepAlive 属性设置。
+                    Range HTTP标头是通过AddRange来添加手工
+                    If-Modified-Since HTTP标头通过IfModifiedSince 属性设置
+                    Content-Length由 ContentLength 属性设置。
+                    Content-Type由 ContentType 属性设置。
+                    Expect由 Expect 属性设置。
+                    Date由 Date属性设置，默认为系统的当前时间。
+                    Transfer-Encoding由 TransferEncoding 属性设置（SendChunked 属性必须为 true）。
+                    */
+                    var k = key.ToLower();
+                    if (k == "host")            request.Host = value;
+                    else if (k == "referer")    request.Referer = value;
+                    else if (k == "user-agent") request.UserAgent = value;
+                    else if (k == "accept")     request.Accept = value;
+                    else if (k == "connection") request.Connection = value;
+                }
+            }
         }
 
 
@@ -104,11 +155,8 @@ namespace App.Core
             //request.ProtocolVersion = HttpVersion.Version11;
 
             // 头部
-            if (headers != null)
-            {
-                foreach( var header in headers)
-                    request.Headers.Add(header.Key, header.Value);
-            }
+            SetRequestHeaders(request, headers);
+
 
             // 上传
             if (stream != null)
@@ -263,10 +311,5 @@ namespace App.Core
                 return null;
             }
         }
-
-
-
-
-
     }
 }

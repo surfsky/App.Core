@@ -7,6 +7,17 @@ using System.Security.Principal;
 
 namespace App.Core
 {
+    /// <summary>存储用户名及角色列表的Principal</summary>
+    public class UserRolePrincipal : GenericPrincipal
+    {
+        public string[] Roles { get; set; }
+        public UserRolePrincipal(IIdentity identity, string[] roles)
+            : base(identity, roles)
+        {
+            this.Roles = roles;
+        }
+    }
+
     /// <summary>
     /// 表单鉴权辅助函数（将用户、角色等信息用加密字符串保存在cookie中）。
     /// （1）Login 创建验票，并将用户角色过期时间等信息加密保存在cookie中。
@@ -63,7 +74,7 @@ namespace App.Core
             HttpContext.Current.Response.Cookies.Add(cookie);
 
             // current user
-            HttpContext.Current.User = new GenericPrincipal(new FormsIdentity(ticket), roles);
+            HttpContext.Current.User = new UserRolePrincipal(new FormsIdentity(ticket), roles);
             return HttpContext.Current.User;
         }
 
@@ -72,7 +83,7 @@ namespace App.Core
         // 读取 Cookie 验票
         //-----------------------------------------------
         /// <summary>从cookie中读取验票并设置当前用户</summary>
-        public static IPrincipal LoadCookiePrincipal()
+        public static IPrincipal LoadPrincipalFromCookie()
         {
             // 获取鉴权Cookie值
             string cookieName = FormsAuthentication.FormsCookieName;
@@ -82,7 +93,7 @@ namespace App.Core
             if (cookieValue.IsNotEmpty())
             {
                 FormsAuthenticationTicket authTicket = ParseTicket(cookieValue, out string user, out string[] roles);
-                HttpContext.Current.User = new GenericPrincipal(new FormsIdentity(authTicket), roles);
+                HttpContext.Current.User = new UserRolePrincipal(new FormsIdentity(authTicket), roles);
                 return HttpContext.Current.User;
             }
             return null;

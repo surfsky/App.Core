@@ -104,6 +104,9 @@ Nuget: install-package App.Corer
 
 ## History
 
+2019-06
+    - 修正 HttpHelper cookie 和请求头处理，不报异常
+
 2019-05
 
     - 重构Convertor类
