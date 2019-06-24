@@ -56,6 +56,7 @@ namespace App.Core
         /// <summary>获取枚举的值列表</summary>
         public static List<T> GetEnums<T>(this Type enumType) where T : struct
         {
+            //return Enum.GetValues(enumType).CastEnum<T>();
             var values = new List<T>();
             foreach (var value in Enum.GetValues(enumType))
                 values.Add((T)value);
@@ -66,7 +67,7 @@ namespace App.Core
         // EnumInfo
         //-------------------------------------------------
         /// <summary>获取一组枚举值的详细信息</summary>
-        public static List<EnumInfo> GetEnumInfos(this IList enumValues)
+        public static List<EnumInfo> ToEnumInfos(this IList enumValues)
         {
             var infos = new List<EnumInfo>();
             foreach (var item in enumValues)
@@ -86,7 +87,7 @@ namespace App.Core
         public static List<string> GetEnumGroups(this Type enumType)
         {
             var groups = new List<string>();
-            var items = enumType.ToList();
+            var items = enumType.ToEnumInfos();
             foreach (var item in items)
                 if (!groups.Contains(item.Group))
                     groups.Add(item.Group);
@@ -95,7 +96,7 @@ namespace App.Core
         }
 
         /// <summary>将枚举类型转化为列表{Name=xxx, Value=xxx, ID=x, Group=x}</summary>
-        public static List<EnumInfo> ToList(this Type enumType, params string[] groups)
+        public static List<EnumInfo> ToEnumInfos(this Type enumType, params string[] groups)
         {
             var items = new List<EnumInfo>();
             foreach (var value in Enum.GetValues(enumType))
