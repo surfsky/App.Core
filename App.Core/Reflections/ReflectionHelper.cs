@@ -365,7 +365,7 @@ namespace App.Core
         /// <summary>获取表达式属性名。var name = GetPropertyName<User>(t => t.Dept.Name);</summary>
         public static string GetExpressionName<T>(this Expression<Func<T, object>> expr)
         {
-            return GetExpressionName(expr.Body);
+            return (expr == null) ? "" : GetExpressionName(expr.Body);
         }
 
 

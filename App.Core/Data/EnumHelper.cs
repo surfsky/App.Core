@@ -83,20 +83,8 @@ namespace App.Core
             return new EnumInfo() { Name = name, Value = enumValue, ID = (int)enumValue, Group = group };
         }
 
-        /// <summary>获取权限分组</summary>
-        public static List<string> GetEnumGroups(this Type enumType)
-        {
-            var groups = new List<string>();
-            var items = enumType.ToEnumInfos();
-            foreach (var item in items)
-                if (!groups.Contains(item.Group))
-                    groups.Add(item.Group);
-            return groups;
-            //return groups.Select(t => new { Group = t }).ToList();
-        }
-
         /// <summary>将枚举类型转化为列表{Name=xxx, Value=xxx, ID=x, Group=x}</summary>
-        public static List<EnumInfo> ToEnumInfos(this Type enumType, params string[] groups)
+        public static List<EnumInfo> GetEnumInfos(this Type enumType, params string[] groups)
         {
             var items = new List<EnumInfo>();
             foreach (var value in Enum.GetValues(enumType))
@@ -106,6 +94,18 @@ namespace App.Core
                     items.Add(info);
             }
             return items;
+        }
+
+        /// <summary>获取权限分组</summary>
+        public static List<string> GetEnumGroups(this Type enumType)
+        {
+            var groups = new List<string>();
+            var items = enumType.GetEnumInfos();
+            foreach (var item in items)
+                if (!groups.Contains(item.Group))
+                    groups.Add(item.Group);
+            return groups;
+            //return groups.Select(t => new { Group = t }).ToList();
         }
     }
 

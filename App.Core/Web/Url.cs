@@ -35,10 +35,10 @@ namespace App.Core
         /// <summary>端口号</summary>
         public string Port { get; set; }
 
-        /// <summary>相对于根目录的绝对路径。如 /Pages/Default.aspx</summary>
+        /// <summary>相对于根目录的绝对路径。如 /Pages/Default.aspx?p=1</summary>
         public string AbsolutePath { get; set; }
 
-        /// <summary>除了查询字符串外的c纯路径。如 http://a.b.com/Pages/Default.aspx</summary>
+        /// <summary>去除查询字符串外的纯路径。如 /Pages/Default.aspx</summary>
         public string PurePath { get; set; } = "";
 
         /// <summary>文件名称。如 Default.aspx</summary>
