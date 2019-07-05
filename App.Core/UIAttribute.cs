@@ -27,27 +27,28 @@ namespace App.Core
     }
 
     /// <summary>
-    /// 什么情况下字段需要展示（表单、网格等）
+    /// 字段展示场合（表单、网格等）
     /// </summary>
-    public enum ShowType
+    public enum ShowType : int
     {
-        [UI("全部")]                All,
-        [UI("不展示")]              No,
-        [UI("表单页面显示该字段")]  Form,
-        [UI("网格页面显示该字段")]  Grid,
-        [UI("只读页面显示该字段")]  View,
+        [UI("不展示")]              No = 0,
+        [UI("表单页面显示该字段")]  Form = 1,
+        [UI("网格页面显示该字段")]  Grid = 2,
+        [UI("只读页面显示该字段")]  View = 4,
+        [UI("全部")]                All = Form | Grid | View
     }
 
 
     /// <summary>
-    /// 什么情况下本字段可以导出（概述、详细等）
+    /// 字段导出方式
     /// </summary>
-    public enum ExportType
+    public enum ExportType : int
     {
-        [UI("全部")]                 All,
-        [UI("不导出")]               No,
-        [UI("概述环境下导出该字段")] Summary,
-        [UI("详细环境下导出该字段")] Detail
+        [UI("不导出")]   No = 0,
+        [UI("简单")]     Simple = 1,
+        [UI("普通")]     Normal = 2,
+        [UI("详细")]     Detail = 4,
+        [UI("全部")]     All = Simple | Normal | Detail
     }
 
     //========================================================

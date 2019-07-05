@@ -9,10 +9,10 @@ namespace App.Core.Tests
     /// <summary>
     /// 性别枚举
     /// </summary>
-    public enum SexType
+    public enum SexType : int
     {
-        Male,
-        Female
+        Male = 1,
+        Female = 2
     }
 
     /// <summary>

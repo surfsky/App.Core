@@ -14,33 +14,19 @@ namespace App.Core
     /// </summary>
     public static class ReflectionHelper
     {
-        //------------------------------------------------
-        // 数据集相关
-        //------------------------------------------------
-        /// <summary>获取调用者数据集版本号</summary>
-        public static Version AssemblyVersion
+        /// <summary>组合各个对象的属性，输出为字典</summary>
+        public static Dictionary<string, object> CombineObject(params object[] objs)
         {
-            get { return Assembly.GetCallingAssembly().GetName().Version; }
+            var dict = new Dictionary<string, object>();
+            foreach (object o in objs)
+            {
+                if (o == null)
+                    continue;
+                foreach (PropertyInfo pi in o.GetType().GetProperties())
+                    dict[pi.Name] = pi.GetValue(o);
+            }
+            return dict;
         }
-
-        /// <summary>获取调用者数据集路径</summary>
-        public static string AssemblyPath
-        {
-            get { return Assembly.GetCallingAssembly().Location; }
-        }
-
-        /// <summary>获取调用者数据集目录</summary>
-        public static string AssemblyDirectory
-        {
-            get { return new FileInfo(AssemblyPath).DirectoryName; }
-        }
-
-        /// <summary>获取某个类型归属的程序集版本号</summary>
-        public static Version GetVersion(Type type)
-        {
-            return type.Assembly.GetName().Version;
-        }
-
 
         //------------------------------------------------
         // 类型相关

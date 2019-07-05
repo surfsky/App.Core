@@ -19,7 +19,13 @@ namespace App.Core
 
         public string Info
         {
-            get { return string.Format("{0}（{1}-{2}）", this.Value, this.Group, this.Name); }
+            get
+            {
+                return this.Group.IsEmpty() 
+                    ? string.Format("{0}({1})", this.Value, this.Name)
+                    : string.Format("{0}({1}/{2})", this.Value, this.Group, this.Name)
+                    ;
+            }
         }
     }
 
