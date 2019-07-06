@@ -44,6 +44,18 @@ namespace App.Core
         //------------------------------------------------
         // 路径、文件
         //------------------------------------------------
+        /// <summary>获取文件扩展名</summary>
+        public static string GetExtension(this string file)
+        {
+            if (file.IsEmpty())
+                return "";
+
+            int n = file.LastIndexOf('.');
+            if (n != -1)
+                return file.Substring(n);
+            return "";
+        }
+
         /// <summary>准备文件路径（不存在则创建）</summary>
         /// <param name="filePath">文件的物理路径</param>
         public static void PrepareDirectory(string filePath)
@@ -67,6 +79,34 @@ namespace App.Core
                 sw.Close();
             }
         }
+
+        /// <summary>合并文件</summary>
+        /// <param name="files">源文件路径列表</param>
+        /// <param name="mergeFile">合并文件路径</param>
+        public static void MergeFiles(List<string> files, string mergeFile, bool deleteRawFiles = true)
+        {
+            using (FileStream stream = new FileStream(mergeFile, FileMode.OpenOrCreate))
+            {
+                using (BinaryWriter writer = new BinaryWriter(stream))
+                {
+                    foreach (string file in files)
+                    {
+                        // 拷贝合并到新文件（并删除临时文件）
+                        using (FileStream fileStream = new FileStream(file, FileMode.Open))
+                        {
+                            using (BinaryReader fileReader = new BinaryReader(fileStream))
+                            {
+                                byte[] bytes = fileReader.ReadBytes((int)fileStream.Length);
+                                writer.Write(bytes);
+                            }
+                        }
+                        if (deleteRawFiles)
+                            File.Delete(file);
+                    }
+                }
+            }
+        }
+
 
         //------------------------------------------------
         // 输出

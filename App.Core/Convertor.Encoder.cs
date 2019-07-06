@@ -24,6 +24,16 @@ namespace App.Core
         //--------------------------------------------------
         // 字节数组和流
         //--------------------------------------------------
+        /// <summary>转换为字节数组</summary>
+        public static byte[] ToBytes(this short n) { return BitConverter.GetBytes(n); }
+        public static byte[] ToBytes(this int n){ return BitConverter.GetBytes(n); }
+        public static byte[] ToBytes(this long n) { return BitConverter.GetBytes(n); }
+        public static byte[] ToBytes(this ushort n) { return BitConverter.GetBytes(n); }
+        public static byte[] ToBytes(this uint n) { return BitConverter.GetBytes(n); }
+        public static byte[] ToBytes(this ulong n) { return BitConverter.GetBytes(n); }
+        public static byte[] ToBytes(this float n) { return BitConverter.GetBytes(n); }
+        public static byte[] ToBytes(this double n) { return BitConverter.GetBytes(n); }
+
         /// <summary>对象转换为字节数组</summary>
         public static byte[] ToBytes(this object o)
         {
@@ -124,7 +134,7 @@ namespace App.Core
         }
 
         /// <summary>按位转为 ASCII 字符串，如：86fb269d190d2c85f6e0468ceca42a20</summary>
-        public static string ToByteString(this byte[] bytes)
+        public static string ToASCString(this byte[] bytes)
         {
             var sb = new StringBuilder();
             for (int i = 0; i < bytes.Length; i++)
@@ -132,11 +142,20 @@ namespace App.Core
             return sb.ToString();
         }
 
+        /// <summary>按位转为 ASCII 字符串，如：86fb269d190d2c85f6e0468ceca42a20</summary>
+        public static byte[] ToASCBytes(this string text)
+        {
+            Encoding enc = Encoding.ASCII;
+            return enc.GetBytes(text);
+        }
+
+        /*
         /// <summary>按位大写输出，如"86-FB-26-9D-19-0D-2C-85-F6-E0-46-8C-EC-A4-2A-20"</summary>
         public static string ToByteSeperateString(this byte[] bytes)
         {
             return BitConverter.ToString(bytes);
         }
+        */
 
         /// <summary>转化为Base64字符串编码，如"hvsmnRkNLIX24EaM7KQqIA=="</summary>
         public static string ToBase64String(this byte[] bytes)
@@ -177,5 +196,38 @@ namespace App.Core
             return bytes;
         }
 
+        /// <summary>转换为二进制文本</summary>
+        public static string ToBitString(this short n) { return BitConverter.GetBytes(n).ToBitString(); }
+        public static string ToBitString(this int n) { return BitConverter.GetBytes(n).ToBitString(); }
+        public static string ToBitString(this long n) { return BitConverter.GetBytes(n).ToBitString(); }
+        public static string ToBitString(this ushort n) { return BitConverter.GetBytes(n).ToBitString(); }
+        public static string ToBitString(this uint n) { return BitConverter.GetBytes(n).ToBitString(); }
+        public static string ToBitString(this ulong n) { return BitConverter.GetBytes(n).ToBitString(); }
+        public static string ToBitString(this float n) { return BitConverter.GetBytes(n).ToBitString(); }
+        public static string ToBitString(this double n) { return BitConverter.GetBytes(n).ToBitString(); }
+
+
+        /// <summary>转化为二进制文本</summary>
+        public static string ToBitString(this byte[] bytes, bool order=false)
+        {
+            var sb = new StringBuilder(bytes.Length * 8);
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                var bt = order ? bytes[i] : bytes[bytes.Length-i-1];
+                sb.Append(Convert.ToString(bt, 2).PadLeft(8, '0'));
+                sb.Append(" ");
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>二进制文本转化为字节数组</summary>
+        public static byte[] ToBitBytes(this string str)
+        {
+            var items = Regex.Match(str, @"([01]{8})+").Groups[1].Captures;
+            byte[] bytes = new byte[items.Count];
+            for (int i = 0; i < items.Count; i++)
+                bytes[i] = Convert.ToByte(items[i].Value, 2);
+            return bytes;
+        }
     }
 }

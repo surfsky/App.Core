@@ -55,7 +55,7 @@ namespace App.Core
         /// <returns>验证码和图片元组对象</returns>
         public static VerifyImage Draw(int w = 80, int h = 40)
         {
-            var fontStencil = FontHelper.GetFont(App.Properties.Resources.Stencil_ICG, 36, FontStyle.Bold);
+            var fontStencil = FontHelper.GetFont(App.Core.Properties.Resources.Stencil_ICG, 36, FontStyle.Bold);
             //var fontPledg = FontHelper.GetFont(App.Properties.Resources.PLEDG_KI, 36, FontStyle.Italic);  // 注意样式要匹配，否则会报异常
             //var fontAgent = FontHelper.GetFont(App.Properties.Resources.Agent_Red, 26, FontStyle.Regular);
 

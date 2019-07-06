@@ -7,10 +7,41 @@ using System.Collections.Generic;
 namespace App.Core
 {
     /// <summary>
+    /// 字节数组编解码方式
+    /// </summary>
+    public enum ByteEncoder
+    {
+        /// <summary>按位转化为ASCII，如：86fb269d190d2c85f6e0468ceca42a20</summary>
+        ASC,
+
+        /// <summary>Base64字符串编码，如"hvsmnRkNLIX24EaM7KQqIA=="</summary>
+        Base64
+    }
+
+    /// <summary>
     /// 负责安全、加密、解密等内容
     /// </summary>
     public static class EncryptHelper
     {
+        public static string ToString(this byte[] bytes, ByteEncoder enc)
+        {
+            switch (enc)
+            {
+                case ByteEncoder.ASC:    return bytes.ToASCString();
+                case ByteEncoder.Base64:  return bytes.ToBase64String();
+                default:                  return bytes.ToASCString();
+            }
+        }
+        public static byte[] ToBytes(this string text, ByteEncoder enc)
+        {
+            switch (enc)
+            {
+                case ByteEncoder.ASC:      return text.ToASCBytes();
+                case ByteEncoder.Base64:    return text.ToBase64Bytes();
+                default: return text.ToBase64Bytes();
+            }
+        }
+
         //-------------------------------------------------------------------------
         // 获取字符串的hash值
         //-------------------------------------------------------------------------
@@ -20,7 +51,7 @@ namespace App.Core
             encoding = encoding ?? Encoding.UTF8;
             var md5 = new MD5CryptoServiceProvider();
             var bytes = md5.ComputeHash(encoding.GetBytes(text));
-            return bytes.ToByteString();
+            return bytes.ToASCString();
         }
 
         /// <summary>获取字符串 SHA1 哈希值（40字符）,如：d3486ae9136e7856bc42212385ea797094475802</summary>
@@ -29,7 +60,7 @@ namespace App.Core
             encoding = encoding ?? Encoding.UTF8;
             var sha1 = new SHA1CryptoServiceProvider();
             var bytes = sha1.ComputeHash(encoding.GetBytes(text));
-            return bytes.ToByteString();
+            return bytes.ToASCString();
         }
 
         /// <summary>获取字符串 HmacSHA256 哈希值（40字符）</summary>
@@ -39,7 +70,7 @@ namespace App.Core
             encoding = encoding ?? Encoding.UTF8;
             var hmacsha256 = new HMACSHA256(encoding.GetBytes(secret));
             var bytes = hmacsha256.ComputeHash(encoding.GetBytes(text));
-            return bytes.ToByteString();
+            return bytes.ToASCString();
         }
 
 
@@ -86,7 +117,7 @@ namespace App.Core
         /// 速度快，特别适用于对较大的数据流执行加密转换
         /// </summary>
         /// <param name="text">要加密的文本</param>
-        /// <param name="key">密钥：8或16字节</param>
+        /// <param name="key">8或16字节密钥，如"12345678"</param>
         /// <returns>加密后的文本</returns>
         public static string DesEncrypt(this string text, string key, Encoding encoding = null)
         {
@@ -98,7 +129,7 @@ namespace App.Core
 
             byte[] inputBuffer = encoding.GetBytes(text);
             byte[] outputBuffer = des.CreateEncryptor().TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
-            return Convert.ToBase64String(outputBuffer);
+            return outputBuffer.ToBase64String();
         }
 
         /// <summary>用 DES 算法解密字符串</summary>
@@ -126,7 +157,7 @@ namespace App.Core
         /// RSA算法的理论根据来自于一个大素数所具有的特性。对于给定的两个大素数A与B，很容易计算出它们的乘积。
         /// 但是，仅知道AB的乘积却很难计算原来的A与B各自的值。
         /// 在不深入到RSA算法细节的情况下，可以简单得认为(A，B)这对数定义了非对称算法中的私钥，而AB的乘积则定义了算法中的公钥。
-        /// 以Base64String方式保存，公钥324个支付，私钥1220字符。
+        /// 以Base64String方式保存，公钥324个字符，私钥1220字符。
         /// </summary>
         /// <example>
         ///    string msg = "hello world";

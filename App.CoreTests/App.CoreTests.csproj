@@ -49,6 +49,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed" />
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -60,11 +61,13 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ConvertorTests.cs" />
+    <Compile Include="Database\SnowflakeIDTests.cs" />
     <Compile Include="Data\DynamicXmlTests.cs" />
     <Compile Include="Data\SerializeHelperTests.cs" />
     <Compile Include="Data\StringHelperTests.cs" />
     <Compile Include="EncryptHelperTests.cs" />
     <Compile Include="ExtensionsTests.cs" />
+    <Compile Include="Database\IDGeneratorTests.cs" />
     <Compile Include="Interop\CsEvaluatorTests.cs" />
     <Compile Include="Interop\JsEvaluatorTests.cs" />
     <Compile Include="Math\MathHelperTests.cs" />
@@ -77,13 +80,13 @@
     <Compile Include="Web\UrlTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\App.Core\App.Core.csproj">
-      <Project>{C887D0A1-20F6-44DA-87DF-EA8D45ACE744}</Project>
-      <Name>App.Core</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\App.Core\App.Core.csproj">
+      <Project>{c887d0a1-20f6-44da-87df-ea8d45ace744}</Project>
+      <Name>App.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

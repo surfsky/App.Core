@@ -7,7 +7,7 @@
     <ProjectGuid>{C887D0A1-20F6-44DA-87DF-EA8D45ACE744}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>App</RootNamespace>
+    <RootNamespace>App.Core</RootNamespace>
     <AssemblyName>App.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -72,7 +72,9 @@
     <Compile Include="Convertor.Json.cs" />
     <Compile Include="Convertor.XML.cs" />
     <Compile Include="Database\DbHelper.cs" />
+    <Compile Include="Database\SnowFlakeID.cs" />
     <Compile Include="Data\BytesExtension.cs" />
+    <Compile Include="Database\IDGenerator.cs" />
     <Compile Include="Math\EncryptHelper.cs" />
     <Compile Include="FreeDictionary.cs" />
     <Compile Include="Serialization\DynamicXml.cs" />

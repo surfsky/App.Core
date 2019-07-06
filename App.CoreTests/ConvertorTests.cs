@@ -145,5 +145,14 @@ namespace App.Core.Tests
             dict.Remove("birthday");
             txt = dict.ToQueryString();
         }
+
+        [TestMethod()]
+        public void ToBinaryStringTest()
+        {
+            int n = 99;
+            var text = n.ToBitString();
+            var bytes = text.ToBitBytes();
+            var m = bytes.ToInt();
+        }
     }
 }
