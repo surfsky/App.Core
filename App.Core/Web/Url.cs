@@ -53,19 +53,13 @@ namespace App.Core
         /// <summary>查询字符串</summary>
         public string QueryString
         {
-            get
-            {
-                var sb = new StringBuilder();
-                foreach (var key in Dict.Keys)
-                    sb.AppendFormat("{0}={1}&", key, Dict[key]);
-                return sb.ToString().TrimEnd('&');
-            }
+            get{ return this.Dict.ToString(); }
         }
 
         /// <summary>获取或设置查询字符串成员</summary>
         public string this[string key]
         {
-            get {return Dict[key];}
+            get { return Dict[key];}
             set { Dict[key] = value; }
         }
 

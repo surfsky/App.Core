@@ -14,16 +14,26 @@ namespace App.Core.Tests
         [TestMethod()]
         public void SnowflakeIDTest()
         {
+            // 生成
+            for (int i = 0; i < 1000; i++)
+            {
+                long id = SnowflakeID.NewID();
+                IO.Write("{0} : {1}", id.ToString(), id.ToBitString());
+            }
+
+            // 解析
+            var snowId = SnowflakeID.Parse(1259605479504482304);
+            var timestamp = snowId.TimeStamp;
+            var machine = snowId.Machine;
+            var sequence = snowId.Sequence;
+        }
+
+        [TestMethod()]
+        public  static void TestShift()
+        {
             ulong n1 = 12;
             ulong n2 = 12 << 4;
             IO.Write("{0} {1}", n1.ToBitString(), n2.ToBitString());
-
-
-            for (int i = 0; i < 1000; i++)
-            {
-                long id = new SnowflakeID(1).Value;
-                IO.Write("{0} : {1}", id.ToString(), id.ToBitString());
-            }
         }
     }
 }

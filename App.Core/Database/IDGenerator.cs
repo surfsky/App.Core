@@ -13,7 +13,7 @@ namespace App.Core
     public static class IDGenerator
     {
         /// <summary>GUID</summary>
-        public static string NewGuid()
+        public static string NewGuid(string format="N")
         {
             return Guid.NewGuid().ToString("N");
         }
@@ -21,40 +21,36 @@ namespace App.Core
         /// <summary>分布式雪花ID</summary>
         public static long NewSnowflakeID(int machine)
         {
-            return new SnowflakeID(machine).Value;
+            return new SnowflakeID(machine).New().Value;
         }
 
-        /// <summary>保留前10位GUID+6位时间戳</summary>
-        public static string NewCombo()
+        /// <summary>保留前10位GUID+6位时间戳，便于数据库索引排序</summary>
+        public static string NewGuidCombo(int startYear=2000)
         {
-            byte[] guidArray = Guid.NewGuid().ToByteArray();
-
-            DateTime baseDate = new DateTime(1900, 1, 1);
+            // 时间偏差（日期、毫秒）
+            DateTime baseDate = new DateTime(startYear, 1, 1);
             DateTime now = DateTime.Now;
-
-            // Get the days and milliseconds which will be used to build    
-            //the byte string    
-            TimeSpan days = new TimeSpan(now.Ticks - baseDate.Ticks);
+            int days = new TimeSpan(now.Ticks - baseDate.Ticks).Days;
             TimeSpan msecs = now.TimeOfDay;
 
-            // Convert to a byte array        
-            // Note that SQL Server is accurate to 1/300th of a    
-            // millisecond so we divide by 3.333333    
-            byte[] daysArray = BitConverter.GetBytes(days.Days);
-            byte[] msecsArray = BitConverter.GetBytes((long)
-              (msecs.TotalMilliseconds / 3.333333));
+            // GUID 128bit = 16byte
+            byte[] bytes = Guid.NewGuid().ToByteArray();
+
+            // Convert to a byte array
+            // Note that SQL Server is accurate to 1/300th of a millisecond so we divide by 3.333333    
+            byte[] daysBytes = BitConverter.GetBytes(days);
+            byte[] msBytes   = BitConverter.GetBytes((long)(msecs.TotalMilliseconds / 3.333333));
 
             // Reverse the bytes to match SQL Servers ordering    
-            Array.Reverse(daysArray);
-            Array.Reverse(msecsArray);
+            Array.Reverse(daysBytes);
+            Array.Reverse(msBytes);
 
-            // Copy the bytes into the guid    
-            Array.Copy(daysArray, daysArray.Length - 2, guidArray,
-              guidArray.Length - 6, 2);
-            Array.Copy(msecsArray, msecsArray.Length - 4, guidArray,
-              guidArray.Length - 4, 4);
+            // 拷贝到GUID数组，天数占2字节，毫秒占4字节
+            Array.Copy(daysBytes, daysBytes.Length - 2, bytes, bytes.Length - 6, 2);
+            Array.Copy(msBytes,   msBytes.Length - 4,   bytes, bytes.Length - 4, 4);
 
-            return new Guid(guidArray).ToString("N");
+            return bytes.ToASCString();
+            //return new Guid(bytes).ToString("N");
         }
     }
 }

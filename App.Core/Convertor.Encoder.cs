@@ -22,16 +22,46 @@ namespace App.Core
     public static partial class Convertor
     {
         //--------------------------------------------------
-        // 字节数组和流
+        // 流
         //--------------------------------------------------
+        /// <summary>将文本转化为流</summary>
+        public static MemoryStream ToStream(this string text, Encoding encoding = null)
+        {
+            return text.ToBytes(encoding).ToStream();
+        }
+
+        /// <summary>将字节数组转化为流</summary>
+        public static MemoryStream ToStream(this byte[] bytes)
+        {
+            MemoryStream stream = new MemoryStream();
+            stream.Write(bytes, 0, bytes.Length);
+            stream.Seek(0, SeekOrigin.Begin);
+            return stream;
+        }
+
+
+        //--------------------------------------------------
+        // 字节数组
+        //--------------------------------------------------
+        /// <summary>字节数组转换为数字</summary>
+        public static short  ToInt16(this byte[] bytes)  { return BitConverter.ToInt16(bytes,0); }
+        public static int    ToInt32(this byte[] bytes)  { return BitConverter.ToInt32(bytes, 0); }
+        public static long   ToInt64(this byte[] bytes)  { return BitConverter.ToInt64(bytes, 0); }
+        public static ushort ToUInt16(this byte[] bytes) { return BitConverter.ToUInt16(bytes, 0); }
+        public static uint   ToUInt32(this byte[] bytes) { return BitConverter.ToUInt32(bytes, 0); }
+        public static ulong  ToUInt64(this byte[] bytes) { return BitConverter.ToUInt64(bytes, 0); }
+        public static float  ToFloat(this byte[] bytes)  { return BitConverter.ToSingle(bytes, 0); }
+        public static double ToDouble(this byte[] bytes) { return BitConverter.ToDouble(bytes, 0); }
+
+        
         /// <summary>转换为字节数组</summary>
-        public static byte[] ToBytes(this short n) { return BitConverter.GetBytes(n); }
-        public static byte[] ToBytes(this int n){ return BitConverter.GetBytes(n); }
-        public static byte[] ToBytes(this long n) { return BitConverter.GetBytes(n); }
+        public static byte[] ToBytes(this short n)  { return BitConverter.GetBytes(n); }
+        public static byte[] ToBytes(this int n)    { return BitConverter.GetBytes(n); }
+        public static byte[] ToBytes(this long n)   { return BitConverter.GetBytes(n); }
         public static byte[] ToBytes(this ushort n) { return BitConverter.GetBytes(n); }
-        public static byte[] ToBytes(this uint n) { return BitConverter.GetBytes(n); }
-        public static byte[] ToBytes(this ulong n) { return BitConverter.GetBytes(n); }
-        public static byte[] ToBytes(this float n) { return BitConverter.GetBytes(n); }
+        public static byte[] ToBytes(this uint n)   { return BitConverter.GetBytes(n); }
+        public static byte[] ToBytes(this ulong n)  { return BitConverter.GetBytes(n); }
+        public static byte[] ToBytes(this float n)  { return BitConverter.GetBytes(n); }
         public static byte[] ToBytes(this double n) { return BitConverter.GetBytes(n); }
 
         /// <summary>对象转换为字节数组</summary>
@@ -71,22 +101,6 @@ namespace App.Core
                 return bytes;
             }
         }
-
-        /// <summary>将文本转化为流</summary>
-        public static MemoryStream ToStream(this string text, Encoding encoding = null)
-        {
-            return text.ToBytes(encoding).ToStream();
-        }
-
-        /// <summary>将字节数组转化为流</summary>
-        public static MemoryStream ToStream(this byte[] bytes)
-        {
-            MemoryStream stream = new MemoryStream();
-            stream.Write(bytes, 0, bytes.Length);
-            stream.Seek(0, SeekOrigin.Begin);
-            return stream;
-        }
-
 
 
         //--------------------------------------------------
@@ -169,7 +183,7 @@ namespace App.Core
             return Convert.FromBase64String(text);
         }
 
-        /// <summary>将byte数组转化为16进制字符串</summary>
+        /// <summary>将byte数组转化为16进制字符串（如9A F8 7C 3E）</summary>
         public static string ToHexString(this byte[] bytes, bool insertSpace = true)
         {
             if ((bytes == null) || (bytes.Length == 0))
@@ -197,17 +211,18 @@ namespace App.Core
         }
 
         /// <summary>转换为二进制文本</summary>
-        public static string ToBitString(this short n) { return BitConverter.GetBytes(n).ToBitString(); }
-        public static string ToBitString(this int n) { return BitConverter.GetBytes(n).ToBitString(); }
-        public static string ToBitString(this long n) { return BitConverter.GetBytes(n).ToBitString(); }
+        public static string ToBitString(this short n)  { return BitConverter.GetBytes(n).ToBitString(); }
+        public static string ToBitString(this int n)    { return BitConverter.GetBytes(n).ToBitString(); }
+        public static string ToBitString(this long n)   { return BitConverter.GetBytes(n).ToBitString(); }
         public static string ToBitString(this ushort n) { return BitConverter.GetBytes(n).ToBitString(); }
-        public static string ToBitString(this uint n) { return BitConverter.GetBytes(n).ToBitString(); }
-        public static string ToBitString(this ulong n) { return BitConverter.GetBytes(n).ToBitString(); }
-        public static string ToBitString(this float n) { return BitConverter.GetBytes(n).ToBitString(); }
+        public static string ToBitString(this uint n)   { return BitConverter.GetBytes(n).ToBitString(); }
+        public static string ToBitString(this ulong n)  { return BitConverter.GetBytes(n).ToBitString(); }
+        public static string ToBitString(this float n)  { return BitConverter.GetBytes(n).ToBitString(); }
         public static string ToBitString(this double n) { return BitConverter.GetBytes(n).ToBitString(); }
 
 
         /// <summary>转化为二进制文本</summary>
+        /// <param name="order">正顺或逆序。逆序适合查看（高位-低位），正顺适合CPU存取（低位-高位）。</param>
         public static string ToBitString(this byte[] bytes, bool order=false)
         {
             var sb = new StringBuilder(bytes.Length * 8);

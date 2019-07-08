@@ -11,7 +11,7 @@ namespace App.Core
     /// <summary>
     /// IO 辅助方法（文件、路径、程序集）
     /// </summary>
-    public static class IO
+    public static partial class IO
     {
         //------------------------------------------------
         // 程序集
@@ -39,74 +39,6 @@ namespace App.Core
         {
             return type.Assembly.GetName().Version;
         }
-
-
-        //------------------------------------------------
-        // 路径、文件
-        //------------------------------------------------
-        /// <summary>获取文件扩展名</summary>
-        public static string GetExtension(this string file)
-        {
-            if (file.IsEmpty())
-                return "";
-
-            int n = file.LastIndexOf('.');
-            if (n != -1)
-                return file.Substring(n);
-            return "";
-        }
-
-        /// <summary>准备文件路径（不存在则创建）</summary>
-        /// <param name="filePath">文件的物理路径</param>
-        public static void PrepareDirectory(string filePath)
-        {
-            var fi = new FileInfo(filePath);
-            if (!Directory.Exists(fi.Directory.FullName))
-                Directory.CreateDirectory(fi.Directory.FullName);
-        }
-
-        /// <summary>写文件（附加）</summary>
-        /// <param name="filePath">文件的物理路径</param>
-        public static void WriteFile(string filePath, string data)
-        {
-            var fileinfo = new FileInfo(filePath);
-            using (FileStream fs = fileinfo.OpenWrite())
-            {
-                var sw = new StreamWriter(fs);
-                sw.BaseStream.Seek(0, SeekOrigin.End);
-                sw.Write(data);
-                sw.Flush();
-                sw.Close();
-            }
-        }
-
-        /// <summary>合并文件</summary>
-        /// <param name="files">源文件路径列表</param>
-        /// <param name="mergeFile">合并文件路径</param>
-        public static void MergeFiles(List<string> files, string mergeFile, bool deleteRawFiles = true)
-        {
-            using (FileStream stream = new FileStream(mergeFile, FileMode.OpenOrCreate))
-            {
-                using (BinaryWriter writer = new BinaryWriter(stream))
-                {
-                    foreach (string file in files)
-                    {
-                        // 拷贝合并到新文件（并删除临时文件）
-                        using (FileStream fileStream = new FileStream(file, FileMode.Open))
-                        {
-                            using (BinaryReader fileReader = new BinaryReader(fileStream))
-                            {
-                                byte[] bytes = fileReader.ReadBytes((int)fileStream.Length);
-                                writer.Write(bytes);
-                            }
-                        }
-                        if (deleteRawFiles)
-                            File.Delete(file);
-                    }
-                }
-            }
-        }
-
 
         //------------------------------------------------
         // 输出

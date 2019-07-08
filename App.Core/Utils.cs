@@ -44,12 +44,6 @@ namespace App.Core
         //--------------------------------------------------
         // 逻辑、断言
         //--------------------------------------------------
-        /// <summary>是否包含指定位（类似枚举包含判断 Enum.HasFlag()）</summary>
-        public static bool HasBit(this int n1, int n2)
-        {
-            return (n1 & n2) != 0;
-        }
-
         /// <summary>模拟VBA的 IIF 函数。逻辑如 var result = o.IIF(t=>t>0, "Positive", "Nagetive");</summary>
         public static TResult IIF<TSource, TResult>(this TSource o, Func<TSource, bool> condition, TResult trueValue, TResult falseValue)
         {

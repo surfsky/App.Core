@@ -330,7 +330,7 @@ namespace App.Core
     [XmlInclude(typeof(UIAttribute))]
     public class UISetting : IID
     {
-        public int ID { get; set; }
+        public long ID { get; set; }
         public string Title { get; set; }
         public Type ModelType { get; set; }
         public List<UIAttribute> Items { get; set; }

@@ -143,7 +143,7 @@ namespace App.Core.Tests
             age = dict["age"];
             dict.Remove("id");
             dict.Remove("birthday");
-            txt = dict.ToQueryString();
+            txt = dict.ToString();
         }
 
         [TestMethod()]

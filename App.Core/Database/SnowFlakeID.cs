@@ -23,41 +23,45 @@ namespace App.Core
     /// </remarks>
     public class SnowflakeID
     {
-        //
-        const int timestampBits = 41;           // 时间戳位数
-        const int machineBits = 10;             // 机器编号位数
-        const int sequenceBits = 12;            // 序列位数
-
-        //
-        const long timestampMask = (1L << timestampBits) - 1; // 掩码
-        const long machineMask   = (1L << machineBits  ) - 1; // 掩码
-        const long sequenceMask  = (1L << sequenceBits ) - 1; // 序列号掩码(0B1111_11111111)
-
-        //
-        static readonly object _lock = 0;       // 互斥锁
-        static long lastTimestamp = -1L;        // 上次时间截
-        static long lastSequence = 0;           // 上次序列号
-
-        //
-        public long TimeStamp { get; set; }     // 毫秒内序列(0~4095)
-        public long Machine { get; set; }       // 毫秒内序列(0~4095)
+        // 属性
+        public int  StartYear { get; set; }     // 开始年份
+        public long TimeStamp { get; set; }     // 时间戳毫秒
+        public long Machine { get; set; }       // 设备编号
         public long Sequence { get; set; }      // 毫秒内序列(0~4095)
+
+        // 位数
+        public int TimeStampBits = 41;           // 时间戳位数
+        public int MachineBits = 10;             // 机器编号位数
+        public int SequenceBits = 12;            // 序列位数
+
+        // 掩码
+        private long _timestampMask;
+        private long _machineMask;
+        private long _sequenceMask;
+
+        // 静态变量
+        static readonly object _lock = 0;       // 互斥锁
+        static long _lastTimeStamp = -1L;       // 上次时间截
+        static long _lastSequence = 0;          // 上次序列号
+
+        //
         public long Value
         {
             get
             {
                 // 移位并通过或运算拼到一起组成64位的ID
-                long span = this.TimeStamp - new DateTime(2010, 1, 1).Ticks / 10000;
-                return  (span << (machineBits + sequenceBits))
-                      | (this.Machine << sequenceBits)
+                long span = this.TimeStamp - new DateTime(this.StartYear, 1, 1).Ticks / 10000;
+                return  (span << (MachineBits + SequenceBits))
+                      | (this.Machine << SequenceBits)
                       | this.Sequence
                       ;
             }
             private set
             {
-                this.TimeStamp = (value >> (machineBits + sequenceBits)) & timestampMask;
-                this.Machine   = (value >> sequenceBits) & machineMask;
-                this.Sequence  = value & sequenceMask;
+                // 解析
+                this.TimeStamp = (value >> (MachineBits + SequenceBits)) & _timestampMask;
+                this.Machine   = (value >> SequenceBits) & _machineMask;
+                this.Sequence  = value & _sequenceMask;
             }
         }
 
@@ -69,35 +73,54 @@ namespace App.Core
             return snow;
         }
 
-        private SnowflakeID(){}
-
         /// <summary>构造函数</summary>
         /// <param name="machine">机器编码（0-1023）</param>
-        public SnowflakeID(int machine)
+        public SnowflakeID(int machine=1, int startYear=2010, int timeStampBits=41, int machineBits=10, int sequenceBits=12)
         {
             if (machine > 1023 || machine < 0)
                 throw new Exception("machine must less then 1024");
             this.Machine = machine;
+            this.StartYear = startYear;
+            this.TimeStampBits = timeStampBits;
+            this.MachineBits = machineBits;
+            this.SequenceBits = sequenceBits;
+            // 掩码
+            this._timestampMask = (1L << TimeStampBits) - 1;
+            this._machineMask   = (1L << MachineBits) - 1;
+            this._sequenceMask  = (1L << SequenceBits) - 1;
+        }
 
+
+        /// <summary>生成</summary>
+        public static long NewID(int machine = 1, int startYear = 2010, int timeStampBits = 41, int machineBits = 10, int sequenceBits = 12)
+        {
+            return new SnowflakeID(machine, startYear, timeStampBits, machineBits, sequenceBits)
+                .New().Value;
+        }
+
+        /// <summary>生成</summary>
+        public SnowflakeID New()
+        {
             lock (_lock)
             {
                 var timestamp = GetTimeStamp();
-                if (timestamp != lastTimestamp)
-                    lastSequence = 0;
+                if (timestamp != _lastTimeStamp)
+                    _lastSequence = 0;
                 else
                 {
                     // 如果是同一时间生成的，则进行毫秒内序列（性能要很好的机子才能跑的出来）
                     // 如果毫秒内序列溢出, 阻塞到下一个毫秒，获得新的时间戳
-                    lastSequence = (lastSequence + 1) & sequenceMask;
-                    if (lastSequence == 0)
-                        timestamp = WaitNextMS(lastTimestamp);
+                    _lastSequence = (_lastSequence + 1) & _sequenceMask;
+                    if (_lastSequence == 0)
+                        timestamp = WaitNextMS(_lastTimeStamp);
                 }
-                lastTimestamp = timestamp;
+                _lastTimeStamp = timestamp;
                 //System.Diagnostics.Trace.WriteLine(lastSequence);
 
                 //
                 this.TimeStamp = timestamp;
-                this.Sequence = lastSequence;
+                this.Sequence = _lastSequence;
+                return this;
             }
         }
 

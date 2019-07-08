@@ -138,30 +138,6 @@ namespace App.Core
             return Server.MapPath(virtualPath);
         }
 
-        /// <summary>获取请求路径（去除查询字符串）</summary>
-        public static string TrimQuerystring(this string url)
-        {
-            int n = url.LastIndexOf('?');
-            if (n != -1)
-                return url.Substring(0, n);
-            return "";
-        }
-
-        /// <summary>获取请求文件（如 Page1.aspx）</summary>
-        public static string GetFileName(this string url)
-        {
-            int n = url.LastIndexOf('/');
-            if (n != -1)
-            {
-                url = url.Substring(n);
-                n = url.IndexOf('?');
-                if (n != -1)
-                    return url.Substring(0, n);
-                return url;
-            }
-            return "";
-        }
-
 
         /// <summary>
         /// 将 URL 转化为完整路径。如:

@@ -11,6 +11,6 @@ namespace App.Core
     /// </summary>
     public interface IID
     {
-        int ID { get; set; }
+        long ID { get; set; }
     }
 }

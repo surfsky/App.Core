@@ -14,10 +14,19 @@ namespace App.Core.Tests
         [TestMethod()]
         public void NewGuidTest()
         {
-            var id1 = IDGenerator.NewGuid();
-            //var id2 = IDGenerator.NewGuidString();
-            var id3 = IDGenerator.NewCombo();
+            var id1 = IDGenerator.NewGuid("N");
+            var id3 = IDGenerator.NewGuidCombo();
             var id4 = IDGenerator.NewSnowflakeID(1);
+        }
+
+        [TestMethod()]
+        public  void NewComboTest()
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                string id = IDGenerator.NewGuidCombo();
+                IO.Write("{0} : {1}", id, id.ToBytes().ToInt32());
+            }
         }
     }
 }

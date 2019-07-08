@@ -30,6 +30,15 @@ namespace App.Core
                     : int.Parse(t.ToString())
                     );
         }
+        /// <summary>转化为整型列表</summary>
+        public static List<Int64> CastInt64(this IEnumerable source)
+        {
+            return source.Cast<Int64>(t =>
+                t.IsEnum()
+                    ? Convert.ToInt64(t)
+                    : int.Parse(t.ToString())
+                    );
+        }
 
         /// <summary>转化为整型列表</summary>
         public static List<string> CastString(this IEnumerable source)

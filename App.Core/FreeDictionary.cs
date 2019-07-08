@@ -22,6 +22,15 @@ namespace App
             }
             set { base[key] = value; }
         }
+
+        /// <summary>转化为查询字符串</summary>
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            foreach (var key in this.Keys)
+                sb.AppendFormat("{0}={1}&", key, this[key]);
+            return sb.ToString().TrimEnd('&');
+        }
     }
 
 }

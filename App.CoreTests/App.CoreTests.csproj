@@ -70,6 +70,7 @@
     <Compile Include="Database\IDGeneratorTests.cs" />
     <Compile Include="Interop\CsEvaluatorTests.cs" />
     <Compile Include="Interop\JsEvaluatorTests.cs" />
+    <Compile Include="IOTests.cs" />
     <Compile Include="Math\MathHelperTests.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
