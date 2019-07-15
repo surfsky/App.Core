@@ -121,6 +121,7 @@ namespace App.Core
         /// <returns>加密后的文本</returns>
         public static string DesEncrypt(this string text, string key, Encoding encoding = null)
         {
+            if (text.IsEmpty()) return "";
             encoding = encoding ?? Encoding.UTF8;
             DESCryptoServiceProvider des = new DESCryptoServiceProvider();
             des.Mode = System.Security.Cryptography.CipherMode.ECB;
@@ -138,6 +139,7 @@ namespace App.Core
         /// <returns>解密后的文本</returns>
         public static string DesDecrypt(this string text, string key, Encoding encoding = null)
         {
+            if (text.IsEmpty())  return "";
             encoding = encoding ?? Encoding.UTF8;
             DESCryptoServiceProvider des = new DESCryptoServiceProvider();
             des.Mode = System.Security.Cryptography.CipherMode.ECB;
@@ -146,7 +148,7 @@ namespace App.Core
 
             byte[] inputBuffer = Convert.FromBase64String(text);
             byte[] outputBuffer = des.CreateDecryptor().TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
-            return Encoding.Default.GetString(outputBuffer);
+            return encoding.GetString(outputBuffer).TrimEnd('\0');
         }
 
         ///-------------------------------------------------------------------------

@@ -20,14 +20,19 @@ namespace App.Core
     ///   按ID递增，易于在数据库中插入和检索，比GUI要好（128位且无序）
     ///   不依赖数据库，在内存中生成，性能好
     /// 参考：https://blog.csdn.net/weixin_40990818/article/details/82745567
+    /// 考虑改成单例方法，减少创建开销，加快生成速度。
     /// </remarks>
+    /// <example>
+    /// var snow = new SnowflakeID(1, 2010);
+    /// var id = snow.New().Value;
+    /// </example>
     public class SnowflakeID
     {
         // 属性
         public int  StartYear { get; set; }     // 开始年份
         public long TimeStamp { get; set; }     // 时间戳毫秒
         public long Machine { get; set; }       // 设备编号
-        public long Sequence { get; set; }      // 毫秒内序列(0~4095)
+        public long Sequence { get; set; }      // 毫秒内序列
 
         // 位数
         public int TimeStampBits = 41;           // 时间戳位数
@@ -40,11 +45,11 @@ namespace App.Core
         private long _sequenceMask;
 
         // 静态变量
-        static readonly object _lock = 0;       // 互斥锁
-        static long _lastTimeStamp = -1L;       // 上次时间截
-        static long _lastSequence = 0;          // 上次序列号
+        static readonly object _lock = new object();     // 互斥锁
+        static long _lastTimeStamp = -1L;        // 上次时间截
+        static long _lastSequence = 0;           // 上次序列号
 
-        //
+        /// <summary>长整形值</summary>
         public long Value
         {
             get
@@ -91,15 +96,23 @@ namespace App.Core
         }
 
 
+        /*
         /// <summary>生成</summary>
         public static long NewID(int machine = 1, int startYear = 2010, int timeStampBits = 41, int machineBits = 10, int sequenceBits = 12)
         {
             return new SnowflakeID(machine, startYear, timeStampBits, machineBits, sequenceBits)
                 .New().Value;
         }
+        */
 
         /// <summary>生成</summary>
-        public SnowflakeID New()
+        public long NewID()
+        {
+            return New().Value;
+        }
+
+        /// <summary>生成</summary>
+        protected SnowflakeID New()
         {
             lock (_lock)
             {
@@ -108,14 +121,13 @@ namespace App.Core
                     _lastSequence = 0;
                 else
                 {
-                    // 如果是同一时间生成的，则进行毫秒内序列（性能要很好的机子才能跑的出来）
+                    // 如果是同一毫秒生成的，则进行毫秒内序列（默认12位，值范围为0-4095, 2^12-1）
                     // 如果毫秒内序列溢出, 阻塞到下一个毫秒，获得新的时间戳
                     _lastSequence = (_lastSequence + 1) & _sequenceMask;
                     if (_lastSequence == 0)
                         timestamp = WaitNextMS(_lastTimeStamp);
                 }
                 _lastTimeStamp = timestamp;
-                //System.Diagnostics.Trace.WriteLine(lastSequence);
 
                 //
                 this.TimeStamp = timestamp;

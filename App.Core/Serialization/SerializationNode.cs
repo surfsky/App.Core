@@ -19,7 +19,7 @@ namespace App.Core
     public enum SerializationType
     {
         /// <summary>简单值类型和字符串（可以直接格式化为文本）</summary>
-        Simple,
+        Basic,
         /// <summary>类或结构体对象</summary>
         Class,
         /// <summary>列表</summary>
@@ -48,7 +48,7 @@ namespace App.Core
         public static SerializationNode FromType(Type type)
         {
             var realType = type.GetRealType();
-            if (realType.IsSimpleType())    return new SerializationNode(SerializationType.Simple, type, type.Name);
+            if (realType.IsSimpleType())    return new SerializationNode(SerializationType.Basic, type, type.Name);
             if (type.IsAnonymous())         return new SerializationNode(SerializationType.Class, type.GenericTypeArguments[0], "Anonymous");
             if (type.IsGenericDict())       return new SerializationNode(SerializationType.Dict, type.GenericTypeArguments[1], type.GenericTypeArguments[1].Name + "s");
             if (type.IsGenericList())       return new SerializationNode(SerializationType.List, type.GenericTypeArguments[0], type.GenericTypeArguments[0].Name + "s");

@@ -60,6 +60,14 @@ namespace App.Core
             return Convert.ToInt32(o);
         }
 
+
+        /// <summary>将可空对象转化为长整型</summary>
+        public static long? ToInt64(this object o)
+        {
+            if (o.IsEmpty()) return null;
+            return Convert.ToInt64(o);
+        }
+
         /// <summary>将可空对象转化为Float</summary>
         public static float? ToFloat(this object o)
         {
@@ -93,6 +101,12 @@ namespace App.Core
         public static T? ToEnum<T>(this int? n) where T : struct
         {
             if (n == null)  return null;
+            return (T)Enum.ToObject(typeof(T), n);
+        }
+        /// <summary>数字转化为枚举</summary>
+        public static T? ToEnum<T>(this long? n) where T : struct
+        {
+            if (n == null) return null;
             return (T)Enum.ToObject(typeof(T), n);
         }
 

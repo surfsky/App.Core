@@ -300,8 +300,8 @@ namespace App.Core
         {
             // 简单值类型直接解析
             var node = SerializationNode.FromType(type);
-            if (node.Type == SerializationType.Simple)
-                return xml.Parse(type);
+            if (node.Type == SerializationType.Basic)
+                return xml.ParseBasicType(type);
 
             // 复杂类型再解析ML
             var doc = new XmlDocument();
@@ -313,7 +313,7 @@ namespace App.Core
         object ParseNode(XmlNode node, Type type)
         {
             var tag = SerializationNode.FromType(type);
-            if (tag.Type == SerializationType.Simple) return ParseNodeToValue(node, type);
+            if (tag.Type == SerializationType.Basic) return ParseNodeToValue(node, type);
             if (tag.Type == SerializationType.List)   return ParseNodeToList(node, type);
             if (tag.Type == SerializationType.Array)  return ParseNodeToArray(node, type);
             if (tag.Type == SerializationType.Dict)   return ParseNodeToDict(node, type);
@@ -324,7 +324,7 @@ namespace App.Core
         object ParseNodeToValue(XmlNode node, Type type)
         {
             var text = node.InnerText;
-            return text.Parse(type);
+            return text.ParseBasicType(type);
         }
 
         /// <summary>将xml解析为对象</summary>

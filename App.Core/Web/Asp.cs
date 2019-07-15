@@ -196,6 +196,16 @@ namespace App.Core
             return null;
         }
 
+        /// <summary>获取查询字符串中的整型参数值</summary>
+        public static Int64? GetQueryLong(string queryKey)
+        {
+            Int64 result = -1;
+            string str = HttpContext.Current.Request.QueryString[queryKey];
+            if (!string.IsNullOrEmpty(str) && Int64.TryParse(str, out result))
+                return result;
+            return null;
+        }
+
         /// <summary>获取查询字符串中的小数参数值</summary>
         public static double? GetQueryDouble(string queryKey)
         {

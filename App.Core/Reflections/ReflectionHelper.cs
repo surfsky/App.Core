@@ -275,7 +275,7 @@ namespace App.Core
             Type realType = type.GetRealType();
             object value = propertyValue;
             if      (type == typeof(bool))                 value = propertyValue.ParseBool() ?? false;
-            else if (type == typeof(Int64))                value = propertyValue.ParseLong() ?? 0;
+            else if (type == typeof(Int64))                value = propertyValue.ParseInt64() ?? 0;
             else if (type == typeof(Int32))                value = propertyValue.ParseInt() ?? 0;
             else if (type == typeof(Int16))                value = propertyValue.ParseShort() ?? 0;
             else if (type == typeof(DateTime))             value = propertyValue.ParseDate() ?? new DateTime();
@@ -283,7 +283,7 @@ namespace App.Core
             else if (type == typeof(double))               value = propertyValue.ParseDouble() ?? 0.0;
             else if (type == typeof(decimal))              value = propertyValue.ParseDecimal() ?? (decimal)0.0;
             else if (type == typeof(bool?))                value = propertyValue.ParseBool();
-            else if (type == typeof(Int64?))               value = propertyValue.ParseLong();
+            else if (type == typeof(Int64?))               value = propertyValue.ParseInt64();
             else if (type == typeof(Int32?))               value = propertyValue.ParseInt();
             else if (type == typeof(Int16?))               value = propertyValue.ParseShort();
             else if (type == typeof(DateTime?))            value = propertyValue.ParseDate();

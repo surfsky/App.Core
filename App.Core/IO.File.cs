@@ -70,6 +70,9 @@ namespace App.Core
         /// <param name="mergeFile">合并文件路径</param>
         public static void MergeFiles(List<string> files, string mergeFile, bool deleteRawFiles = true)
         {
+            if (File.Exists(mergeFile))
+                File.Delete(mergeFile);
+
             using (FileStream stream = new FileStream(mergeFile, FileMode.OpenOrCreate))
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
@@ -110,7 +113,7 @@ namespace App.Core
             int n = url.LastIndexOf('?');
             if (n != -1)
                 return url.Substring(0, n);
-            return "";
+            return url;
         }
 
 

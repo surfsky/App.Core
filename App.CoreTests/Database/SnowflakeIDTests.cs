@@ -15,17 +15,23 @@ namespace App.Core.Tests
         public void SnowflakeIDTest()
         {
             // 生成
+            var snow = new SnowflakeID(1);
+            var ids = new List<long>();
             for (int i = 0; i < 1000; i++)
             {
-                long id = SnowflakeID.NewID();
-                IO.Write("{0} : {1}", id.ToString(), id.ToBitString());
+                long id = snow.NewID();
+                ids.Add(id);
             }
 
             // 解析
-            var snowId = SnowflakeID.Parse(1259605479504482304);
-            var timestamp = snowId.TimeStamp;
-            var machine = snowId.Machine;
-            var sequence = snowId.Sequence;
+            foreach (var id in ids)
+            {
+                IO.Write("{0} : {1}", id.ToString(), id.ToBitString());
+                var snowId = SnowflakeID.Parse(1259605479504482304);
+                var timestamp = snowId.TimeStamp;
+                var machine = snowId.Machine;
+                var sequence = snowId.Sequence;
+            }
         }
 
         [TestMethod()]

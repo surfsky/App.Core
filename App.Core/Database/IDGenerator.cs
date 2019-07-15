@@ -21,7 +21,7 @@ namespace App.Core
         /// <summary>分布式雪花ID</summary>
         public static long NewSnowflakeID(int machine)
         {
-            return new SnowflakeID(machine).New().Value;
+            return new SnowflakeID(machine).NewID();
         }
 
         /// <summary>保留前10位GUID+6位时间戳，便于数据库索引排序</summary>

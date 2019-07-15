@@ -41,7 +41,7 @@ namespace App.Core
             return BitConverter.ToInt32(bytes, 0);
         }
 
-        /// <summary>Js格式化</summary>
+        /// <summary>解析逗号表达式</summary>
         public static int[] ToIntArray(this string commaText)
         {
             if (String.IsNullOrEmpty(commaText))

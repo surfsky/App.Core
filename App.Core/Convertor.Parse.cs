@@ -23,16 +23,23 @@ namespace App.Core
     /// </summary>
     public static partial class Convertor
     {
+        /// <summary>获取类型编码</summary>
+        public static TypeCode GetTypeCode(this Type type)
+        {
+            return Type.GetTypeCode(type);
+        }
+
         //--------------------------------------------------
         // 将文本解析为值或对象
         //--------------------------------------------------
-        /// <summary>将文本转化为简单值</summary>
-        public static object Parse<T>(this string text) where T : struct
+        /// <summary>将文本转化为数字及衍生类型(枚举、布尔、日期）</summary>
+        public static object ParseBasicType<T>(this string text) where T : struct
         {
-            return text.Parse(typeof(T));
+            return text.ParseBasicType(typeof(T));
         }
-        /// <summary>将文本转化为简单值</summary>
-        public static object Parse(this string text, Type type)
+        /// <summary>将文本转化为数字及衍生类型(枚举、布尔、日期）</summary>
+        /// <remarks>ParseBasicType, ParseSimpleType, ParseValue, ParseNumber</remarks>
+        public static object ParseBasicType(this string text, Type type)
         {
             if (type == typeof(string))
                 return text;
@@ -41,7 +48,8 @@ namespace App.Core
             {
                 type = type.GetRealType();
                 if (type == typeof(int))      return text.ParseInt();
-                if (type == typeof(long))     return text.ParseLong();
+                if (type == typeof(long))     return text.ParseInt64();
+                if (type == typeof(ulong))    return text.ParseULong();
                 if (type == typeof(float))    return text.ParseFloat();
                 if (type == typeof(double))   return text.ParseDouble();
                 if (type == typeof(decimal))  return text.ParseDecimal();
@@ -53,7 +61,8 @@ namespace App.Core
             else
             {
                 if (type == typeof(int))      return text.ParseInt().Value;
-                if (type == typeof(long))     return text.ParseLong().Value;
+                if (type == typeof(long))     return text.ParseInt64().Value;
+                if (type == typeof(ulong))    return text.ParseULong().Value;
                 if (type == typeof(float))    return text.ParseFloat().Value;
                 if (type == typeof(double))   return text.ParseDouble().Value;
                 if (type == typeof(decimal))  return text.ParseDecimal().Value;
@@ -125,9 +134,14 @@ namespace App.Core
             return text.IsEmpty() ? null : new float?(float.Parse(text));
         }
 
-        public static long? ParseLong(this string text)
+        public static long? ParseInt64(this string text)
         {
             return text.IsEmpty() ? null : new Int64?(Int64.Parse(text));
+        }
+
+        public static ulong? ParseULong(this string text)
+        {
+            return text.IsEmpty() ? null : new UInt64?(UInt64.Parse(text));
         }
 
         public static int? ParseInt(this string text)
@@ -160,6 +174,22 @@ namespace App.Core
             return dict;
         }
 
+        /// <summary>解析枚举字符串列表（支持枚举名或值，如Male,Female 或 0,1）</summary>
+        public static List<T> ParseEnums<T>(this string text, char separator=',') where T : struct
+        {
+            var enums = new List<T>();
+            if (text.IsNotEmpty())
+            {
+                var items = text.Split(new char[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var item in items)
+                {
+                    var e = item.ParseEnum<T>();
+                    if (e != null)
+                        enums.Add(e.Value);
+                }
+            }
+            return enums;
+        }
 
     }
 }
