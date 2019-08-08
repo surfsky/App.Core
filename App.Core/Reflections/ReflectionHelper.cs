@@ -32,7 +32,7 @@ namespace App.Core
         // 类型相关
         //------------------------------------------------
         /// <summary>尝试遍历获取类型（根据类型名、数据集名称）</summary>
-        public static Type TryGetType(string typeName, string assemblyName = "")
+        public static Type TryGetType(string typeName, string assemblyName = "", bool ignoreSystemType=true)
         {
             var type = Assembly.GetExecutingAssembly().GetType(typeName);
             if (type != null)
@@ -47,8 +47,9 @@ namespace App.Core
                     return assembly.GetType(typeName);
 
                 // 过滤掉系统自带的程序集
-                if (name.StartsWith("System") || name.StartsWith("Microsoft") || name.StartsWith("mscorlib"))
-                    continue;
+                if (ignoreSystemType)
+                    if (name.StartsWith("System") || name.StartsWith("Microsoft") || name.StartsWith("mscorlib"))
+                        continue;
 
                 // 尝试获取类别
                 type = assembly.GetType(typeName);
@@ -82,6 +83,16 @@ namespace App.Core
             {
                 type = type.GetNullableDataType();
                 return GetTypeString(type) + "?";
+            }
+            if (type.IsGenericList())
+            {
+                type = type.GetGenericDataType();
+                return string.Format("List<{0}>", GetTypeString(type));
+            }
+            if (type.IsGenericDict())
+            {
+                type = type.GetGenericDataType();
+                return string.Format("Dictionary<{0}>", GetTypeString(type));
             }
             if (type.IsValueType)
                 return type.Name.ToString();
