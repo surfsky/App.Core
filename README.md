@@ -104,34 +104,39 @@ Nuget: install-package App.Corer
 
 ## History
 
-2019-06
-
-    - 修正 HttpHelper cookie 和请求头处理，不报异常
-    - 修正 PostMultipartForm，增加 Cookie 和 Header 参数
 
 2019-05
 
-    - 重构Convertor类
-        * 将各个分散的转换方法聚合在此类中
-        * 增加ToBase64(), ParseBase64() 方法
-    - 重构HttpHelper 类
-        * 给各个方法都增加了 headers 参数
-        * 删除方法 PostJson() 方法，请直接用 PostText() 方法
-            /// <summary>Post Json 字符串</summary>
-            public static string PostJson(string url, string json, Encoding encoding = null, CookieContainer cookieContainer = null, Dictionary<string, string> headers = null)
-            {
-                return Post(url, json, encoding, "application/json", cookieContainer, headers);
-            }
-        * 删除 PostDictionary 方法。不通用，容易混淆
-            /// <summary>Post 文本字典（会拼装成QueryString的形式）</summary>
-            public static string Post(string url, Dictionary<string, string> data, Encoding encoding = null, string contentType = null, CookieContainer cookieContainer = null, Dictionary<string, string> headers = null)
-            {
-                return Post(url, data.ToQueryString(), encoding, contentType, cookieContainer, headers);
-            }
-    - 将 HttpHelper 中服务器端处理方法移到 Asp 类中
-    - 增加 EncrypHelper.ToHmacSHA256()
-    - EncryptHelper 的以下方法迁移到 Convertor 类
-            ToByteString
-            ToByteSeperateString
-            ToBase64String
-            ToBase64Bytes
+- 重构Convertor类
+    * 将各个分散的转换方法聚合在此类中
+    * 增加ToBase64(), ParseBase64() 方法
+- 重构HttpHelper 类
+    * 给各个方法都增加了 headers 参数
+    * 删除方法 PostJson() 方法，请直接用 PostText() 方法
+        /// <summary>Post Json 字符串</summary>
+        public static string PostJson(string url, string json, Encoding encoding = null, CookieContainer cookieContainer = null, Dictionary<string, string> headers = null)
+        {
+            return Post(url, json, encoding, "application/json", cookieContainer, headers);
+        }
+    * 删除 PostDictionary 方法。不通用，容易混淆
+        /// <summary>Post 文本字典（会拼装成QueryString的形式）</summary>
+        public static string Post(string url, Dictionary<string, string> data, Encoding encoding = null, string contentType = null, CookieContainer cookieContainer = null, Dictionary<string, string> headers = null)
+        {
+            return Post(url, data.ToQueryString(), encoding, contentType, cookieContainer, headers);
+        }
+- 将 HttpHelper 中服务器端处理方法移到 Asp 类中
+- 增加 EncrypHelper.ToHmacSHA256()
+- EncryptHelper 的以下方法迁移到 Convertor 类
+        ToByteString
+        ToByteSeperateString
+        ToBase64String
+        ToBase64Bytes
+
+2019-06
+
+- 修正 HttpHelper cookie 和请求头处理，不报异常
+- 修正 PostMultipartForm，增加 Cookie 和 Header 参数
+
+2019-07
+
+- 增加分布式ID生成类：SnowflakeID
