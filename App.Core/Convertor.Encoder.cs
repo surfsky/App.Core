@@ -39,6 +39,14 @@ namespace App.Core
             return stream;
         }
 
+        /// <summary> 将 Stream 转成 byte[] </summary> 
+        public static byte[] ToBytes(this Stream stream)
+        {
+            byte[] bytes = new byte[stream.Length];
+            stream.Read(bytes, 0, bytes.Length);
+            stream.Seek(0, SeekOrigin.Begin);
+            return bytes;
+        }
 
         //--------------------------------------------------
         // 字节数组
@@ -87,6 +95,13 @@ namespace App.Core
             return txt.IsEmpty() ? new byte[0] : encoding.GetBytes(txt);
         }
 
+        /// <summary>字节数组转换为字符串</summary>
+        public static string ToString(this byte[] bytes, Encoding encoding = null)
+        {
+            encoding = encoding ?? Encoding.UTF8;
+            return encoding.GetString(bytes);
+        }
+
         /// <summary>将图像转换为字节数组</summary>
         public static byte[] ToBytes(this Image img)
         {
@@ -105,6 +120,9 @@ namespace App.Core
 
         //--------------------------------------------------
         // 常用字符串编码转换
+        //--------------------------------------------------
+        //--------------------------------------------------
+        // Url、Html、QueryString
         //--------------------------------------------------
         /// <summary> url编码</summary> 
         public static string ToUrlEncode(this string text)
@@ -147,6 +165,9 @@ namespace App.Core
             return sb.ToString();
         }
 
+        //--------------------------------------------------
+        // ASCII
+        //--------------------------------------------------
         /// <summary>按位转为 ASCII 字符串，如：86fb269d190d2c85f6e0468ceca42a20</summary>
         public static string ToASCString(this byte[] bytes)
         {
@@ -171,6 +192,9 @@ namespace App.Core
         }
         */
 
+        //--------------------------------------------------
+        // Base64
+        //--------------------------------------------------
         /// <summary>转化为Base64字符串编码，如"hvsmnRkNLIX24EaM7KQqIA=="</summary>
         public static string ToBase64String(this byte[] bytes)
         {
@@ -183,6 +207,9 @@ namespace App.Core
             return Convert.FromBase64String(text);
         }
 
+        //--------------------------------------------------
+        // 16 进制
+        //--------------------------------------------------
         /// <summary>将byte数组转化为16进制字符串（如9A F8 7C 3E）</summary>
         public static string ToHexString(this byte[] bytes, bool insertSpace = true)
         {
@@ -210,6 +237,9 @@ namespace App.Core
             return bytes;
         }
 
+        //--------------------------------------------------
+        // 二进制
+        //--------------------------------------------------
         /// <summary>转换为二进制文本</summary>
         public static string ToBitString(this short n)  { return BitConverter.GetBytes(n).ToBitString(); }
         public static string ToBitString(this int n)    { return BitConverter.GetBytes(n).ToBitString(); }
@@ -244,5 +274,8 @@ namespace App.Core
                 bytes[i] = Convert.ToByte(items[i].Value, 2);
             return bytes;
         }
+
+
+
     }
 }

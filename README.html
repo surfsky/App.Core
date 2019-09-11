@@ -150,6 +150,27 @@ ToBase64Bytes</li>
 <ul>
 <li>增加分布式ID生成类：SnowflakeID</li>
 </ul>
+<p>2019-08</p>
+<ul>
+<li>Convertor.ToCommaString 增加 seperator 可选参数，默认值为','</li>
+</ul>
+<ul>
+<li>Convertor public static string ToString(this byte[] bytes, Encoding encoding = null)</li>
+<li>StringHelper.Quato(); Unquate(); Escape(), Unescape()</li>
+</ul>
+<ul>
+<li>StringHelper.RemoveHtml(), RemoveScriptBlock(), RemoveStyleBlock() 修正</li>
+</ul>
+<ul>
+<li>IO.GetNextName() ，构建后继文件名（附加递增数字），如：rawname_2.eml, rawname_3.eml</li>
+<li>StringHelper.ToSizeText(this long bytes) , 转化为文件大小文本（如 1.3M）</li>
+</ul>
+<p>2019-09</p>
+<ul>
+<li>删除XmlSerializeHelper，直接用 XmlHelper</li>
+<li>JsonHelper 集中所有 Json 相关操作</li>
+<li>MathHelper.Approx 小数约等于判断</li>
+</ul>
 
 
 </body>

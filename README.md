@@ -140,3 +140,19 @@ Nuget: install-package App.Corer
 2019-07
 
 - 增加分布式ID生成类：SnowflakeID
+
+
+2019-08
+* Convertor.ToCommaString 增加 seperator 可选参数，默认值为','
++ Convertor public static string ToString(this byte[] bytes, Encoding encoding = null)
++ StringHelper.Quato(); Unquate(); Escape(), Unescape()
+* StringHelper.RemoveHtml(), RemoveScriptBlock(), RemoveStyleBlock() 修正
++ IO.GetNextName() ，构建后继文件名（附加递增数字），如：rawname_2.eml, rawname_3.eml
++ StringHelper.ToSizeText(this long bytes) , 转化为文件大小文本（如 1.3M）
+
+
+2019-09
+- 删除XmlSerializeHelper，直接用 XmlHelper
+- JsonHelper 集中所有 Json 相关操作
+- MathHelper.Approx 小数约等于判断
+

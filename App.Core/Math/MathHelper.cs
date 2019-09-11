@@ -10,6 +10,40 @@ namespace App.Core
     /// </summary>
     public static class MathHelper
     {
+        //--------------------------------------------
+        // 小数的相等判断
+        //--------------------------------------------
+        /// <summary>约等于</summary>
+        /// <param name="precision">精度，如0.01f</param>
+        /// <example>bool b = MathHelper.Equals(1.153f, 1.152f, 0.001f);</example>
+        /// <remarks>注意: 小数的精度问题会导致例如 1.153 -1.152 大于 0.001 的错误，故该方法实际计算时会将精度乘以1.1(如0.001 变为 0.0011)，以避免逻辑上出错</remarks>
+        public static bool Approx(this float n1, float n2, float precision)
+        {
+            precision = precision * 1.1f;
+            var v = n1 - n2;
+            return Math.Abs(v) <= precision;
+        }
+        /// <summary>约等于</summary>
+        /// <param name="precision">精度，如0.01f</param>
+        /// <example>bool b = MathHelper.Equals(1.153f, 1.152f, 0.001f);</example>
+        /// <remarks>注意: 小数的精度问题会导致例如 1.153 -1.152 大于 0.001 的错误，故该方法实际计算时会将精度乘以1.1(如0.001 变为 0.0011)，以避免逻辑上出错</remarks>
+        public static bool Approx(this double n1, double n2, double precision)
+        {
+            precision = precision * 1.1d;
+            var v = n1 - n2;
+            return Math.Abs(v) <= precision;
+        }
+        /// <summary>约等于</summary>
+        /// <param name="precision">精度，如0.01f</param>
+        /// <example>bool b = MathHelper.Equals(1.153f, 1.152f, 0.001f);</example>
+        /// <remarks>注意: 小数的精度问题会导致例如 1.153 -1.152 大于 0.001 的错误，故该方法实际计算时会将精度乘以1.1(如0.001 变为 0.0011)，以避免逻辑上出错</remarks>
+        public static bool Approx(this decimal n1, decimal n2, decimal precision)
+        {
+            precision = precision * 1.1m;
+            var v = n1 - n2;
+            return Math.Abs(v) <= precision;
+        }
+
         /// <summary>计算两个GPS坐标的距离</summary>
         public static double CalcGPSDistance(double x1, double y1, double x2, double y2)
         {

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace App.Core
@@ -116,6 +117,16 @@ namespace App.Core
             return url;
         }
 
+        /// <summary>去除文件扩展名</summary>
+        public static string TrimExtension(this string url)
+        {
+            if (url.IsEmpty())
+                return "";
+            int n = url.LastIndexOf('.');
+            if (n != -1)
+                return url.Substring(0, n);
+            return url;
+        }
 
         /// <summary>去除目录部分</summary>
         public static string TrimFolder(this string url)
@@ -139,6 +150,20 @@ namespace App.Core
             return url.TrimQuery().TrimFolder();
         }
 
+        /// <summary>获取文件目录</summary>
+        public static string GetFileFolder(this string url)
+        {
+            if (url.IsEmpty())
+                return "";
+            int n = url.LastIndexOf('/');
+            if (n != -1)
+                url = url.Substring(0, n);
+            n = url.LastIndexOf('\\');
+            if (n != -1)
+                url = url.Substring(0, n);
+            return url;
+        }
+
         /// <summary>获取文件扩展名</summary>
         public static string GetFileExtension(this string fileName)
         {
@@ -149,6 +174,50 @@ namespace App.Core
             if (n != -1)
                 return fileName.Substring(n).ToLower();
             return "";
+        }
+
+        /// <summary>构建后继文件名（附加递增数字），如：rawname_2.eml, rawname_3.eml</summary>
+        /// <param name="format">格式字符串。如：_{0}, -{0}, ({0})</param>
+        public static string GetNextName(this string url, string format= @"_{0}")
+        {
+            // 三部分
+            var num = 2;      // 数字编号
+            var front = url;  // 字符 "." 前面的部分
+            var last = "";    // 字符 "." 后面的部分
+            int n = url.LastIndexOf('.');
+            if (n != -1)
+            {
+                last = url.Substring(n);
+                front = url.Substring(0, n);
+            }
+
+            // 将格式化公式转化为正则表达式并匹配，如：{0} -> (\d+)$
+            var match = format
+                .Replace("(", @"\(").Replace(")", @"\)")    // 替换()直接量
+                .Replace("[", @"\[").Replace("]", @"\]")    // 替换[]直接量
+                .Replace("{0}", @"(\d+)")                   // 替换数字部分
+                ;
+            Regex reg = new Regex(match + "$");
+            var m = reg.Match(front);
+            if (m.Success)
+            {
+                // 如果匹配成功，计算新编号
+                var txt = m.Result("$1");
+                try
+                {
+                    var k = txt.ParseInt();
+                    if (k != null) num = k.Value + 1;
+                }
+                catch { }
+
+                // 去除匹配部分
+                front = reg.Replace(front, "");
+            }
+
+            // 构造新名称: (\d+) -> {0}
+            //var format = match.Replace(@"(\d+)", "{0}").Replace(@"\", "");
+            var numText = string.Format(format, num);
+            return string.Format("{0}{1}{2}", front, numText, last);
         }
 
         /// <summary>该文件是否是图片（根据扩展名）</summary>

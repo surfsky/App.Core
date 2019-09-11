@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using App.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using App.Core;
 
-namespace App.Data.Tests
+namespace App.Core.Tests
 {
     [TestClass()]
     public class DynamicXmlTests

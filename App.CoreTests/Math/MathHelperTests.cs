@@ -19,6 +19,13 @@ namespace App.Core.Tests
             IO.Trace(n.ToString());
         }
 
-
+        [TestMethod()]
+        public void EqualsTest()
+        {
+            bool b1 = MathHelper.Approx(1.15f, 1.16f, 0.01f);     // success
+            bool b2 = MathHelper.Approx(1.153f, 1.152f, 0.001f);  // 
+            Assert.IsTrue(b1);
+            Assert.IsTrue(b2);
+        }
     }
 }

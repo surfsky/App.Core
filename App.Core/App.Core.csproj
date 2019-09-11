@@ -68,8 +68,8 @@
     <Compile Include="Convertor.Encoder.cs" />
     <Compile Include="Convertor.Parse.cs" />
     <Compile Include="Convertor.List.cs" />
-    <Compile Include="Convertor.Json.cs" />
-    <Compile Include="Convertor.XML.cs" />
+    <Compile Include="Serialization\JsonHelper.cs" />
+    <Compile Include="Serialization\XmlHelper.cs" />
     <Compile Include="Database\DbHelper.cs" />
     <Compile Include="Database\SnowFlakeID.cs" />
     <Compile Include="Data\BytesExtension.cs" />
@@ -124,7 +124,6 @@
     <Compile Include="Data\RegexHelper.cs" />
     <Compile Include="Web\ResourceHelper.cs" />
     <Compile Include="Web\ScriptHelper.cs" />
-    <Compile Include="Serialization\XmlSerializeHelper.cs" />
     <Compile Include="Data\StringHelper.cs" />
     <Compile Include="UIAttribute.cs" />
     <Compile Include="Web\Asp.cs" />

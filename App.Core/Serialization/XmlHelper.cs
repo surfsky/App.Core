@@ -17,9 +17,9 @@ using System.Xml;
 namespace App.Core
 {
     /// <summary>
-    /// 类型转换-XML（json转换请直接查看SerializationHelper)
+    /// XML 相关的辅助类
     /// </summary>
-    public static partial class Convertor
+    public static class XmlHelper
     {
         //------------------------------------------
         // xml
@@ -69,5 +69,39 @@ namespace App.Core
 
 
 
+        //-------------------------------------
+        // XML 文件读写
+        //-------------------------------------
+        /// <summary>保存对象为 Xml 文件</summary>
+        public static void SaveXmlFile(this object obj, string filePath)
+        {
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                writer.Write(obj.ToXml());
+                writer.Close();
+            }
+        }
+
+        /// <summary>加载 XML 文件并解析为对象</summary>
+        public static object LoadXmlFile(string filePath, Type type)
+        {
+            if (!File.Exists(filePath))
+                return null;
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                var obj = reader.ReadToEnd().ParseXml(type);
+                reader.Close();
+                return obj;
+            }
+        }
+
+        /// <summary>加载 XML 文件并解析为对象</summary>
+        public static T LoadXmlFile<T>(string filePath) where T : class
+        {
+            if (!File.Exists(filePath))
+                return null;
+            var txt = File.ReadAllText(filePath);
+            return txt.ParseXml<T>();
+        }
     }
 }

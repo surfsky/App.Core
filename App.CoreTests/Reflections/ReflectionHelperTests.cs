@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 
-namespace App.CoreTests
+namespace App.Core.Tests
 {
     [TestClass()]
     public class ReflectionHelperTests

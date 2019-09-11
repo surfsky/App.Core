@@ -21,9 +21,9 @@ using Newtonsoft.Json.Serialization;
 namespace App.Core
 {
     /// <summary>
-    /// 类型转换-Json
+    /// Json 相关的操作
     /// </summary>
-    public static partial class Convertor
+    public static class JsonHelper
     {
         //------------------------------------------------
         // JSON
@@ -37,31 +37,6 @@ namespace App.Core
             return JsonConvert.SerializeObject(obj, settings);
         }
 
-        /// <summary>OBJECT -> JSON</summary>
-        public static void SaveJson(string filePath, object obj, JsonSerializerSettings settings = null)
-        {
-            Type type = obj.GetType();
-            using (StreamWriter writer = new StreamWriter(filePath))
-            {
-                string txt = obj.ToJson(settings);
-                writer.Write(txt);
-                writer.Close();
-            }
-        }
-
-        /// <summary>JSON -> OBJECT</summary>
-        public static object LoadJson(string filePath, Type type, JsonSerializerSettings settings = null)
-        {
-            if (!File.Exists(filePath))
-                return null;
-            using (StreamReader reader = new StreamReader(filePath))
-            {
-                string txt = reader.ReadToEnd();
-                reader.Close();
-                settings = settings ?? GetDefaultJsonSettings();
-                return JsonConvert.DeserializeObject(txt, type, settings);
-            }
-        }
 
         /// <summary>JSON -> OBJECT</summary>
         public static object ParseJson(this string txt, Type type, JsonSerializerSettings settings = null)
@@ -96,6 +71,35 @@ namespace App.Core
             settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;              // 指定如何处理循环引用
             settings.Converters.Add(new StringEnumConverter());                         // 枚举输出为字符串
             return settings;
+        }
+
+
+        //------------------------------------------------
+        // Json 文件
+        //------------------------------------------------
+        /// <summary>保存 json 到文件</summary>
+        public static void SaveJsonFile(this object obj, string filePath, JsonSerializerSettings settings = null)
+        {
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                writer.Write(obj.ToJson(settings));
+                writer.Close();
+            }
+        }
+
+        /// <summary>读取 Json 文件</summary>
+        public static object LoadJsonFile(string filePath, Type type, JsonSerializerSettings settings = null)
+        {
+            if (!File.Exists(filePath))  return null;
+            return File.ReadAllText(filePath).ParseJson(type, settings);
+        }
+
+        /// <summary>读取 Json 文件</summary>
+        public static T LoadJsonFile<T>(string filePath, JsonSerializerSettings settings = null)
+            where T : class
+        {
+            if (!File.Exists(filePath))  return null;
+            return File.ReadAllText(filePath).ParseJson<T>(settings);
         }
     }
 }

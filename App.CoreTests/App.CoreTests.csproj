@@ -79,6 +79,7 @@
     <Compile Include="Reflections\ReflectionHelperTests.cs" />
     <Compile Include="ThreadPondTests.cs" />
     <Compile Include="UIExtensionTests.cs" />
+    <Compile Include="UnitTest1.cs" />
     <Compile Include="UtilsTests.cs" />
     <Compile Include="Web\UrlTests.cs" />
   </ItemGroup>

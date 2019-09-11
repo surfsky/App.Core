@@ -8,29 +8,7 @@ using System.Threading.Tasks;
 
 namespace App.Core
 {
-    /// <summary>枚举输出方式</summary>
-    public enum EnumFomatting
-    {
-        Text = 0,
-        Int = 1
-    }
-
-    /// <summary>序列化类型</summary>
-    public enum SerializationType
-    {
-        /// <summary>简单值类型和字符串（可以直接格式化为文本）</summary>
-        Basic,
-        /// <summary>类或结构体对象</summary>
-        Class,
-        /// <summary>列表</summary>
-        List,
-        /// <summary>数组</summary>
-        Array,
-        /// <summary>字典</summary>
-        Dict
-    }
-
-    /// <summary>序列化节点信息</summary>
+    /// <summary>序列化节点信息（可供 Xmlizer, Jsonlizer 使用）</summary>
     public class SerializationNode
     {
         public SerializationType Type { get; set; }
@@ -56,5 +34,29 @@ namespace App.Core
             return new SerializationNode(SerializationType.Class, type, type.Name);
         }
     }
+
+
+    /// <summary>枚举输出方式</summary>
+    public enum EnumFomatting
+    {
+        Text = 0,
+        Int = 1
+    }
+
+    /// <summary>序列化类型</summary>
+    public enum SerializationType
+    {
+        /// <summary>简单值类型和字符串（可以直接格式化为文本）</summary>
+        Basic,
+        /// <summary>类或结构体对象</summary>
+        Class,
+        /// <summary>列表</summary>
+        List,
+        /// <summary>数组</summary>
+        Array,
+        /// <summary>字典</summary>
+        Dict
+    }
+
 
 }

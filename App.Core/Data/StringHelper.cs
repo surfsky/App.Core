@@ -15,6 +15,144 @@ namespace App.Core
     /// </summary>
     public static class StringHelper
     {
+        //--------------------------------------------------
+        // 引号处理
+        //--------------------------------------------------
+        /// <summary>给字符串加上双引号。Qoutes string and escapes fishy('\',"') chars.</summary>
+        public static string Quote(this string text)
+        {
+            // String is already quoted-string.
+            if (text != null && text.StartsWith("\"") && text.EndsWith("\""))
+                return text;
+
+            StringBuilder retVal = new StringBuilder();
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = text[i];
+                if (c == '\\')
+                    retVal.Append("\\\\");
+                else if (c == '\"')
+                    retVal.Append("\\\"");
+                else
+                    retVal.Append(c);
+            }
+            return "\"" + retVal.ToString() + "\"";
+        }
+
+        /// <summary>去除外层的双引号。Unquotes and unescapes escaped chars specified text. For example "xxx" will become to 'xxx', "escaped quote \"", will become to escaped 'quote "'.</summary>
+        public static string Unquote(this string text)
+        {
+            int startPosInText = 0;
+            int endPosInText = text.Length;
+
+            //--- Trim. We can't use standard string.Trim(), it's slow. ----//
+            for (int i = 0; i < endPosInText; i++)
+            {
+                char c = text[i];
+                if (c == ' ' || c == '\t')
+                    startPosInText++;
+                else
+                    break;
+            }
+            for (int i = endPosInText - 1; i > 0; i--)
+            {
+                char c = text[i];
+                if (c == ' ' || c == '\t')
+                    endPosInText--;
+                else
+                    break;
+            }
+
+            // All text trimmed
+            if ((endPosInText - startPosInText) <= 0)
+                return "";
+
+            // Remove starting and ending quotes.         
+            if (text[startPosInText] == '\"')
+                startPosInText++;
+            if (text[endPosInText - 1] == '\"')
+                endPosInText--;
+
+            // Just '"'
+            if (endPosInText == startPosInText - 1)
+                return "";
+
+            char[] chars = new char[endPosInText - startPosInText];
+            int posInChars = 0;
+            bool charIsEscaped = false;
+            for (int i = startPosInText; i < endPosInText; i++)
+            {
+                char c = text[i];
+                // Escaping char
+                if (!charIsEscaped && c == '\\')
+                    charIsEscaped = true;
+
+                // Escaped char
+                else if (charIsEscaped)
+                {
+                    // TODO: replace \n,\r,\t,\v ???
+                    chars[posInChars] = c;
+                    posInChars++;
+                    charIsEscaped = false;
+                }
+                // Normal char
+                else
+                {
+                    chars[posInChars] = c;
+                    posInChars++;
+                    charIsEscaped = false;
+                }
+            }
+            return new string(chars, 0, posInChars);
+        }
+
+        /// <summary>给指定字符加斜杠（Escapes specified chars in the specified string.）</summary>
+		public static string Escape(this string text, params char[] charsToEscape)
+        {
+            // Create worst scenario buffer, assume all chars must be escaped
+            char[] buffer = new char[text.Length * 2];
+            int nChars = 0;
+            foreach (char c in text)
+            {
+                foreach (char escapeChar in charsToEscape)
+                {
+                    if (c == escapeChar)
+                    {
+                        buffer[nChars] = '\\';
+                        nChars++;
+                        break;
+                    }
+                }
+
+                buffer[nChars] = c;
+                nChars++;
+            }
+            return new string(buffer, 0, nChars);
+        }
+
+
+        /// <summary>去除所有斜杠转义字符（Unescapes all escaped chars.）</summary>
+        public static string Unescape(this string text)
+        {
+            // Create worst scenarion buffer, non of the chars escaped.
+            char[] buffer = new char[text.Length];
+            int nChars = 0;
+            bool escapedCahr = false;
+            foreach (char c in text)
+            {
+                if (!escapedCahr && c == '\\')
+                    escapedCahr = true;
+                else
+                {
+                    buffer[nChars] = c;
+                    nChars++;
+                    escapedCahr = false;
+                }
+            }
+
+            return new string(buffer, 0, nChars);
+        }
+
 
         //--------------------------------------------------
         // 
@@ -118,6 +256,20 @@ namespace App.Core
             return text.Substring(0, 1).ToUpper() + text.Substring(1);
         }
 
+        /// <summary>转化为文件大小文本（如 1.3M）</summary>
+        public static string ToSizeText(this long bytes)
+        {
+            if (bytes < 0)
+                return "0";
+            else if (bytes >= 1024 * 1024 * 1024)
+                return string.Format("{0:0.00} GB", (double)bytes / (1024 * 1024 * 1024));
+            else if (bytes >= 1024 * 1024)
+                return string.Format("{0:0.00} MB", (double)bytes / (1024 * 1024));
+            else if (bytes >= 1024)
+                return string.Format("{0:0.00} KB", (double)bytes / 1024);
+            else
+                return string.Format("{0:0.00} bytes", bytes);
+        }
 
         //--------------------------------------------------
         // 正则表达式处理字符串
@@ -136,14 +288,14 @@ namespace App.Core
         public static string RemoveScriptBlock(this string text)
         {
             if (text.IsEmpty()) return "";
-            return Regex.Replace(text, @"<script[^>]*?>.*?</script>", "", RegexOptions.IgnoreCase);  // 脚本标签块
+            return Regex.Replace(text, @"<script[^>]*>[\s\S]*</script>", "", RegexOptions.IgnoreCase);  // 脚本标签块
         }
 
         /// <summary>去除样式标签块</summary>
         public static string RemoveStyleBlock(this string text)
         {
             if (text.IsEmpty()) return "";
-            return Regex.Replace(text, @"<style[^>]*?>.*?</style>", "", RegexOptions.IgnoreCase);    // 样式标签块
+            return Regex.Replace(text, @"<style[^>]*>[\s\S]*</style>", "", RegexOptions.IgnoreCase);    // 样式标签块
         }
 
         /// <summary>去除不可见的空白字符（[\t\n\r\f\v]）</summary>
@@ -180,8 +332,8 @@ namespace App.Core
             if (text.IsEmpty()) return "";
 
             // 删除标签
-            text = Regex.Replace(text, @"<script[^>]*?>.*?</script>", "", RegexOptions.IgnoreCase);  // 脚本标签块
-            text = Regex.Replace(text, @"<style[^>]*?>.*?</style>", "", RegexOptions.IgnoreCase);    // 样式标签块
+            text = Regex.Replace(text, @"<script[^>]*>[\s\S]*</script>", "", RegexOptions.IgnoreCase);  // 脚本标签块
+            text = Regex.Replace(text, @"<style[^>]*>[\s\S]*</style>", "", RegexOptions.IgnoreCase);    // 样式标签块
             text = Regex.Replace(text, @"<(.[^>]*)>", "", RegexOptions.IgnoreCase);                  // 标签 <form> <div> </div> </form>
             text = Regex.Replace(text, @"<!–.*", "", RegexOptions.IgnoreCase);                      // 注释头
             text = Regex.Replace(text, @"–>", "", RegexOptions.IgnoreCase);                         // 注释尾
