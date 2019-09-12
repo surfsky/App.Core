@@ -53,8 +53,8 @@ Nuget: install-package App.Corer
     Between           : 
 
 ## Math
-    ToMd5             : MD5 采样编码
-    ToSHA1            : SHA1 采样编码
+    Md5             : MD5 采样编码
+    SHA1            : SHA1 采样编码
     XOR               : XOR 异或编码
     DesXXX            : DES 编解码
     RsaXXX            : RAS 编解码
@@ -151,8 +151,16 @@ Nuget: install-package App.Corer
 + StringHelper.ToSizeText(this long bytes) , 转化为文件大小文本（如 1.3M）
 
 
-2019-09
+1.2.6
 - 删除XmlSerializeHelper，直接用 XmlHelper
 - JsonHelper 集中所有 Json 相关操作
 - MathHelper.Approx 小数约等于判断
 
+1.2.7
+- EncryptHelper.ToMD5        -> MD5
+- EncryptHelper.ToSHA1       -> SHA1
+- EncryptHelper.ToHmacSHA256 -> HmacSHA256
+- Convertor.ToUrlEncode      -> UrlEncode 
+- Convertor.ToHtmlEncode     -> HtmlEncode
+- Add Convertor.Unicode/DeUnicode
+ 

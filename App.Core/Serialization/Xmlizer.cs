@@ -131,14 +131,14 @@ namespace App.Core
         static string XmlTagEncode(string txt)
         {
             if (txt.IndexOfAny(new char[] { '<', '&', '/', '>' }) != -1)
-                return txt.ToUrlEncode();
+                return txt.UrlEncode();
             return txt;
         }
 
         /// <summary>XML标签名称反解码</summary>
         static string XmlTagDecode(string txt)
         {
-            return txt.ToUrlDecode();
+            return txt.UrlDecode();
         }
 
 

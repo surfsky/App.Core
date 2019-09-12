@@ -44,6 +44,9 @@ namespace App.Core
             return Math.Abs(v) <= precision;
         }
 
+        //--------------------------------------------------
+        // Distance
+        //--------------------------------------------------
         /// <summary>计算两个GPS坐标的距离</summary>
         public static double CalcGPSDistance(double x1, double y1, double x2, double y2)
         {

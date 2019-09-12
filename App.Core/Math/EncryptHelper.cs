@@ -46,7 +46,7 @@ namespace App.Core
         // 获取字符串的hash值
         //-------------------------------------------------------------------------
         /// <summary>获取字符串 MD5 哈希值（32字符）,如：86fb269d190d2c85f6e0468ceca42a20</summary>
-        public static string ToMD5(this string text, Encoding encoding = null)
+        public static string MD5(this string text, Encoding encoding = null)
         {
             encoding = encoding ?? Encoding.UTF8;
             var md5 = new MD5CryptoServiceProvider();
@@ -55,7 +55,7 @@ namespace App.Core
         }
 
         /// <summary>获取字符串 SHA1 哈希值（40字符）,如：d3486ae9136e7856bc42212385ea797094475802</summary>
-        public static string ToSHA1(this string text, Encoding encoding = null)
+        public static string SHA1(this string text, Encoding encoding = null)
         {
             encoding = encoding ?? Encoding.UTF8;
             var sha1 = new SHA1CryptoServiceProvider();
@@ -64,7 +64,7 @@ namespace App.Core
         }
 
         /// <summary>获取字符串 HmacSHA256 哈希值（40字符）</summary>
-        public static string ToHmacSHA256(this string text, string secret, Encoding encoding=null)
+        public static string HmacSHA256(this string text, string secret, Encoding encoding=null)
         {
             secret = secret ?? "";
             encoding = encoding ?? Encoding.UTF8;
@@ -252,7 +252,7 @@ namespace App.Core
         /// <returns></returns>
         public static bool FileCompare(string srcFilename, string destFilename)
         {
-            MD5 md5 = MD5.Create();
+            MD5 md5 = System.Security.Cryptography.MD5.Create();
             FileInfo srcFile = new FileInfo(srcFilename);
             FileInfo destFile = new FileInfo(destFilename);
             byte[] srcHash = md5.ComputeHash(srcFile.OpenRead());

@@ -9,8 +9,6 @@ using System.Diagnostics;
 
 namespace App.Core.Tests
 {
-
-
     [TestClass()]
     public class ConvertorTests
     {
@@ -154,5 +152,19 @@ namespace App.Core.Tests
             var bytes = text.ToBitBytes();
             var m = bytes.ToInt();
         }
+
+        [TestMethod()]
+        public void UnicodeTest()
+        {
+            var txt1 = @"亲爱的，你慢慢飞，小心前面带刺的玫瑰...";
+            var txt2 = @"\u4eb2\u7231\u7684\uff0c\u4f60\u6162\u6162\u98de\uff0c\u5c0f\u5fc3\u524d\u9762\u5e26\u523a\u7684\u73ab\u7470...";
+            var encode = txt1.Unicode();
+            var decode = txt2.DeUnicode();
+            Assert.IsTrue(encode == txt2);
+            Assert.IsTrue(decode == txt1);
+        }
+
+
+
     }
 }

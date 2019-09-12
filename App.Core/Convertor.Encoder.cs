@@ -125,25 +125,25 @@ namespace App.Core
         // Url、Html、QueryString
         //--------------------------------------------------
         /// <summary> url编码</summary> 
-        public static string ToUrlEncode(this string text)
+        public static string UrlEncode(this string text)
         {
             return HttpUtility.UrlEncode(text);
         }
 
         /// <summary> url解码</summary> 
-        public static string ToUrlDecode(this string text)
+        public static string UrlDecode(this string text)
         {
             return HttpUtility.UrlDecode(text);
         }
 
         /// <summary>进行Html编码。格式如：&amp;quot;Name&amp;quot;</summary>
-        public static string ToHtmlEncode(this string text)
+        public static string HtmlEncode(this string text)
         {
             return HttpUtility.HtmlEncode(text);
         }
 
         /// <summary>进行Html反编码。格式如：&quot;Name&quot;</summary>
-        public static string ToHtmlDecode(this string text)
+        public static string HtmlDecode(this string text)
         {
             return HttpUtility.HtmlDecode(text);
         }
@@ -276,6 +276,40 @@ namespace App.Core
         }
 
 
+        //--------------------------------------------------
+        // Unicode
+        //--------------------------------------------------
+        /// <summary>Unicode编码（如将“亲爱的”编码为\u4eb2\u7231\u7684）</summary>
+        public static string Unicode(this string str)
+        {
+            var sb = new StringBuilder();
+            if (!string.IsNullOrEmpty(str))
+            {
+                for (int i = 0; i < str.Length; i++)
+                {
+                    char c = str[i];
+                    if (c > 256)
+                    {
+                        sb.Append("\\u");
+                        sb.Append(((int)c).ToString("x"));
+                    }
+                    else
+                        sb.Append(c);
+                }
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>Unicode解码（如将\u4eb2\u7231\u7684解码为亲爱的）</summary>
+        public static string DeUnicode(this string str)
+        {
+            return Regex.Unescape(str);
+            // 以下实现逻辑供参考
+            //Regex reg = new Regex(@"\\[uU]([0-9a-fA-F]{4})");
+            //return reg.Replace(str, delegate (Match m) {
+            //    return ((char)Convert.ToInt32(m.Groups[1].Value, 16)).ToString();
+            //});
+        }
 
     }
 }
