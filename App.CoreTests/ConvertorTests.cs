@@ -158,13 +158,41 @@ namespace App.Core.Tests
         {
             var txt1 = @"亲爱的，你慢慢飞，小心前面带刺的玫瑰...";
             var txt2 = @"\u4eb2\u7231\u7684\uff0c\u4f60\u6162\u6162\u98de\uff0c\u5c0f\u5fc3\u524d\u9762\u5e26\u523a\u7684\u73ab\u7470...";
-            var encode = txt1.Unicode();
-            var decode = txt2.DeUnicode();
+            var encode = txt1.UnicodeEncode();
+            var decode = txt2.UnicodeDecode();
             Assert.IsTrue(encode == txt2);
             Assert.IsTrue(decode == txt1);
         }
 
+        [TestMethod()]
+        public void ParseDateTest()
+        {
+            string txt3 = null;
+            var dt1 = "2019-01-01".ParseDate();
+            var dt2 = "".ParseDate();
+            var dt3 = txt3.ParseDate();
+        }
 
+        [TestMethod()]
+        public void ParseBoolTest()
+        {
+            string t = null;
+            Assert.AreEqual("true".ParseBool(), true);
+            Assert.AreEqual("false".ParseBool(), false);
+            Assert.AreEqual("True".ParseBool(), true);
+            Assert.AreEqual("False".ParseBool(), false);
+            Assert.AreEqual("Yes".ParseBool(), null);
+            Assert.AreEqual("".ParseBool(), null);
+            Assert.AreEqual(t.ParseBool(), null);
+        }
 
+        [TestMethod()]
+        public void ParseEnumTest()
+        {
+            Assert.AreEqual("Male".ParseEnum<SexType>(), SexType.Male);
+            Assert.AreEqual("0".ParseEnum<SexType>(),   SexType.Male);
+            Assert.AreEqual("Male,Female".ParseEnums<SexType>(), new List<SexType>() { SexType.Male, SexType.Female });
+            Assert.AreEqual("0,1".ParseEnums<SexType>(),         new List<SexType>() { SexType.Male, SexType.Female });
+        }
     }
 }

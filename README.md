@@ -53,8 +53,8 @@ Nuget: install-package App.Corer
     Between           : 
 
 ## Math
-    Md5             : MD5 采样编码
-    SHA1            : SHA1 采样编码
+    Md5               : MD5 采样编码
+    SHA1              : SHA1 采样编码
     XOR               : XOR 异或编码
     DesXXX            : DES 编解码
     RsaXXX            : RAS 编解码
@@ -161,6 +161,12 @@ Nuget: install-package App.Corer
 - EncryptHelper.ToSHA1       -> SHA1
 - EncryptHelper.ToHmacSHA256 -> HmacSHA256
 - Convertor.ToUrlEncode      -> UrlEncode 
+- Convertor.ToUrlDecode      -> UrlDecode 
 - Convertor.ToHtmlEncode     -> HtmlEncode
-- Add Convertor.Unicode/DeUnicode
+- Convertor.ToHtmlDecode     -> HtmlDecode
+- Add Convertor.UnicodeEncode/UnicodeDecode
  
+
+1.2.8
+- ParseXXX(...) 将不抛出异常，若解析失败，则返回null
+- Fix RegexHelper bugs: AABB, ABAB, Int....etc

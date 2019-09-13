@@ -60,8 +60,8 @@ SortAndPage       :
 Between           : 
 </code></pre>
 <h2 id="math">Math</h2>
-<pre><code>Md5             : MD5 采样编码
-SHA1            : SHA1 采样编码
+<pre><code>Md5               : MD5 采样编码
+SHA1              : SHA1 采样编码
 XOR               : XOR 异或编码
 DesXXX            : DES 编解码
 RsaXXX            : RAS 编解码
@@ -177,8 +177,15 @@ ToBase64Bytes</li>
 <li>EncryptHelper.ToSHA1       -&gt; SHA1</li>
 <li>EncryptHelper.ToHmacSHA256 -&gt; HmacSHA256</li>
 <li>Convertor.ToUrlEncode      -&gt; UrlEncode</li>
+<li>Convertor.ToUrlDecode      -&gt; UrlDecode</li>
 <li>Convertor.ToHtmlEncode     -&gt; HtmlEncode</li>
-<li>Add Convertor.Unicode/DeUnicode</li>
+<li>Convertor.ToHtmlDecode     -&gt; HtmlDecode</li>
+<li>Add Convertor.UnicodeEncode/UnicodeDecode</li>
+</ul>
+<p>1.2.8</p>
+<ul>
+<li>ParseXXX(...) 将不抛出异常，若解析失败，则返回null</li>
+<li>Fix RegexHelper bugs: AABB, ABAB, Int....etc</li>
 </ul>
 
 

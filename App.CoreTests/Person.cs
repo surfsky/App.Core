@@ -11,8 +11,8 @@ namespace App.Core.Tests
     /// </summary>
     public enum SexType : int
     {
-        Male = 1,
-        Female = 2
+        Male = 0,
+        Female = 1
     }
 
     /// <summary>

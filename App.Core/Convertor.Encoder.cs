@@ -280,7 +280,7 @@ namespace App.Core
         // Unicode
         //--------------------------------------------------
         /// <summary>Unicode编码（如将“亲爱的”编码为\u4eb2\u7231\u7684）</summary>
-        public static string Unicode(this string str)
+        public static string UnicodeEncode(this string str)
         {
             var sb = new StringBuilder();
             if (!string.IsNullOrEmpty(str))
@@ -301,7 +301,7 @@ namespace App.Core
         }
 
         /// <summary>Unicode解码（如将\u4eb2\u7231\u7684解码为亲爱的）</summary>
-        public static string DeUnicode(this string str)
+        public static string UnicodeDecode(this string str)
         {
             return Regex.Unescape(str);
             // 以下实现逻辑供参考

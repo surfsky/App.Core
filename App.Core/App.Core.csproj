@@ -149,7 +149,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>c:\nuget.exe pack ${ProjectPath}
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

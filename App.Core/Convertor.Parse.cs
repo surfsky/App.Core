@@ -48,7 +48,7 @@ namespace App.Core
             {
                 type = type.GetRealType();
                 if (type == typeof(int))      return text.ParseInt();
-                if (type == typeof(long))     return text.ParseInt64();
+                if (type == typeof(long))     return text.ParseLong();
                 if (type == typeof(ulong))    return text.ParseULong();
                 if (type == typeof(float))    return text.ParseFloat();
                 if (type == typeof(double))   return text.ParseDouble();
@@ -61,7 +61,7 @@ namespace App.Core
             else
             {
                 if (type == typeof(int))      return text.ParseInt().Value;
-                if (type == typeof(long))     return text.ParseInt64().Value;
+                if (type == typeof(long))     return text.ParseLong().Value;
                 if (type == typeof(ulong))    return text.ParseULong().Value;
                 if (type == typeof(float))    return text.ParseFloat().Value;
                 if (type == typeof(double))   return text.ParseDouble().Value;
@@ -76,32 +76,8 @@ namespace App.Core
         }
 
 
-        /// <summary>字符串解析为枚举（支持枚举字符串或数字，遇到）</summary>
-        public static T? ParseEnum<T>(this string o) where T : struct
-        {
-            if (o.IsNotEmpty())
-            {
-                try
-                {
-                    if (RegexHelper.IsMatch(o, RegexHelper.Integer))
-                    {
-                        int n = int.Parse(o);
-                        return (T)Enum.ToObject(typeof(T), n);
-                    }
-                    else
-                    {
-                        Enum.TryParse<T>(o, true, out T result);
-                        return result;
-                    }
-                }
-                catch
-                {
-                    return null;
-                }
-            }
-            return null;
-        }
-
+        /// <summary>Parse string to enum object</summary>
+        /// <param name="text"></param>
         public static object ParseEnum(this string text, Type enumType)
         {
             try
@@ -114,68 +90,19 @@ namespace App.Core
             }
         }
 
-        public static DateTime? ParseDate(this string text)
+        /// <summary>Parse string to enum? </summary>
+        /// <param name="text">Enum text(name or value). Eg. "Male" or "0"</param>
+        public static T? ParseEnum<T>(this string text) where T : struct
         {
-            return text.IsEmpty() ? null : new DateTime?(DateTime.Parse(text));
+            if (Enum.TryParse<T>(text, true, out T val))
+                return val;
+            return null;
         }
 
-        public static decimal? ParseDecimal(this string text)
-        {
-            return text.IsEmpty() ? null : new decimal?(decimal.Parse(text));
-        }
-
-        public static double? ParseDouble(this string text)
-        {
-            return text.IsEmpty() ? null : new double?(double.Parse(text));
-        }
-
-        public static float? ParseFloat(this string text)
-        {
-            return text.IsEmpty() ? null : new float?(float.Parse(text));
-        }
-
-        public static long? ParseInt64(this string text)
-        {
-            return text.IsEmpty() ? null : new Int64?(Int64.Parse(text));
-        }
-
-        public static ulong? ParseULong(this string text)
-        {
-            return text.IsEmpty() ? null : new UInt64?(UInt64.Parse(text));
-        }
-
-        public static int? ParseInt(this string text)
-        {
-            return text.IsEmpty() ? null : new Int32?(Int32.Parse(text));
-        }
-
-        public static short? ParseShort(this string txt)
-        {
-            return txt.IsEmpty() ? null : new Int16?(Int16.Parse(txt));
-        }
-
-        public static bool? ParseBool(this string text)
-        {
-            return text.IsEmpty() ? null : new bool?(Boolean.Parse(text));
-        }
-
-        /// <summary>解析查询字符串（如id=1&amp;name=Kevin）为字典</summary>
-        public static FreeDictionary<string, string> ParseDict(this string text)
-        {
-            var dict = new FreeDictionary<string, string>();
-            var regex = new Regex(@"(^|&)?(\w+)=([^&]+)(&|$)?", RegexOptions.Compiled);
-            var matches = regex.Matches(text);
-            foreach (Match match in matches)
-            {
-                var key = match.Result("$2");
-                var value = match.Result("$3");
-                dict.Add(key, value);
-            }
-            return dict;
-        }
 
         /// <summary>解析枚举字符串列表（支持枚举名或值，如Male,Female 或 0,1）</summary>
-        public static List<T> ParseEnums<T>(this string text, char separator=',') where T : struct
+        /// <param name="text">Enum texts, eg. "Male,Female" or "0,1"</param>
+        public static List<T> ParseEnums<T>(this string text, char separator = ',') where T : struct
         {
             var enums = new List<T>();
             if (text.IsNotEmpty())
@@ -190,6 +117,95 @@ namespace App.Core
             }
             return enums;
         }
+
+        /// <summary>Parse string to DateTime?</summary>
+        public static DateTime? ParseDate(this string text)
+        {
+            if (DateTime.TryParse(text, out DateTime val))
+                return val;
+            return null;
+        }
+
+        /// <summary>Parse string to decimal?</summary>
+        public static decimal? ParseDecimal(this string text)
+        {
+            if (Decimal.TryParse(text, out Decimal val))
+                return val;
+            return null;
+        }
+
+        /// <summary>Parse string to double?</summary>
+        public static double? ParseDouble(this string text)
+        {
+            if (Double.TryParse(text, out Double val))
+                return val;
+            return null;
+        }
+
+        /// <summary>Parse string to float?</summary>
+        public static float? ParseFloat(this string text)
+        {
+            if (float.TryParse(text, out float val))
+                return val;
+            return null;
+        }
+
+        /// <summary>Parse string to int?</summary>
+        public static int? ParseInt(this string text)
+        {
+            if (Int32.TryParse(text, out Int32 val))
+                return val;
+            return null;
+        }
+
+        /// <summary>Parse string to int64?</summary>
+        public static long? ParseLong(this string text)
+        {
+            if (Int64.TryParse(text, out Int64 val))
+                return val;
+            return null;
+        }
+
+        /// <summary>Parse string to short?</summary>
+        public static short? ParseShort(this string text)
+        {
+            if (Int16.TryParse(text, out Int16 val))
+                return val;
+            return null;
+        }
+
+        /// <summary>Parse string to ulong?</summary>
+        public static ulong? ParseULong(this string text)
+        {
+            if (UInt64.TryParse(text, out UInt64 val))
+                return val;
+            return null;
+        }
+
+        /// <summary>Parse string to bool?</summary>
+        public static bool? ParseBool(this string text)
+        {
+            if (bool.TryParse(text, out bool val))
+                return val;
+            return null;
+        }
+
+        /// <summary>Parse querystring to dict（eg. id=1&amp;name=Kevin）</summary>
+        /// <param name="text">Querystring, eg. id=1&amp;name=Kevin</param>
+        public static FreeDictionary<string, string> ParseDict(this string text)
+        {
+            var dict = new FreeDictionary<string, string>();
+            var regex = new Regex(@"(^|&)?(\w+)=([^&]+)(&|$)?", RegexOptions.Compiled);
+            var matches = regex.Matches(text);
+            foreach (Match match in matches)
+            {
+                var key = match.Result("$2");
+                var value = match.Result("$3");
+                dict.Add(key, value);
+            }
+            return dict;
+        }
+
 
     }
 }

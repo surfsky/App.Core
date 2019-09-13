@@ -47,3 +47,40 @@
             //foreach (var header in headers)
             //    h.Add(header.Key, header.Value);
             //request.Headers = h;
+
+
+                        //return text.IsEmpty() ? null : new DateTime?(DateTime.Parse(text));
+                                    //return text.IsEmpty() ? null : new decimal?(decimal.Parse(text));
+                                                //return text.IsEmpty() ? null : new double?(double.Parse(text));
+            //return text.IsEmpty() ? null : new float?(float.Parse(text));
+                        //return text.IsEmpty() ? null : new Int64?(Int64.Parse(text));
+            //return text.IsEmpty() ? null : new UInt64?(UInt64.Parse(text));
+                        //return text.IsEmpty() ? null : new Int32?(Int32.Parse(text));
+            //return txt.IsEmpty() ? null : new Int16?(Int16.Parse(text));
+                        //return text.IsEmpty() ? null : new bool?(Boolean.Parse(text));
+
+                                    if (RegexHelper.IsMatch(text, RegexHelper.Integer))
+            {
+                int n = int.Parse(text);
+                return (T)Enum.ToObject(typeof(T), n);
+            }
+            else
+            {
+            }
+
+            /// <summary>解析文件扩展名</summary>
+        public static string ParseFileExtension(string file)
+        {
+            /*
+            string pattern = @"^(.*)(.)(.*)$";
+            Regex r = new Regex(pattern);
+            Match m = r.Match(file);
+            if (m.Success && m.Groups.Count >= 3)
+                return m.Groups[3].Value;
+            return null;
+            */
+            int n = file.LastIndexOf('.');
+            if (n != -1)
+                return file.Substring(n);
+            return "";
+        }
