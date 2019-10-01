@@ -1,3 +1,7 @@
+c:\nuget.exe pack ${ProjectPath}
+
+
+
 
             foreach (var header in headers)
             {
@@ -83,4 +87,38 @@
             if (n != -1)
                 return file.Substring(n);
             return "";
+        }
+
+		        public static T GetCache<T>(string key, Func<T> creator) where T : class
+        {
+            return GetCache<T>(key, creator, Cache.NoAbsoluteExpiration);
+        }
+        /// <summary>获取缓存对象</summary>
+        public static T GetCache<T>(string key) where T : class
+        {
+            var cache = HttpRuntime.Cache;
+            return cache[key] as T;
+        }
+
+        /// <summary>获取缓存对象（缓存有有效期，一旦失效，自动获取）</summary>
+        public static object GetCache(string key, Func<object> creator, DateTime expiredTime)
+        {
+            var cache = HttpRuntime.Cache;
+            if (creator != null && cache[key] == null)
+            {
+                var o = creator();
+                SetCache(key, o, expiredTime);
+            }
+            return cache[key];
+        }
+
+		        public string Info
+        {
+            get
+            {
+                return this.Group.IsEmpty() 
+                    ? string.Format("{0}({1})", this.Value, this.Name)
+                    : string.Format("{0}({1}/{2})", this.Value, this.Group, this.Name)
+                    ;
+            }
         }

@@ -112,7 +112,7 @@ namespace App.Core.Tests
 
 
         [TestMethod()]
-        public void ToDynamicTest()
+        public void ParseDynamicTest()
         {
             var json = "{name:'Kevin', age:21}";
             var o = json.ParseDynamic();
@@ -121,12 +121,19 @@ namespace App.Core.Tests
         }
 
         [TestMethod()]
-        public void ToJObjectTest()
+        public void ParseJObjectTest()
         {
             var json = "{name:'Kevin', age:21}";
             var o = json.ParseJObject();
+
+            var nameObject = o["name"];
+            var ageObject = o["age"];
+
+            var nameString = (string)o["name"];
+            var ageInt = (int)o["age"];
+
             string name = o["name"].ToText();
-            int? age = o["age"].ToInt();
+            int? age = o["age"].ToString().ParseInt();  //.ToInt();
         }
 
 
@@ -150,7 +157,7 @@ namespace App.Core.Tests
             int n = 99;
             var text = n.ToBitString();
             var bytes = text.ToBitBytes();
-            var m = bytes.ToInt();
+            var m = bytes.ToInt32();
         }
 
         [TestMethod()]

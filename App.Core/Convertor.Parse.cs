@@ -32,10 +32,10 @@ namespace App.Core
         //--------------------------------------------------
         // 将文本解析为值或对象
         //--------------------------------------------------
-        /// <summary>将文本转化为数字及衍生类型(枚举、布尔、日期）</summary>
-        public static object ParseBasicType<T>(this string text) where T : struct
+        /// <summary>将文本解析为数字及衍生类型(枚举、布尔、日期）</summary>
+        public static T ParseBasicType<T>(this string text) where T : struct
         {
-            return text.ParseBasicType(typeof(T));
+            return (T)text.ParseBasicType(typeof(T));
         }
         /// <summary>将文本转化为数字及衍生类型(枚举、布尔、日期）</summary>
         /// <remarks>ParseBasicType, ParseSimpleType, ParseValue, ParseNumber</remarks>

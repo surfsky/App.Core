@@ -62,6 +62,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Base\EnumHelperTests.cs" />
     <Compile Include="ConvertorTests.cs" />
     <Compile Include="Database\SnowflakeIDTests.cs" />
     <Compile Include="Data\DynamicXmlTests.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Reflections\ReflectionHelperTests.cs" />
     <Compile Include="ThreadPondTests.cs" />
     <Compile Include="UIExtensionTests.cs" />
+    <Compile Include="UISettingTests.cs" />
     <Compile Include="UtilsTests.cs" />
     <Compile Include="Web\UrlTests.cs" />
   </ItemGroup>

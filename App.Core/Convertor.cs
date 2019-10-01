@@ -18,9 +18,10 @@ namespace App.Core
 {
     /// <summary>
     /// 负责各种类型转换、列表类型转换
-    /// ParseXXXX(string) 负责将字符串解析为对应的类型
-    /// ToXXX()           负责将各种数据类型相互转换
-    /// CastXXX()         负责列表元素的遍历、转换、筛选
+    /// ParseXXXX(string)      负责将字符串解析为对应的类型
+    /// ToXXX()                负责将各种数据类型相互转换
+    /// CastXXX()              负责列表元素的遍历、转换、筛选
+    /// XXXEncode() XXXDecode  负责编解码
     /// </summary>
     public static partial class Convertor
     {
@@ -52,7 +53,8 @@ namespace App.Core
             return Convert.ToInt32(o).ToString();
         }
 
-
+        /*
+        // 以下代码由于侵入性太强及未处理异常而废除，请改用ParseXXX() 方法
         /// <summary>将可空对象转化为整型</summary>
         public static int? ToInt(this object o)
         {
@@ -95,6 +97,7 @@ namespace App.Core
             if (o.IsEmpty()) return null;
             return DateTime.Parse(o.ToString());
         }
+        */
 
 
         /// <summary>数字转化为枚举</summary>
@@ -120,7 +123,7 @@ namespace App.Core
         }
 
         /// <summary>转化为逗号分隔的字符串</summary>
-        public static string ToCommaString(this IEnumerable source, char seperator=',')
+        public static string ToSeparatedString(this IEnumerable source, char seperator=',')
         {
             if (source == null)
                 return "";

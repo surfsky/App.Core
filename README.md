@@ -170,3 +170,27 @@ Nuget: install-package App.Corer
 1.2.8
 - ParseXXX(...) 将不抛出异常，若解析失败，则返回null
 - Fix RegexHelper bugs: AABB, ABAB, Int....etc
+
+1.3.0
+- Asp.GetCacheData() 迁移到IO.GetCacheData()，采用 HttpRuntime.Cache，替代 HttpContext.Current.Cache, 可用于非Web环境。
+- 修正 AssemblyVersion，采用 Assembly.GetEntryAssembly() 替代 CallingAssembly
+
+1.4.0
+- object ParseBasicType<T>(..) 返回值改为  T ParseBaseType<T>(...)
+- 废除ToInt，ToFloat，ToDouble(this object o)等方法，请用ParseXXX()方法替代，侵入性过强。
+- 废除 public static byte[] ToBytes(this object o)，侵入性过强。以后扩展方法尽量不直接用this object参数
+- Convertor.ToCommonString -> ToSeparatedString
+
+1.4.4
+- UIAttribute 增加3个构造方法
+- UISetting 增加Groups属性
+
+1.4.5
+- IO.GetCache(), SetCache(), RemoveCache()
+
+
+1.4.6 /7/9（未发布）
+- App.Core.Data -> App.Core.Base
+- BytesExtension -> ByteHelper
+- EnumInfo.Info -> ToString()
+- + Type.GetDescription()

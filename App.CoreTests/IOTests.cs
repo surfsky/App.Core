@@ -39,5 +39,17 @@ namespace App.Core.Tests
             var name4 = name1.GetNextName(@"({0})").GetNextName(@"({0})");
             Assert.AreEqual(name4, "c:\\folder\\filename(3).doc?x=1");
         }
+
+        [TestMethod()]
+        public void GetCacheTest()
+        {
+            var key = "Name";
+            var name1 = IO.GetCache(key, ()=>"Kevin");
+            var name2 = IO.GetCache<string>(key);
+            Assert.AreEqual(name1, name2);
+            IO.SetCache(key, "John");
+            var name3 = IO.GetCache<string>(key);
+            Assert.AreEqual(name3, "John");
+        }
     }
 }

@@ -72,6 +72,7 @@ namespace App.Core
         public static byte[] ToBytes(this float n)  { return BitConverter.GetBytes(n); }
         public static byte[] ToBytes(this double n) { return BitConverter.GetBytes(n); }
 
+        /*
         /// <summary>对象转换为字节数组</summary>
         public static byte[] ToBytes(this object o)
         {
@@ -87,6 +88,7 @@ namespace App.Core
                 return bytes;
             }
         }
+        */
 
         /// <summary>字符串转换为字节数组</summary>
         public static byte[] ToBytes(this string txt, Encoding encoding = null)

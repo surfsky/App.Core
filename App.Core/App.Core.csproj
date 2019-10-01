@@ -31,22 +31,21 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>App.Core.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.Extended, Version=6.0.0.0, Culture=neutral, PublicKeyToken=05b7e29bdd433584, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.Extended.6.1.0.168\lib\net45\EntityFramework.Extended.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\App.Schedule\bin\Debug\log4net.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.JScript" />
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\App.HttpApi\App.HttpApi-GitHub\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -72,13 +71,13 @@
     <Compile Include="Serialization\XmlHelper.cs" />
     <Compile Include="Database\DbHelper.cs" />
     <Compile Include="Database\SnowFlakeID.cs" />
-    <Compile Include="Data\BytesExtension.cs" />
+    <Compile Include="Base\ByteHelper.cs" />
     <Compile Include="Database\IDGenerator.cs" />
     <Compile Include="Math\EncryptHelper.cs" />
     <Compile Include="FreeDictionary.cs" />
     <Compile Include="Serialization\DynamicXml.cs" />
     <Compile Include="IO.File.cs" />
-    <Compile Include="Data\HexEncoding.cs" />
+    <Compile Include="Base\HexEncoding.cs" />
     <Compile Include="Serialization\SerializationNode.cs" />
     <Compile Include="Serialization\Xmlizer.cs" />
     <Compile Include="Draw\FontHelper.cs" />
@@ -104,12 +103,12 @@
     <Compile Include="Web\Asp.Data.cs" />
     <Compile Include="Web\AuthHelper.cs" />
     <Compile Include="Web\CookieHelper.cs" />
-    <Compile Include="Data\DateTimeHelper.cs" />
+    <Compile Include="Base\DateTimeHelper.cs" />
     <Compile Include="Math\DESEncrypt.cs" />
     <Compile Include="Draw\Drawer.cs" />
     <Compile Include="Linq\EFExtension.cs" />
-    <Compile Include="Data\EnumHelper.cs" />
-    <Compile Include="Data\ExcelHelper.cs" />
+    <Compile Include="Base\EnumHelper.cs" />
+    <Compile Include="Base\ExcelHelper.cs" />
     <Compile Include="Convertor.cs" />
     <Compile Include="Net\HttpHelper.cs" />
     <Compile Include="Interfaces.cs" />
@@ -121,16 +120,17 @@
     <Compile Include="Math\PasswordHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflections\ReflectionHelper.cs" />
-    <Compile Include="Data\RegexHelper.cs" />
+    <Compile Include="Base\RegexHelper.cs" />
     <Compile Include="Web\ResourceHelper.cs" />
     <Compile Include="Web\ScriptHelper.cs" />
-    <Compile Include="Data\StringHelper.cs" />
+    <Compile Include="Base\StringHelper.cs" />
     <Compile Include="UIAttribute.cs" />
     <Compile Include="Web\Asp.cs" />
     <Compile Include="Web\Url.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="App.Core.pfx" />
     <None Include="packages.config" />
     <EmbeddedResource Include="Resources\Agent Red.TTF" />
     <EmbeddedResource Include="Resources\Stencil ICG.ttf" />
@@ -149,7 +149,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>c:\nuget.exe pack ${ProjectPath}
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

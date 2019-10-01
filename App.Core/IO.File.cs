@@ -26,6 +26,30 @@ namespace App.Core
                 Directory.CreateDirectory(fi.Directory.FullName);
         }
 
+        /// <summary>删除目录及子文件</summary>
+        public static bool DeleteDir(string folder)
+        {
+            try
+            {
+                var di = new DirectoryInfo(folder);
+                di.Attributes = FileAttributes.Normal & FileAttributes.Directory;
+                File.SetAttributes(folder, FileAttributes.Normal);
+                if (Directory.Exists(folder))
+                {
+                    foreach (string f in Directory.GetFileSystemEntries(folder))
+                    {
+                        if (File.Exists(f))
+                            File.Delete(f);
+                        else
+                            DeleteDir(f);
+                    }
+                    Directory.Delete(folder);
+                }
+                return true;
+            }
+            catch { return false; }
+        }
+
         //------------------------------------------------
         // 文件存取
         //------------------------------------------------

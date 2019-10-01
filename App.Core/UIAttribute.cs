@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml.Serialization;
@@ -12,18 +13,18 @@ namespace App.Core
     /// </summary>
     public enum EditorType
     {
-        [UI("自动选择")]     Auto,
-        [UI("标签")]         Label,
-        [UI("文本框 ")]      TextBox,
-        [UI("多行文本框")]   TextArea,
-        [UI("HTML编辑框")]   HtmlEditor,
-        [UI("MD编辑框")]     MarkdownEditor,
-        [UI("数字框")]       NumberBox,
-        [UI("日期选择")]     DatePicker,
-        [UI("时间选择")]     TimePicker,
-        [UI("日期时间选择")] DateTimePicker,
-        [UI("图片")]         Image,
-        [UI("枚举下拉框")]   EnumDropDownList
+        [UI(title: "自动选择")]     Auto,
+        [UI(title: "标签")]         Label,
+        [UI(title: "文本框 ")]      TextBox,
+        [UI(title: "多行文本框")]   TextArea,
+        [UI(title: "HTML编辑框")]   HtmlEditor,
+        [UI(title: "MD编辑框")]     MarkdownEditor,
+        [UI(title: "数字框")]       NumberBox,
+        [UI(title: "日期选择")]     DatePicker,
+        [UI(title: "时间选择")]     TimePicker,
+        [UI(title: "日期时间选择")] DateTimePicker,
+        [UI(title: "图片")]         Image,
+        [UI(title: "枚举下拉框")]   EnumDropDownList
     }
 
     /// <summary>
@@ -31,11 +32,11 @@ namespace App.Core
     /// </summary>
     public enum ShowType : int
     {
-        [UI("不展示")]              No = 0,
-        [UI("表单页面显示该字段")]  Form = 1,
-        [UI("网格页面显示该字段")]  Grid = 2,
-        [UI("只读页面显示该字段")]  View = 4,
-        [UI("全部")]                All = Form | Grid | View
+        [UI(title: "不展示")]              No = 0,
+        [UI(title: "表单页面显示该字段")]  Form = 1,
+        [UI(title: "网格页面显示该字段")]  Grid = 2,
+        [UI(title: "只读页面显示该字段")]  View = 4,
+        [UI(title: "全部")]                All = Form | Grid | View
     }
 
 
@@ -44,11 +45,11 @@ namespace App.Core
     /// </summary>
     public enum ExportType : int
     {
-        [UI("不导出")]   No = 0,
-        [UI("简单")]     Simple = 1,
-        [UI("普通")]     Normal = 2,
-        [UI("详细")]     Detail = 4,
-        [UI("全部")]     All = Simple | Normal | Detail
+        [UI(title: "不导出")]   No = 0,
+        [UI(title: "简单")]     Simple = 1,
+        [UI(title: "普通")]     Normal = 2,
+        [UI(title: "详细")]     Detail = 4,
+        [UI(title: "全部")]     All = Simple | Normal | Detail
     }
 
     //========================================================
@@ -139,27 +140,40 @@ namespace App.Core
         //---------------------------------------------
         // 构造函数
         //---------------------------------------------
-        public UIAttribute(string title, string group="", string formatString = "{0}")
+        public UIAttribute(string title) : this("", title, "{0}") { }
+        public UIAttribute(string group, string title, string formatString="{0}")
         {
+            this.Group = group;
             this.Title = title;
             this.Format = formatString;
-            this.Group = group;
         }
-        public UIAttribute(string title, ExportType export, string group="")
+        public UIAttribute(string title, ExportType export) : this("", title, export) { }
+        public UIAttribute(string group, string title, ExportType export)
         {
+            this.Group = group;
             this.Title = title;
             this.Export = export;
-            this.Group = group;
         }
-        public UIAttribute(string title, ShowType show, string group = "")
+        public UIAttribute(string title, ShowType show) : this("", title, show) { }
+        public UIAttribute(string group, string title, ShowType show)
         {
-            this.Title = title;
             this.Group = group;
+            this.Title = title;
+            this.Show = show;
         }
-        public UIAttribute(string title, Type type, string group = "")
+        public UIAttribute(string title, EditorType type) : this("", title, type) { }
+        public UIAttribute(string group, string title, EditorType type)
         {
-            this.Title = title;
             this.Group = group;
+            this.Title = title;
+            this.Editor = type;
+        }
+        public UIAttribute(string title, Type type) : this("", title, type) { }
+        public UIAttribute(string group, string title, Type type)
+        {
+            this.Group = group;
+            this.Title = title;
+            this.Type = type;
         }
 
     }
@@ -184,7 +198,7 @@ namespace App.Core
             {
                 UIAttribute attr = ReflectionHelper.GetAttribute<UIAttribute>(prop);
                 if (attr == null)
-                    attr = new UIAttribute(prop.Name);
+                    attr = new UIAttribute("", prop.Name);
                 attr.Field = prop;
                 attr.Type = attr.Type ?? prop.PropertyType;  // 编辑器的数据来源类型
                 attrs.Add(attr);
@@ -221,6 +235,20 @@ namespace App.Core
         //--------------------------------------------
         // Get UIAttribute property
         //--------------------------------------------
+        /// <summary>获取类型说明（来自 UIAttribute 或 DescriptionAttribute）</summary>
+        public static string GetDescription(this Type type)
+        {
+            if (type != null)
+            {
+                var attr1 = type.GetCustomAttribute<UIAttribute>();
+                var attr2 = type.GetCustomAttribute<DescriptionAttribute>();
+                if (attr1 != null) return attr1.Title;
+                if (attr2 != null) return attr2.Description;
+                return type.Name;
+            }
+            return "";
+        }
+
         /// <summary>获取字段说明</summary>
         public static string GetDescription(this PropertyInfo info)
         {
@@ -228,7 +256,7 @@ namespace App.Core
         }
 
         /// <summary>获取字段说明（来自 UIAttribute 或 DescriptionAttribute）</summary>
-        static string GetDescription(this MemberInfo info)
+        public static string GetDescription(this MemberInfo info)
         {
             if (info != null)
             {
@@ -240,6 +268,7 @@ namespace App.Core
             }
             return "";
         }
+
 
         /// <summary>获取枚举值的文本说明。RoleType.Admin.GetDescription()</summary>
         public static string GetDescription(this object enumValue)
@@ -334,6 +363,7 @@ namespace App.Core
         public string Title { get; set; }
         public Type ModelType { get; set; }
         public List<UIAttribute> Items { get; set; }
+        public Dictionary<string, List<UIAttribute>> Groups { get; set; }
 
 
         // 构造函数
@@ -359,6 +389,13 @@ namespace App.Core
             this.ID = id;
             this.ModelType = type;
             this.Items = type.GetUIAttributes();
+            this.Groups = new Dictionary<string, List<UIAttribute>>();
+            foreach (var item in Items)
+            {
+                if (!Groups.Keys.Contains(item.Group))
+                    Groups.Add(item.Group, new List<UIAttribute>());
+                Groups[item.Group].Add(item);
+            }
         }
     }
 }

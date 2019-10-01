@@ -11,8 +11,9 @@ namespace App.Core.Tests
     /// </summary>
     public enum SexType : int
     {
-        Male = 0,
-        Female = 1
+        [UI("正常",    "男")] Male = 0,
+        [UI("正常",    "女")] Female = 1,
+        [UI("不正常",  "人妖")] RenYao = 2
     }
 
     /// <summary>
@@ -20,16 +21,16 @@ namespace App.Core.Tests
     /// </summary>
     public class Person
     {
-        public string Name { get; set; }
-        public int Age { get; set; }
-        public DateTime? Birthday { get; set; }
-        public SexType? Sex { get; set; }
-        public string About { get; set; }
-        public Person Brother { get; set; }
-        public List<Person> Parents { get; set; }
-        public List<string> Favorites { get; set; }
-        public Dictionary<string, Person> Friends { get; set; }
-        public Dictionary<string, float> Scores { get; set; }
+        [UI("基础", "Name")]  public string Name { get; set; }
+        [UI("基础", "年龄")]  public int Age { get; set; }
+        [UI("基础", "三日")]  public DateTime? Birthday { get; set; }
+        [UI("基础", "性别")]  public SexType? Sex { get; set; }
+        [UI("基础", "关于")]  public string About { get; set; }
+        [UI("亲友", "兄弟")]  public Person Brother { get; set; }
+        [UI("亲友", "父母")]  public List<Person> Parents { get; set; }
+        [UI("亲友", "朋友")]  public Dictionary<string, Person> Friends { get; set; }
+        [UI("其它", "关注")]  public List<string> Favorites { get; set; }
+        [UI("其它", "分数")]  public Dictionary<string, float> Scores { get; set; }
 
         public Person() { }
         public Person(string name) { this.Name = name; }

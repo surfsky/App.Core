@@ -7,8 +7,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Web;
 using System.Web.SessionState;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
+using System.Web.Caching;
 
 namespace App.Core
 {
@@ -141,52 +140,7 @@ namespace App.Core
         }
 
 
-        //------------------------------------------------------------
-        // 缓存相关
-        //------------------------------------------------------------
-        /// <summary>获取缓存对象（缓存有有效期，一旦失效，自动获取）</summary>
-        public static T GetCacheData<T>(string key, Func<T> creator) where T : class
-        {
-            return GetCacheData<T>(key, System.Web.Caching.Cache.NoAbsoluteExpiration, creator);
-        }
-        public static T GetCacheData<T>(string key, DateTime expiredTime, Func<T> creator) where T : class
-        {
-            if (HttpContext.Current.Cache[key] == null)
-            {
-                T o = creator();
-                if (o != null)
-                {
-                    HttpContext.Current.Cache.Insert(key, o, null, expiredTime, System.Web.Caching.Cache.NoSlidingExpiration);
-                    System.Diagnostics.Debug.WriteLine("Create cache : " + key);
-                }
-            }
-            return HttpContext.Current.Cache[key] as T;
-        }
-
-        /// <summary>获取缓存对象（缓存有有效期，一旦失效，自动获取）</summary>
-        public static object GetCacheData(string key, DateTime expiredTime, Func<object> creator = null)
-        {
-            if (creator != null && HttpContext.Current.Cache[key] == null)
-            {
-                var o = creator();
-                if (o != null)
-                {
-                    HttpContext.Current.Cache.Insert(key, o, null, expiredTime, System.Web.Caching.Cache.NoSlidingExpiration);  // Cache.Insert若存在会覆盖的
-                    System.Diagnostics.Debug.WriteLine("Create cache : " + key);
-                }
-            }
-            return HttpContext.Current.Cache[key];
-        }
-
-        /// <summary>清除缓存对象</summary>
-        public static void ClearCachedObject(string key)
-        {
-            if (HttpContext.Current.Cache[key] != null)
-            {
-                System.Diagnostics.Debug.WriteLine("Clear cache : " + key);
-                HttpContext.Current.Cache.Remove(key);
-            }
-        }
+        
 
         /// <summary>设置缓存策略（使用context.Response.Cache来缓存输出）</summary>
         /// <remarks>

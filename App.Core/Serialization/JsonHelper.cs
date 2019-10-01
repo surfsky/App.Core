@@ -52,7 +52,7 @@ namespace App.Core
             return JsonConvert.DeserializeObject<T>(txt, settings);
         }
 
-        /// <summary>Json 字符串转换为 JObject 对象。可用 JObject["Name1"]["Name2"].ToString() 来获取节点值</summary>
+        /// <summary>Json 字符串转换为 JObject 对象。获取节点值可用： var name = o["Name1"]["Name2"].ToString(); var age = (int)o["age"];</summary>
         public static JObject ParseJObject(this string json)
         {
             return JObject.Parse(json);
