@@ -1,3 +1,6 @@
+≤‚ ‘¿‡£∫RegexHelper
+
+
 c:\nuget.exe pack ${ProjectPath}
 
 

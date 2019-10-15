@@ -46,7 +46,7 @@ using System.Text.RegularExpressions;
     \s      任何空白符,等价于[\t\n\r\f\v]                  \sa       [space]a, \ta, \na（\t和\n与C#的\t和\n含义相同）
     \S      任何非空白符,等价于[^\t\n\r\f\v]               \SF       aF,rF,cF，但不能是\tf
     \w      任何可以组成单词的字符：在服务器端表示为任意Unicode单词字符（如汉字！）[\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Nd}\p{Pc}]，在javascript中才等价于[a-zA-Z0-9]。
-    \W      任何不可以组成单词字字符
+    \W      任何不可以组成单词的字符
     \d      任何数字,等价于[0-9]
     \D      除了数字之外的任何字符,等价于[^0-9]
 
@@ -184,9 +184,9 @@ namespace App.Core
         /// <param name="text">输入字符串</param>
         /// <param name="regex">正则表达式</param>
         /// <returns></returns>
-        public static bool IsMatch(string text, string regex)
+        public static bool IsMatch(string text, string regex, RegexOptions options=RegexOptions.IgnoreCase)
         {
-            return new Regex(regex).IsMatch(text);
+            return new Regex(regex, options).IsMatch(text);
         }
 
         /// <summary>按照指定正则表达式搜索字符串，并输出匹配的结果字符串</summary>
@@ -225,9 +225,9 @@ namespace App.Core
         ///      "${year}-${month}-${day}"
         ///     );
         /// </example>
-        public static string ReplaceRegex(this string text, string matchRegex, string replaceRegex)
+        public static string ReplaceRegex(this string text, string matchRegex, string replaceRegex, RegexOptions options=RegexOptions.IgnoreCase)
         {
-            return Regex.Replace(text, matchRegex, replaceRegex);
+            return Regex.Replace(text, matchRegex, replaceRegex, options);
         }
 
 

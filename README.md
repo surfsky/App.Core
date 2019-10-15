@@ -189,8 +189,25 @@ Nuget: install-package App.Corer
 - IO.GetCache(), SetCache(), RemoveCache()
 
 
-1.4.6 /7/9（未发布）
+1.4.6 /7/9
 - App.Core.Data -> App.Core.Base
 - BytesExtension -> ByteHelper
 - EnumInfo.Info -> ToString()
 - + Type.GetDescription()
+
+
+1.5.0
++ Asp.IsRequestValid
+
+1.5.1
++ EditorType.Switch
++ EditorType.EnumGroup
++ UIAttribute.GetUIGroup(this Type type)
+
+1.5.3
++ ShowType [Flags], ExportType [Flags]
++ RegexHelper.IsMatch\ReplaceRegex 增加大小写忽略选项
+
+1.5.4
+* FreeDictionary -> App.Core
+* fix CastInt64

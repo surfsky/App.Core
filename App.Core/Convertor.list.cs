@@ -36,7 +36,7 @@ namespace App.Core
             return source.Cast<Int64>(t =>
                 t.IsEnum()
                     ? Convert.ToInt64(t)
-                    : int.Parse(t.ToString())
+                    : long.Parse(t.ToString())
                     );
         }
 

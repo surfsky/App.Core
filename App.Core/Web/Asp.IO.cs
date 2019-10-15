@@ -170,6 +170,8 @@ namespace App.Core
             if (ex.InnerException != null)
                 ex = ex.InnerException;
 
+
+
             var sb = new StringBuilder();
             sb.AppendFormat("<h1>错误信息</h1>");
             sb.AppendFormat("<BR/>时间：{0}&nbsp;", DateTime.Now);

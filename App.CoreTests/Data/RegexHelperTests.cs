@@ -5,12 +5,93 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace App.Core.Tests
 {
+    /// <summary>
+    /// 内容块
+    /// </summary>
+    public class ContentPart
+    {
+        public string Type { get; set; }
+        public string Content { get; set; }
+        public ContentPart(string type, string content)
+        {
+            this.Type = type;
+            this.Content = content;
+        }
+        public override string ToString()
+        {
+            return this.Content;
+        }
+    }
+
+
     [TestClass()]
     public class RegexHelperTests
     {
+        [TestMethod()]
+        public void ParseViewTest()
+        {
+            var text = @"
+                <p>政企主流套餐</p>
+                <h1>testsf</h1>
+                <br/>
+                <a href='x' >link</a>
+                <p>
+                    <h1>testsf</h1>
+                    <img src='http://122.229.31.237:88/Files/Editors/62021739-5b5c-4383-820c-bea96ae36e7b.png' style='width: 32px; height: 32px;'/>
+                </p>
+                ";
+            var items = ParseViews(text);
+            Console.Write(items.ToJson());
+        }
+
+        // 除了img标签以外，所有的标签都清空
+        public static string ReplaceMatch(Match m)
+        {
+            var txt = m.Value.ToLower();
+            if (txt.StartsWith("<img"))
+                return txt;
+            return "";
+        }
+
+        /// <summary>解析标签</summary>
+        public static List<ContentPart> ParseViews(string text)
+        {
+            // 预处理所有结对标签，弄成平面文档
+            //text = text.Replace("<p>", "<br/>").Replace(@"</p>", @"\r");
+            text = text.Replace("<br/>", "\r").Replace("<br>", "\r");                       // 换行符：改为回车  
+            text = Regex.Replace(text, @"<!-[^>]*->", "");                                  // 注释：去掉
+            text = Regex.Replace(text, @"<\/[^>]*>", "\r");                                 // 结对标签尾：改为回车
+            //text = Regex.Replace(text, @"<[^>]*>", "");                                   // 结对标签头：去掉
+
+            text = Regex.Replace(text, @"<[^>]*>", new MatchEvaluator(ReplaceMatch));                 // 除了img标签外，去除所有单标签头
+            text = Regex.Replace(text, @"[\r\n]{2,}", "\r", RegexOptions.IgnoreCase);       // 合并多个回车换行
+            text = Regex.Replace(text, @"[\t\v ]{2,}", " ", RegexOptions.IgnoreCase);       // 合并多个空格
+            text = text.Trim();
+
+            // 剩下的就是单标签和回车符
+            List<ContentPart> items = new List<ContentPart>();
+            var parts = text.Split(new string[] { "\r" }, StringSplitOptions.RemoveEmptyEntries);            
+            foreach (var part in parts)
+            {
+                // 尝试解析图像标签
+                string pattern = @"<img\s*src=['""](?<src>[^'""]*)['""].*>";
+                Regex r = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                var m = r.Match(part);
+                
+                if (m.Success)
+                    items.Add(new ContentPart("img", m.Result("${src}")));
+                else
+                    items.Add(new ContentPart("text", part.RemoveHtml()));
+            }
+
+            return items;
+        }
+
+
         [TestMethod()]
         public void IsMatchTest()
         {

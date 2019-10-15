@@ -279,8 +279,8 @@ namespace App.Core
         {
             if (text.IsEmpty()) return "";
             text = Regex.Replace(text, "<[^>]*>", "");                                               // 标签
-            text = Regex.Replace(text, @"<!–.*", "", RegexOptions.IgnoreCase);                      // 注释头
-            text = Regex.Replace(text, @"–>", "", RegexOptions.IgnoreCase);                         // 注释尾
+            text = Regex.Replace(text, @"<!-.*", "", RegexOptions.IgnoreCase);                      // 注释头
+            text = Regex.Replace(text, @"->", "", RegexOptions.IgnoreCase);                         // 注释尾
             return text;
         }
 
@@ -335,8 +335,8 @@ namespace App.Core
             text = Regex.Replace(text, @"<script[^>]*>[\s\S]*</script>", "", RegexOptions.IgnoreCase);  // 脚本标签块
             text = Regex.Replace(text, @"<style[^>]*>[\s\S]*</style>", "", RegexOptions.IgnoreCase);    // 样式标签块
             text = Regex.Replace(text, @"<(.[^>]*)>", "", RegexOptions.IgnoreCase);                  // 标签 <form> <div> </div> </form>
-            text = Regex.Replace(text, @"<!–.*", "", RegexOptions.IgnoreCase);                      // 注释头
-            text = Regex.Replace(text, @"–>", "", RegexOptions.IgnoreCase);                         // 注释尾
+            text = Regex.Replace(text, @"<!-.*", "", RegexOptions.IgnoreCase);                      // 注释头
+            text = Regex.Replace(text, @"->", "", RegexOptions.IgnoreCase);                         // 注释尾
 
             // 处理转义符
             text = Regex.Replace(text, @"&(nbsp|#160);", " ", RegexOptions.IgnoreCase);              // 空格

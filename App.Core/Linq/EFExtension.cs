@@ -125,8 +125,8 @@ namespace App.Core
         //---------------------------------------------------
         /// <summary>排序后分页（字段名是用字符串的，不安全，慎用）</summary>
         /// <example>q.SortAndPage("Name", "ASC", 2, 100);</example>
-        [Obsolete("请使用强类型方法 SortAndPage(t => t.Column, true, 0, 10)")]
-        internal static IQueryable<T> SortAndPage<T>(this IQueryable<T> query, string sortField, string sortDirection, int pageIndex, int pageSize)
+        //[Obsolete("请使用强类型方法 SortAndPage(t => t.Column, true, 0, 10)")]
+        public static IQueryable<T> SortAndPage<T>(this IQueryable<T> query, string sortField, string sortDirection, int pageIndex, int pageSize)
         {
             return query.SortBy(sortField , sortDirection).Page(pageIndex, pageSize);
         }
@@ -147,7 +147,7 @@ namespace App.Core
 
         /// <summary>排序</summary>
         /// <example>q.SortBy("Name", "ASC");</example>
-        [Obsolete("请用强类型版本")]
+        //[Obsolete("请用强类型版本")]
         public static IQueryable<T> SortBy<T>(this IQueryable<T> query, string sortField, string sortDirection = "ASC")
         {
             if (String.IsNullOrEmpty(sortField))

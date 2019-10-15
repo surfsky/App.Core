@@ -21,7 +21,14 @@ namespace App.Core
         // HttpContext
         //-------------------------------------
         public static HttpServerUtility Server { get { return HttpContext.Current.Server; } }
-        public static HttpRequest Request { get { return HttpContext.Current.Request; } }
+        public static HttpRequest Request
+        {
+            get
+            {
+                try   { return HttpContext.Current.Request; }
+                catch { return null; }
+            }
+        }
         public static HttpResponse Response { get { return HttpContext.Current.Response; } }
         public static HttpSessionState Session { get { return HttpContext.Current.Session; } }
         public static HttpApplicationState Application { get { return HttpContext.Current.Application; } }
@@ -49,17 +56,31 @@ namespace App.Core
             get {return HttpContext.Current != null;}
         }
 
+        /// <summary>请求是否有效（避免触发“HttpRequest在上下文中不可用”的异常）</summary>
+        public static bool IsRequestValid
+        {
+            get { return Request != null; }
+        }
+
+
         /// <summary>获取客户端真实IP</summary>
         public static string ClientIP
         {
             get
             {
-                HttpRequest request = HttpContext.Current.Request;
-                return (request.ServerVariables["HTTP_VIA"] != null)
-                    ? request.ServerVariables["HTTP_X_FORWARDED_FOR"].ToString()   // 使用代理，尝试去找原始地址
-                    : request.ServerVariables["REMOTE_ADDR"].ToString()            // 
-                    ;
-                //return request.UserHostAddress;
+                try
+                {
+                    HttpRequest request = HttpContext.Current.Request;
+                    return (request.ServerVariables["HTTP_VIA"] != null)
+                        ? request.ServerVariables["HTTP_X_FORWARDED_FOR"].ToString()   // 使用代理，尝试去找原始地址
+                        : request.ServerVariables["REMOTE_ADDR"].ToString()            // 
+                        ;
+                    //return request.UserHostAddress;
+                }
+                catch
+                {
+                    return "";
+                }
             }
         }
 

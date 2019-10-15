@@ -13,23 +13,26 @@ namespace App.Core
     /// </summary>
     public enum EditorType
     {
-        [UI(title: "自动选择")]     Auto,
-        [UI(title: "标签")]         Label,
-        [UI(title: "文本框 ")]      TextBox,
-        [UI(title: "多行文本框")]   TextArea,
-        [UI(title: "HTML编辑框")]   HtmlEditor,
-        [UI(title: "MD编辑框")]     MarkdownEditor,
-        [UI(title: "数字框")]       NumberBox,
-        [UI(title: "日期选择")]     DatePicker,
-        [UI(title: "时间选择")]     TimePicker,
-        [UI(title: "日期时间选择")] DateTimePicker,
-        [UI(title: "图片")]         Image,
-        [UI(title: "枚举下拉框")]   EnumDropDownList
+        [UI("自动选择")]     Auto,
+        [UI("标签")]         Label,
+        [UI("文本框 ")]      TextBox,
+        [UI("多行文本框")]   TextArea,
+        [UI("HTML编辑框")]   HtmlEditor,
+        [UI("MD编辑框")]     MarkdownEditor,
+        [UI("数字框")]       NumberBox,
+        [UI("日期选择")]     DatePicker,
+        [UI("时间选择")]     TimePicker,
+        [UI("日期时间选择")] DateTimePicker,
+        [UI("图片")]         Image,
+        [UI("枚举下拉框")]   EnumDropDownList,
+        [UI("枚举组合框")]   EnumGroup,
+        [UI("布尔选择器")]   Switch
     }
 
     /// <summary>
     /// 字段展示场合（表单、网格等）
     /// </summary>
+    [Flags]
     public enum ShowType : int
     {
         [UI(title: "不展示")]              No = 0,
@@ -43,6 +46,7 @@ namespace App.Core
     /// <summary>
     /// 字段导出方式
     /// </summary>
+    [Flags]
     public enum ExportType : int
     {
         [UI(title: "不导出")]   No = 0,
@@ -69,7 +73,7 @@ namespace App.Core
         /// <summary>格式化字符串</summary>
         public string Format { get; set; } = "{0}";
 
-        /// <summary>显示数据类型</summary>
+        /// <summary>要显示的数据的数据类型</summary>
         public Type Type { get; set; }
 
         /// <summary>附加数据</summary>
@@ -206,6 +210,12 @@ namespace App.Core
             return attrs;
         }
 
+        /// <summary>获取类型说明</summary>
+        public static UIAttribute GetUIAttribute(this Type type)
+        {
+            return type.GetCustomAttribute<UIAttribute>();
+        }
+
         /// <summary>获取  UIAttribute </summary>
         public static UIAttribute GetUIAttribute(this Type type, string propertyName)
         {
@@ -329,6 +339,14 @@ namespace App.Core
             return null;
         }
 
+        /// <summary>获取类型的分组信息。RoleType.GetUIGroup()</summary>
+        public static string GetUIGroup(this Type type)
+        {
+            var ui = GetUIAttribute(type);
+            if (ui != null)
+                return ui.Group;
+            return "";
+        }
 
         /// <summary>获取枚举值的分组信息。RoleType.Admin.GetUIGroup()</summary>
         public static string GetUIGroup(this object enumValue)
@@ -359,10 +377,19 @@ namespace App.Core
     [XmlInclude(typeof(UIAttribute))]
     public class UISetting : IID
     {
+        /// <summary>实体ID</summary>
         public long ID { get; set; }
+
+        /// <summary>标题</summary>
         public string Title { get; set; }
+
+        /// <summary>数据模型类型</summary>
         public Type ModelType { get; set; }
+
+        /// <summary>成员</summary>
         public List<UIAttribute> Items { get; set; }
+
+        /// <summary>分组</summary>
         public Dictionary<string, List<UIAttribute>> Groups { get; set; }
 
 
