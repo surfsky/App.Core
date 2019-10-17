@@ -65,27 +65,29 @@ namespace App.Core
         /// <param name="i">数字。若为空，等价于0</param>
         /// <param name="n">增加值</param>
         /// <param name="max">最大值</param>
-        public static int Inc(this int? i, int n, int? max = null)
+        public static int Inc(this ref int? i, int n, int? max = null)
         {
-            return Inc(i ?? 0, n, max);
+            if (i == null) i = 0;
+            return Inc(ref i, n, max);
         }
-        public static int Inc(this int i, int n, int? max = null)
+        public static int Inc(this ref int i, int n, int? max = null)
         {
-            int k = i + n;
+            i = i + n;
             if (max != null)
-                return (k > max.Value) ? max.Value : k;
-            return k;
+                i = (i > max.Value) ? max.Value : i;
+            return i;
         }
 
         /// <summary>减少数字，不小于指定最小值</summary>
         /// <param name="i">数字。若为空，等价于0</param>
         /// <param name="n">减少值</param>
         /// <param name="max">最小值</param>
-        public static int Dec(this int? i, int n, int? min = 0)
+        public static int Dec(this ref int? i, int n, int? min = 0)
         {
-            return Dec(i ?? 0, n, min);
+            if (i == null) i = 0;
+            return Dec(ref i, n, min);
         }
-        public static int Dec(this int i, int n, int? min = 0)
+        public static int Dec(this ref int i, int n, int? min = 0)
         {
             int k = i - n;
             if (min != null)

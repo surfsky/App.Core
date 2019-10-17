@@ -197,9 +197,22 @@ namespace App.Core.Tests
         public void ParseEnumTest()
         {
             Assert.AreEqual("Male".ParseEnum<SexType>(), SexType.Male);
-            Assert.AreEqual("0".ParseEnum<SexType>(),   SexType.Male);
+            Assert.AreEqual("0".ParseEnum<SexType>(), SexType.Male);
             Assert.AreEqual("Male,Female".ParseEnums<SexType>(), new List<SexType>() { SexType.Male, SexType.Female });
-            Assert.AreEqual("0,1".ParseEnums<SexType>(),         new List<SexType>() { SexType.Male, SexType.Female });
+            Assert.AreEqual("0,1".ParseEnums<SexType>(), new List<SexType>() { SexType.Male, SexType.Female });
         }
+
+        [TestMethod()]
+        public void ParseTest()
+        {
+            string s = "1";
+            var o = s.Parse<string>();
+            var n = s.Parse<int>();
+            var b = s.Parse<bool?>();
+            Assert.AreEqual(o, "1");
+            Assert.AreEqual(n, 1);
+            Assert.AreEqual(b, null);
+        }
+
     }
 }

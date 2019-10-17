@@ -60,5 +60,22 @@ namespace App.Core
                 throw new Exception(failInfo);
         }
 
+
+        //--------------------------------------------------
+        // 列表
+        //--------------------------------------------------
+        /// <summary>找到第一个匹配的位置</summary>
+        public static int IndexOf<T>(this IEnumerable<T> data, Func<T, bool> condition)
+        {
+            int n = -1;
+            foreach (var o in data)
+            {
+                n++;
+                if (condition(o))
+                    return n;
+            }
+            return n;
+        }
+
     }
 }

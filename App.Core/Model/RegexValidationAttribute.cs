@@ -14,7 +14,7 @@ namespace App.Core.Model
     public class RegexValidationAttribute : ValidationAttribute
     {
         private string _pattern;
-        public RegexValidationAttribute(string pattern = @"\d+", string errorMessage = "必须满足正则")
+        public RegexValidationAttribute(string pattern = @"\d+", string errorMessage = "数据格式不正确")
         {
             _pattern = pattern;
             this.ErrorMessage = errorMessage;

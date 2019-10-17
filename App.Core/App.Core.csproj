@@ -67,6 +67,8 @@
     <Compile Include="Convertor.Encoder.cs" />
     <Compile Include="Convertor.Parse.cs" />
     <Compile Include="Convertor.List.cs" />
+    <Compile Include="Model\HistoryAttribute.cs" />
+    <Compile Include="Model\ParamAttribute.cs" />
     <Compile Include="Serialization\JsonHelper.cs" />
     <Compile Include="Serialization\XmlHelper.cs" />
     <Compile Include="Database\DbHelper.cs" />

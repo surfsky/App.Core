@@ -211,3 +211,24 @@ Nuget: install-package App.Corer
 1.5.4
 * FreeDictionary -> App.Core
 * fix CastInt64
+
+1.5.5/6
+* fix Asp.BuildRequestHtml
++ HistoryAttribute
++ ParamAttribute
+
+1.5.7
++ Asp.GetHandler
+
+1.5.8
++ IO.Parse<T>()
+
+1.5.9
++ StringHelper.Split<T>()
+
+1.5.10
+* Asp.GetCompiledType no exception
+* Utils.IndexOf<T>(Func<T, bool> condition)
+
+1.5.11
+* MathHelper.Inc(ref int i, int n, int? max) 参数1改为ref方式

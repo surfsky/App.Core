@@ -22,7 +22,7 @@ namespace App.Core.Tests
     public class Person
     {
         [UI("基础", "Name")]  public string Name { get; set; }
-        [UI("基础", "年龄")]  public int Age { get; set; }
+        [UI("基础", "年龄")]  public int? Age { get; set; }
         [UI("基础", "三日")]  public DateTime? Birthday { get; set; }
         [UI("基础", "性别")]  public SexType? Sex { get; set; }
         [UI("基础", "关于")]  public string About { get; set; }

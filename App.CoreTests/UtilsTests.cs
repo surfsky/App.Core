@@ -24,5 +24,13 @@ namespace App.Core.Tests
             SexType all = SexType.Male | SexType.Female;
             bool isMale = all.HasFlag(SexType.Male);
         }
+
+        [TestMethod()]
+        public void IndexOfTest()
+        {
+            var items = new string[] { "ID", "Name", "Url" };
+            var n = items.IndexOf(t => t == "Name");
+            Assert.AreEqual(n, 1);
+        }
     }
 }

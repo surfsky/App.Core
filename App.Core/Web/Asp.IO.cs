@@ -154,11 +154,15 @@ namespace App.Core
                 return "";
 
             var sb = new StringBuilder();
-            sb.Append(BuildExceptionInfo(ex));
-            sb.Append(BuildRequestCoreInfo());
-            sb.Append(BuildRequestParamsInfo());
-            sb.Append(BuildServerInfo());
-            sb.Append(BuildClientInfo());
+            try
+            {
+                sb.Append(BuildExceptionInfo(ex));
+                sb.Append(BuildRequestCoreInfo());
+                sb.Append(BuildRequestParamsInfo());
+                sb.Append(BuildServerInfo());
+                sb.Append(BuildClientInfo());
+            }
+            catch { }
             return sb.ToString();
         }
 
@@ -178,7 +182,7 @@ namespace App.Core
             sb.AppendFormat("<BR/>URL：{0}&nbsp;", Request?.Url);
             sb.AppendFormat("<BR/>来源：{0}&nbsp;", Request?.UrlReferrer);
             sb.AppendFormat("<BR/>错误：{0}", ex.Message);
-            sb.AppendFormat("<BR/>类名：{0}", ex.TargetSite.DeclaringType.FullName);
+            sb.AppendFormat("<BR/>类名：{0}", ex.TargetSite.DeclaringType?.FullName);
             sb.AppendFormat("<BR/>方法：{0}", ex.TargetSite.Name);
             sb.AppendFormat("<BR/>堆栈：<pre>{0}</pre>", ex.StackTrace);
             /*

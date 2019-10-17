@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Text;
 using System.Security.Cryptography;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace App.Core
 {
@@ -15,6 +17,30 @@ namespace App.Core
     /// </summary>
     public static class StringHelper
     {
+        /// <summary>转化为逗号分隔的字符串</summary>
+        public static string ToSeparatedString(this IEnumerable source, char seperator = ',')
+        {
+            if (source == null)
+                return "";
+            string txt = "";
+            foreach (var item in source)
+                txt += item.ToString() + seperator;
+            return txt.TrimEnd(seperator);
+        }
+
+        /// <summary>拆分字符串并转化为对象列表</summary>
+        public static List<T> Split<T>(this string text)
+        {
+            List<T> items = new List<T>();
+            if (text != null)
+            {
+                var parts = text.Split(new char[] { ',', ';', '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                items = parts.Cast(t => t.Parse<T>());
+            }
+            return items;
+        }
+
+
         //--------------------------------------------------
         // 引号处理
         //--------------------------------------------------

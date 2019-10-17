@@ -11,25 +11,13 @@ namespace App.Core
     /// </summary>
     public enum WeekDay
     {
-        [UI(title: "星期一")] Monday = 1,
-        [UI(title: "星期二")] Tuesday = 2,
-        [UI(title: "星期三")] Wednesday = 3,
-        [UI(title: "星期四")] Thursday = 4,
-        [UI(title: "星期五")] Friday = 5,
-        [UI(title: "星期六")] Saturday = 6,
-        [UI(title: "星期日")] Sunday = 0
-    }
-
-    /// <summary>
-    /// 日期时间扩展方法
-    /// </summary>
-    public static class DateTimeExtension
-    {
-        /// <summary>截取年月日信息</summary>
-        public static DateTime TrimDay(this DateTime dt)
-        {
-            return new DateTime(dt.Year, dt.Month, dt.Day);
-        }
+        [UI("星期一")] Monday = 1,
+        [UI("星期二")] Tuesday = 2,
+        [UI("星期三")] Wednesday = 3,
+        [UI("星期四")] Thursday = 4,
+        [UI("星期五")] Friday = 5,
+        [UI("星期六")] Saturday = 6,
+        [UI("星期日")] Sunday = 0
     }
 
     /// <summary>
@@ -37,6 +25,12 @@ namespace App.Core
     /// </summary>
     public static class DateTimeHelper
     {
+        /// <summary>截取年月日信息</summary>
+        public static DateTime TrimDay(this DateTime dt)
+        {
+            return new DateTime(dt.Year, dt.Month, dt.Day);
+        }
+
         //------------------------------------------------
         // 批量安排日期
         //------------------------------------------------

@@ -114,23 +114,13 @@ namespace App.Core
         }
 
         /// <summary>数组转化为列表</summary>
-        public static List<T> ToList<T>(params T[] steps)
+        public static List<T> ToList<T>(params T[] array)
         {
             List<T> items = new List<T>();
-            foreach (var step in steps)
-                items.Add(step);
+            foreach (var item in array)
+                items.Add(item);
             return items;
         }
 
-        /// <summary>转化为逗号分隔的字符串</summary>
-        public static string ToSeparatedString(this IEnumerable source, char seperator=',')
-        {
-            if (source == null)
-                return "";
-            string txt = "";
-            foreach (var item in source)
-                txt += item.ToString() + seperator;
-            return txt.TrimEnd(seperator);
-        }
     }
 }

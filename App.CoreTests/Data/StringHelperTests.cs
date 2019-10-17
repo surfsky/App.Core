@@ -71,5 +71,15 @@ function do() {
             var t4 = t1.RemoveStyleBlock();
             Assert.AreEqual(t2, "hello world");
         }
+
+
+        [TestMethod()]
+        public void SplitTest()
+        {
+            var t1 = "1,2,3,4,5";
+            var t2 = "1 2 3 4 5";
+            var a1 = t1.Split<int>();
+            var a2 = t2.Split<string>();
+        }
     }
 }

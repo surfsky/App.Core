@@ -263,5 +263,45 @@ namespace App.Core
             string str = HttpContext.Current.Request.QueryString[queryKey];
             return str.ParseEnum<T>();
         }
+
+        /// <summary>获取 URL 对应的处理器类</summary>
+        public static Type GetHandler(string url, HttpContext context=null)
+        {
+            if (context == null)
+                context = HttpContext.Current;
+            var type = WebHandlerParser.GetCompiledType(url, url, context);
+            if (type.FullName.StartsWith("ASP.") && type.BaseType != null)
+                type = type.BaseType;
+            return type;
+        }
+    }
+
+    /// <summary>
+    /// 页面请求处理器解析器。可获取页面请求对应的处理类。
+    /// （抄的 Asp.net 源码）
+    /// </summary>
+    internal class WebHandlerParser : SimpleWebHandlerParser
+    {
+        private WebHandlerParser(HttpContext context, string virtualPath, string physicalPath)
+            : base(context, virtualPath, physicalPath)
+        {
+        }
+        internal static Type GetCompiledType(string virtualPath, string physicalPath, HttpContext context)
+        {
+            try
+            {
+                var parser = new WebHandlerParser(context, virtualPath, physicalPath);
+                return parser.GetCompiledTypeFromCache();
+            }
+            catch (Exception  ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return null;
+            }
+        }
+        protected override string DefaultDirectiveName
+        {
+            get { return "webhandler"; }
+        }
     }
 }
