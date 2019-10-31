@@ -221,7 +221,7 @@ Nuget: install-package App.Corer
 + Asp.GetHandler
 
 1.5.8
-+ IO.Parse<T>()
++ Convertor.Parse<T>()
 
 1.5.9
 + StringHelper.Split<T>()
@@ -231,4 +231,72 @@ Nuget: install-package App.Corer
 * Utils.IndexOf<T>(Func<T, bool> condition)
 
 1.5.11
-* MathHelper.Inc(ref int i, int n, int? max) 参数1改为ref方式
+* MathHelper.Inc(ref int i, int n, int? max) change param 1 to ref
+* Asp.GetHandler don't throw exception
+
+1.5.12
+* MathHelper.Inc(int i, int n, int? max) recover
+
+1.5.13
+* Utils.IsEmpty() support null, string, IEnumerable
+
+
+1.5.14
+* Fix MathHelper.Inc, Dec bug
+
+1.5.15
++ IO.GetQueryString(this url)
++ GZipper
+* ToHexBytes() ToHexString()
+* StringHelper.SubText(int startIndex, int length)
+
+1.6.0
+* EFExtension.SortBy() -> Sort()
+
+1.6.1
+* EFExtension.Page() fix bug
+
+1.6.2
++ IO.Mimes
+* IO.GetMimeType()
+* Asp.WriteFile() auto fix mimetype
+
+1.6.3
++ StringHelper.Contains(this string text, string value, bool ignoreCase=true)
+
+1.6.4
+* Asp.WriteFile(string filePath, string mimeType = "", string attachName = "") rename last parameter to avoid chaos
+
+1.6.5
++ ParamAttribute.Optional
++ IO.GetAppSetting<T>(string key)
++ Asp.GetQuery<T>(string key)
+
+1.6.6
++ Net.IPs
+* Asp.WriteFile() buffer mode
++ Asp.WriteBigFile()
++ Asp.WriteStream()
+
+
+1.6.8
+* Asp.IsLocalFile -> IsSiteFile
+* Asp.MapPath... -> extension function
+
+1.6.9
+* AuthHelper.LoadPrincipalFromCookie no exception
+
+1.7.0
+* Asp.WriteFile: CacheControl = "no-cache";
+* SetCachePolicy(httpcontext -> httpResponse)
+
+1.7.1
+* StringHelper.ToSizeText  supports TB
+
+1.7.2
+* StringHelper.ToSizeText  supports format
+* IO.MimeType update office file mimetype
+
+1.7.3
++ ReflectionHelper.GetEventSubscribers()
++ TypeBuilder

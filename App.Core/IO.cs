@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace App.Core
     /// </summary>
     public static partial class IO
     {
+        
         //------------------------------------------------
         // 程序集
         //------------------------------------------------
@@ -72,9 +74,20 @@ namespace App.Core
             //Debug(format, args);
         }
 
+        /// <summary>获取文本</summary>
         public static string GetText(string format, object[] args)
         {
             return (args.Length == 0) ? format : string.Format(format, args);
+        }
+
+        //------------------------------------------------------------
+        // 配置相关 *.config>AppSetting
+        //------------------------------------------------------------
+        /// <summary>从 .config 文件中获取配置信息</summary>
+        public static T GetAppSetting<T>(string key)
+        {
+            var txt = System.Configuration.ConfigurationManager.AppSettings.Get(key);
+            return txt.Parse<T>();
         }
 
         //------------------------------------------------------------

@@ -148,9 +148,9 @@ namespace App.Core
         /// 故可直接调用本方法实现缓存。
         /// 参考：https://stackoverflow.com/questions/1109768/how-to-use-output-caching-on-ashx-handler
         /// </remarks>
-        public static void SetCachePolicy(HttpContext context, int cacheSeconds, string varyByParam = "*", HttpCacheability cacheLocation = HttpCacheability.ServerAndPrivate)
+        public static void SetCachePolicy(this HttpResponse response, int cacheSeconds, string varyByParam = "*", HttpCacheability cacheLocation = HttpCacheability.ServerAndPrivate)
         {
-            HttpCachePolicy cachePolicy = context.Response.Cache;
+            HttpCachePolicy cachePolicy = response.Cache;
             if (cacheSeconds > 0)
             {
                 cachePolicy.SetCacheability(cacheLocation);
@@ -164,7 +164,7 @@ namespace App.Core
             }
             else
             {
-                cachePolicy.SetNoServerCaching();
+                cachePolicy.SetCacheability(HttpCacheability.NoCache);
                 cachePolicy.SetMaxAge(TimeSpan.Zero);
             }
         }

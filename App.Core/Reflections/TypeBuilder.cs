@@ -10,17 +10,13 @@ namespace App.Core
     /// 类帮助器,可以动态对类,类成员进行控制(添加,删除),目前只支持属性控制。  
     /// 注意,属性以外的其它成员会被清空,功能还有待完善,使其不影响其它成员。  
     /// </summary>  
-    internal class TypeHelper
+    public class TypeBuilder
     {
         #region 公有方法  
-        /// <summary>  
-        /// 防止实例化。  
-        /// </summary>  
-        private TypeHelper() { }
+        /// <summary>防止实例化</summary>  
+        private TypeBuilder() { }
 
-        /// <summary>  
-        /// 根据类的类型型创建类实例。  
-        /// </summary>  
+        /// <summary>根据类的类型型创建类实例</summary>  
         /// <param name="t">将要创建的类型。</param>  
         /// <returns>返回创建的类实例。</returns>  
         public static object CreateInstance(Type t)
@@ -28,9 +24,7 @@ namespace App.Core
             return Activator.CreateInstance(t);
         }
 
-        /// <summary>  
-        /// 根据类的名称,属性列表创建型实例。  
-        /// </summary>  
+        /// <summary>根据类的名称,属性列表创建型实例</summary>  
         /// <param name="className">将要创建的类的名称。</param>  
         /// <param name="lcpi">将要创建的类的属性列表。</param>  
         /// <returns>返回创建的类实例</returns>  
@@ -41,9 +35,7 @@ namespace App.Core
             return Activator.CreateInstance(t);
         }
 
-        /// <summary>  
-        /// 根据属性列表创建类的实例,默认类名为DefaultClass,由于生成的类不是强类型,所以类名可以忽略。  
-        /// </summary>  
+        /// <summary>根据属性列表创建类的实例,默认类名为DefaultClass,由于生成的类不是强类型,所以类名可以忽略。</summary>  
         /// <param name="lcpi">将要创建的类的属性列表</param>  
         /// <returns>返回创建的类的实例。</returns>  
         public static object CreateInstance(List<CustPropertyInfo> lcpi)
@@ -51,9 +43,7 @@ namespace App.Core
             return CreateInstance("DefaultClass", lcpi);
         }
 
-        /// <summary>  
-        /// 根据类的实例设置类的属性。  
-        /// </summary>  
+        /// <summary>根据类的实例设置类的属性。</summary>  
         /// <param name="classInstance">将要设置的类的实例。</param>  
         /// <param name="propertyName">将要设置属性名。</param>  
         /// <param name="propertSetValue">将要设置属性值。</param>  
@@ -63,9 +53,7 @@ namespace App.Core
                                           null, classInstance, new object[] { Convert.ChangeType(propertSetValue, propertSetValue.GetType()) });
         }
 
-        /// <summary>  
-        /// 根据类的实例获取类的属性。  
-        /// </summary>  
+        /// <summary>根据类的实例获取类的属性。</summary>  
         /// <param name="classInstance">将要获取的类的实例</param>  
         /// <param name="propertyName">将要设置的属性名。</param>  
         /// <returns>返回获取的类的属性。</returns>  
@@ -75,9 +63,7 @@ namespace App.Core
                                                           null, classInstance, new object[] { });
         }
 
-        /// <summary>  
-        /// 创建一个没有成员的类型的实例,类名为"DefaultClass"。  
-        /// </summary>  
+        /// <summary>创建一个没有成员的类型的实例,类名为"DefaultClass"。</summary>  
         /// <returns>返回创建的类型的实例。</returns>  
         public static Type BuildType()
         {
@@ -99,7 +85,7 @@ namespace App.Core
             //创建类型。  
             AssemblyBuilder asmBuilder = domain.DefineDynamicAssembly(asmName, AssemblyBuilderAccess.RunAndSave);
             ModuleBuilder moduleBuilder = asmBuilder.DefineDynamicModule(asmName.Name, asmName.Name + ".dll");
-            TypeBuilder typeBuilder = moduleBuilder.DefineType(className, TypeAttributes.Public);
+            System.Reflection.Emit.TypeBuilder typeBuilder = moduleBuilder.DefineType(className, TypeAttributes.Public);
             Type type = typeBuilder.CreateType();
 
             //保存程序集,以便可以被Ildasm.exe解析,或被测试程序引用。  
@@ -195,7 +181,7 @@ namespace App.Core
         /// <summary>把lcpi参数里的属性加入到myTypeBuilder中。注意:该操作会将其它成员清除掉,其功能有待完善。</summary>  
         /// <param name="typeBuilder">类型构造器的实例。</param>  
         /// <param name="cpis">里面包含属性列表的信息。</param>  
-        private static void AddPropertyToTypeBuilder(TypeBuilder typeBuilder, List<CustPropertyInfo> cpis)
+        private static void AddPropertyToTypeBuilder(System.Reflection.Emit.TypeBuilder typeBuilder, List<CustPropertyInfo> cpis)
         {
             PropertyBuilder custNamePropBldr;
             MethodBuilder custNameGetPropMthdBldr;
@@ -263,7 +249,7 @@ namespace App.Core
             //创建类型。  
             AssemblyBuilder myAsmBuilder = myDomain.DefineDynamicAssembly(myAsmName, AssemblyBuilderAccess.RunAndSave);
             ModuleBuilder myModBuilder = myAsmBuilder.DefineDynamicModule(myAsmName.Name, myAsmName.Name + ".dll");
-            TypeBuilder myTypeBuilder = myModBuilder.DefineType(type.FullName,  TypeAttributes.Public);
+            System.Reflection.Emit.TypeBuilder myTypeBuilder = myModBuilder.DefineType(type.FullName, TypeAttributes.Public);
             AddPropertyToTypeBuilder(myTypeBuilder, cpis);
             Type retval = myTypeBuilder.CreateType();
 

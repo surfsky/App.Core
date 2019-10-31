@@ -126,8 +126,13 @@ namespace App.Core
         /// <summary>获取查询字符串字典</summary>
         public static FreeDictionary<string, string> GetQuery(this string fileName)
         {
-            Url url = new Url(fileName);
-            return url.Dict;
+            return new Url(fileName).Dict;
+        }
+
+        /// <summary>获取查询字符串字典</summary>
+        public static string GetQueryString(this string fileName)
+        {
+            return new Url(fileName).Dict.ToString();
         }
 
         /// <summary>去除尾部的查询字符串</summary>
@@ -174,21 +179,22 @@ namespace App.Core
             return url.TrimQuery().TrimFolder();
         }
 
-        /// <summary>获取文件目录</summary>
+        /// <summary>获取文件目录（返回目录值不带斜杠）</summary>
         public static string GetFileFolder(this string url)
         {
             if (url.IsEmpty())
                 return "";
+
             int n = url.LastIndexOf('/');
             if (n != -1)
-                url = url.Substring(0, n);
+                return url.Substring(0, n);
             n = url.LastIndexOf('\\');
             if (n != -1)
-                url = url.Substring(0, n);
-            return url;
+                return url.Substring(0, n);
+            return "";
         }
 
-        /// <summary>获取文件扩展名</summary>
+        /// <summary>获取文件扩展名（经过小写化处理）</summary>
         public static string GetFileExtension(this string fileName)
         {
             if (fileName.IsEmpty())
@@ -251,7 +257,7 @@ namespace App.Core
             if (ext.IsEmpty())
                 return false;
 
-            string[] exts = new string[] { ".jpg", ".png", ".gif", ".jpeg", ".bmp", ".tif" };
+            string[] exts = new string[] { ".jpg", ".png", ".gif", ".jpeg", ".bmp", ".tif", ".tiff" };
             return exts.Contains(ext);
         }
 
@@ -261,20 +267,39 @@ namespace App.Core
             var ext = GetFileExtension(fileName);
             if (ext.IsEmpty())
                 return "";
-            switch (ext)
-            {
-                case ".jpg": return "image/jpeg";
-                case ".png": return "image/png";
-                case ".gif": return "image/gif";
-                case ".doc": return "application/msword";
-                case ".xls": return "application/vnd.ms-excel";
-                case ".ppt": return "application/vnd.ms-powerpoint";
-                case ".exe": return "application/octet-stream";
-                case ".pdf": return "application/pdf";
-                case ".mp3": return "audio/mp3";
-                case ".mp4": return "vidio/mp4";
-                default: return "";
-            }
+            var mimeType = Mimes[ext];
+            return mimeType ?? "";
+        }
+
+        /// <summary>
+        /// MimeType
+        /// https://www.w3school.com.cn/media/media_mimeref.asp
+        /// </summary>
+        public static FreeDictionary<string, string> Mimes { get; set; }
+        static IO()
+        {
+            Mimes = new FreeDictionary<string, string>();
+            Mimes[".jpg"]  = "image/jpeg";
+            Mimes[".jpeg"] = "image/jpeg";
+            Mimes[".png"]  = "image/png";
+            Mimes[".gif"]  = "image/gif";
+            Mimes[".html"] = "text/html";
+            Mimes[".json"] = "text/json";
+            Mimes[".txt"]  = "text/plain";
+
+            // 来自IISExpress application.config
+            Mimes[".doc"]  = "application/msword";
+            Mimes[".docx"] = "application/application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            Mimes[".xls"]  = "application/vnd.ms-excel";
+            Mimes[".xlsx"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Mimes[".ppt"]  = "application/vnd.ms-powerpoint";
+            Mimes[".pptx"] = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+
+            Mimes[".exe"]  = "application/octet-stream";
+            Mimes[".pdf"]  = "application/pdf";
+            Mimes[".js"]   = "application/x-javascript";
+            Mimes[".mp3"]  = "audio/mp3";
+            Mimes[".mp4"]  = "vidio/mp4";
         }
     }
 }

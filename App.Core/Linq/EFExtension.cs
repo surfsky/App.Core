@@ -17,6 +17,98 @@ namespace App.Core
     /// </summary>
     public static class EFExtension
     {
+
+        //---------------------------------------------------
+        // 排序 & 分页
+        //---------------------------------------------------
+        /// <summary>排序后分页（字段名是用字符串的，慎用）</summary>
+        /// <example>q.SortAndPage("Name", "ASC", 2, 100);</example>
+        public static IQueryable<T> SortAndPage<T>(this IQueryable<T> query, string sortField, string sortDirection, int pageIndex, int pageSize)
+        {
+            return query.Sort(sortField, sortDirection).Page(pageIndex, pageSize);
+        }
+
+        /// <summary>排序后分页</summary>
+        /// <example>q.SortAndPage(t => t.Name, true, 2, 100);</example>
+        public static IQueryable<T> SortAndPage<T, TKey>(this IQueryable<T> query, Expression<Func<T, TKey>> keySelector, bool ascend, int pageIndex, int pageSize)
+        {
+            return query.Sort(keySelector, ascend).Page(pageIndex, pageSize);
+        }
+
+        /// <summary>排序（可指定升降序）</summary>
+        /// <example>q.SortBy(t => t.Name, true);</example>
+        public static IQueryable<T> Sort<T, TKey>(this IQueryable<T> query, Expression<Func<T, TKey>> keySelector, bool ascend = true)
+        {
+            return ascend ? query.OrderBy(keySelector) : query.OrderByDescending(keySelector);
+        }
+
+        /// <summary>排序</summary>
+        /// <example>q.SortBy("Name", "ASC");</example>
+        public static IQueryable<T> Sort<T>(this IQueryable<T> query, string sortField, string sortDirection = "ASC")
+        {
+            if (String.IsNullOrEmpty(sortField))
+                return query;
+            if (string.IsNullOrEmpty(sortDirection))
+                sortDirection = "ASC";
+
+            // 构造表达式
+            ParameterExpression parameter = Expression.Parameter(query.ElementType, String.Empty);
+            MemberExpression property = Expression.Property(parameter, sortField);
+            LambdaExpression lambda = Expression.Lambda(property, parameter);
+            string methodName = (sortDirection == "ASC") ? "OrderBy" : "OrderByDescending";
+            Expression methodCallExpression = Expression.Call(
+                typeof(Queryable),
+                methodName,
+                new Type[] { query.ElementType, property.Type },
+                query.Expression,
+                Expression.Quote(lambda)
+                );
+
+            //
+            return query.Provider.CreateQuery<T>(methodCallExpression);
+        }
+
+
+        /// <summary>分页</summary>
+        /// <example>q.Page(2, 100);</example>
+        /// <param name="pageIndex">第几页（base-0）</param>
+        /// <param name="pageSize">页面大小</param>
+        public static IQueryable<T> Page<T>(this IQueryable<T> query, int pageIndex, int pageSize)
+        {
+            int total = query.Count();
+            int pageCount = Convert.ToInt32(Math.Ceiling((double)total / (double)pageSize));
+            if (pageCount < 1) pageCount = 1;
+
+            // 修正页码
+            //if (pageIndex > pageCount - 1) pageIndex = pageCount - 1;  // 超出页数则显示最后一页
+            if (pageIndex < 0) pageIndex = 0;
+
+            return query.Skip(pageIndex * pageSize).Take(pageSize);
+        }
+
+
+        //---------------------------------------------------
+        // Boolean
+        //---------------------------------------------------
+        public static Expression<Func<T, bool>> True<T>() { return f => true; }
+        public static Expression<Func<T, bool>> False<T>() { return f => false; }
+        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> expression1, Expression<Func<T, bool>> expression2)
+        {
+            var invokedExpression = Expression.Invoke(expression2, expression1.Parameters.Cast<Expression>());
+            return Expression.Lambda<Func<T, bool>>(Expression.Or(expression1.Body, invokedExpression), expression1.Parameters);
+        }
+        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> expression1, Expression<Func<T, bool>> expression2)
+        {
+            var invokedExpression = Expression.Invoke(expression2, expression1.Parameters.Cast<Expression>());
+            return Expression.Lambda<Func<T, bool>>(Expression.And(expression1.Body, invokedExpression), expression1.Parameters);
+        }
+        public static Expression<Func<T, bool>> Not<T>(this Expression<Func<T, bool>> expression)
+        {
+            var negated = Expression.Not(expression.Body);
+            return Expression.Lambda<Func<T, bool>>(negated, expression.Parameters);
+        }
+
+
         //---------------------------------------------------
         // SQL相关
         //---------------------------------------------------
@@ -99,96 +191,5 @@ namespace App.Core
         }
 
 
-        //---------------------------------------------------
-        // Boolean
-        //---------------------------------------------------
-        public static Expression<Func<T, bool>> True<T>() { return f => true; }
-        public static Expression<Func<T, bool>> False<T>() { return f => false; }
-        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> expression1, Expression<Func<T, bool>> expression2)
-        {
-            var invokedExpression = Expression.Invoke(expression2, expression1.Parameters.Cast<Expression>());
-            return Expression.Lambda<Func<T, bool>>(Expression.Or(expression1.Body, invokedExpression), expression1.Parameters);
-        }
-        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> expression1, Expression<Func<T, bool>> expression2)
-        {
-            var invokedExpression = Expression.Invoke(expression2, expression1.Parameters.Cast<Expression>());
-            return Expression.Lambda<Func<T, bool>>(Expression.And(expression1.Body, invokedExpression), expression1.Parameters);
-        }
-        public static Expression<Func<T, bool>> Not<T>(this Expression<Func<T, bool>> expression)
-        {
-            var negated = Expression.Not(expression.Body);
-            return Expression.Lambda<Func<T, bool>>(negated, expression.Parameters);
-        }
-
-        //---------------------------------------------------
-        // 排序 & 分页
-        //---------------------------------------------------
-        /// <summary>排序后分页（字段名是用字符串的，不安全，慎用）</summary>
-        /// <example>q.SortAndPage("Name", "ASC", 2, 100);</example>
-        //[Obsolete("请使用强类型方法 SortAndPage(t => t.Column, true, 0, 10)")]
-        public static IQueryable<T> SortAndPage<T>(this IQueryable<T> query, string sortField, string sortDirection, int pageIndex, int pageSize)
-        {
-            return query.SortBy(sortField , sortDirection).Page(pageIndex, pageSize);
-        }
-
-        /// <summary>排序后分页</summary>
-        /// <example>q.SortAndPage(t => t.Name, true, 2, 100);</example>
-        public static IQueryable<T> SortAndPage<T, TKey>(this IQueryable<T> query, Expression<Func<T, TKey>> keySelector, bool ascend, int pageIndex, int pageSize)
-        {
-            return query.SortBy(keySelector, ascend).Page(pageIndex, pageSize);
-        }
-
-        /// <summary>排序（可指定升降序）</summary>
-        /// <example>q.SortBy(t => t.Name, true);</example>
-        public static IQueryable<T> SortBy<T, TKey>(this IQueryable<T> query, Expression<Func<T, TKey>> keySelector, bool ascend = true)
-        {
-            return ascend ? query.OrderBy(keySelector) : query.OrderByDescending(keySelector);
-        }
-
-        /// <summary>排序</summary>
-        /// <example>q.SortBy("Name", "ASC");</example>
-        //[Obsolete("请用强类型版本")]
-        public static IQueryable<T> SortBy<T>(this IQueryable<T> query, string sortField, string sortDirection = "ASC")
-        {
-            if (String.IsNullOrEmpty(sortField))
-                return query;
-            if (string.IsNullOrEmpty(sortDirection))
-                sortDirection = "ASC";
-
-            // 构造表达式
-            ParameterExpression parameter = Expression.Parameter(query.ElementType, String.Empty);
-            MemberExpression property = Expression.Property(parameter, sortField);
-            LambdaExpression lambda = Expression.Lambda(property, parameter);
-            string methodName = (sortDirection == "ASC") ? "OrderBy" : "OrderByDescending";
-            Expression methodCallExpression = Expression.Call(
-                typeof(Queryable),
-                methodName,
-                new Type[] { query.ElementType, property.Type },
-                query.Expression,
-                Expression.Quote(lambda)
-                );
-
-            //
-            return query.Provider.CreateQuery<T>(methodCallExpression);
-        }
-
-
-        /// <summary>分页</summary>
-        /// <example>q.Page(2, 100);</example>
-        /// <param name="pageIndex">第几页（base-0）</param>
-        /// <param name="pageSize">页面大小</param>
-        public static IQueryable<T> Page<T>(this IQueryable<T> query, int pageIndex, int pageSize)
-        {
-            int total = query.Count();
-            int pageCount = Convert.ToInt32(Math.Ceiling((double)total / (double)pageSize));
-            if (pageCount < 1)            pageCount = 1;
-            if (pageIndex > pageCount-1)  pageIndex = pageCount - 1;
-            if (pageIndex < 0)            pageIndex = 0;
-
-            return query.Skip(pageIndex * pageSize).Take(pageSize);
-        }
-
-
-        
     }
 }

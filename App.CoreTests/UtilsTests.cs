@@ -32,5 +32,32 @@ namespace App.Core.Tests
             var n = items.IndexOf(t => t == "Name");
             Assert.AreEqual(n, 1);
         }
+
+        [TestMethod()]
+        public void IsEmptyTest()
+        {
+            // string
+            string text = null;
+            Assert.IsTrue(text.IsEmpty());
+            text = "";
+            Assert.IsTrue(text.IsEmpty());
+            text = "aa";
+            Assert.IsTrue(text.IsNotEmpty());
+
+            // list
+            List<string> arr = null;
+            Assert.IsTrue(arr.IsEmpty());
+            arr = new List<string> { };
+            Assert.IsTrue(arr.IsEmpty());
+            arr = new List<string> { "aa"};
+            Assert.IsTrue(arr.IsNotEmpty());
+
+            // object
+            Person p = null;
+            Assert.IsTrue(p.IsEmpty());
+            p = new Person();
+            Assert.IsTrue(p.IsNotEmpty());
+
+        }
     }
 }

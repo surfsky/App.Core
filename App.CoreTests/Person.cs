@@ -32,10 +32,35 @@ namespace App.Core.Tests
         [UI("其它", "关注")]  public List<string> Favorites { get; set; }
         [UI("其它", "分数")]  public Dictionary<string, float> Scores { get; set; }
 
+        // 事件
+        public event Action<string> Speak;
+
+        // 构造函数
         public Person() { }
         public Person(string name) { this.Name = name; }
+        public Person(string name, SexType sex, int age)
+        {
+            this.Name = name;
+            this.Sex = sex;
+            this.Age = age;
+        }
 
-        public static Person Demo()
+
+        // 方法
+        public void Cry()
+        {
+            IO.Trace("I am crying");
+        }
+
+
+        // 格式化
+        public override string ToString()
+        {
+            return $"{Name} {Sex} {Age} {Birthday}";
+        }
+
+        /// <summary>获取示例数据</summary>
+        public static Person GetPerson()
         {
             var p = new Person();
             p.Name = "Kevin";
@@ -57,6 +82,23 @@ namespace App.Core.Tests
                 {"BoyFriend", new Person("Bob") }
             };
             return p;
+        }
+
+        /// <summary>获取示例列表数据</summary>
+        public static List<Person> GetPersons()
+        {
+            List<Person> persons = new List<Person>();
+            persons.Add(new Person("0a", SexType.Male, 80));
+            persons.Add(new Person("1b", SexType.Female, 9));
+            persons.Add(new Person("2c", SexType.Male, 1));
+            persons.Add(new Person("3d", SexType.Female, 20));
+            persons.Add(new Person("4e", SexType.Male, 66));
+            persons.Add(new Person("5f", SexType.Male, 31));
+            persons.Add(new Person("6g", SexType.Female, 7));
+            persons.Add(new Person("7g", SexType.Female, 16));
+            persons.Add(new Person("8g", SexType.Female, 23));
+            persons.Add(new Person("9g", SexType.Female, 30));
+            return persons;
         }
     }
 

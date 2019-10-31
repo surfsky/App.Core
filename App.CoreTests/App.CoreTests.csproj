@@ -62,6 +62,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Base\DateTimeHelperTests.cs" />
     <Compile Include="Base\EnumHelperTests.cs" />
     <Compile Include="ConvertorTests.cs" />
     <Compile Include="Database\SnowflakeIDTests.cs" />
@@ -75,6 +76,8 @@
     <Compile Include="Interop\CsEvaluatorTests.cs" />
     <Compile Include="Interop\JsEvaluatorTests.cs" />
     <Compile Include="IOTests.cs" />
+    <Compile Include="Linq\EFExtensionTests.cs" />
+    <Compile Include="Math\GZiperTests.cs" />
     <Compile Include="Math\MathHelperTests.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -83,9 +86,11 @@
     <Compile Include="UIExtensionTests.cs" />
     <Compile Include="UISettingTests.cs" />
     <Compile Include="UtilsTests.cs" />
+    <Compile Include="Web\AspTests.cs" />
     <Compile Include="Web\UrlTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

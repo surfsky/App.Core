@@ -87,7 +87,7 @@ namespace App.Core.Tests
         [TestMethod()]
         public void ParseXmlTest()
         {
-            var p = Person.Demo();
+            var p = Person.GetPerson();
             var x = p.ToXml("Person");
             Trace.Write(x);
 
@@ -180,6 +180,8 @@ namespace App.Core.Tests
             var dt3 = txt3.ParseDate();
         }
 
+
+
         [TestMethod()]
         public void ParseBoolTest()
         {
@@ -214,5 +216,27 @@ namespace App.Core.Tests
             Assert.AreEqual(b, null);
         }
 
+        [TestMethod()]
+        public void ToASCStringTest()
+        {
+            var txt = "abcdefg";
+            var bytes = txt.ToASCBytes();
+            var asc = bytes.ToASCString();
+            Assert.AreEqual(txt, asc);
+        }
+
+        [TestMethod()]
+        public void ToHexStringTest()
+        {
+            var enc = Encoding.UTF8;
+            var txt = "abcdefg";
+            var bytes = txt.ToBytes(enc);
+
+            var hexText = txt.ToHexString(enc);
+            var bytes2 = hexText.ToHexBytes();
+
+            var txt2 = bytes2.ToString(enc);
+            Assert.AreEqual(txt, txt2);
+        }
     }
 }

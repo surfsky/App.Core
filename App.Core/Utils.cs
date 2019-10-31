@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,29 +17,36 @@ namespace App.Core
         //--------------------------------------------------
         // 为空
         //--------------------------------------------------
-        /// <summary>字符串是否为空</summary>
-        public static bool IsEmpty(this string txt)
-        {
-            return String.IsNullOrEmpty(txt);
-        }
-
-        /// <summary>字符串是否为空</summary>
-        public static bool IsNotEmpty(this string txt)
-        {
-            return !String.IsNullOrEmpty(txt);
-        }
-
-        /// <summary>对象是否为空或为空字符串</summary>
-        public static bool IsEmpty(this object o)
-        {
-            return (o == null) ? true : o.ToString().IsEmpty();
-        }
-
-        /// <summary>对象是否为空或为空字符串</summary>
+        /// <summary>判断对象是否不为空、空字符串、空列表</summary>
         public static bool IsNotEmpty(this object o)
         {
             return !o.IsEmpty();
         }
+
+        /// <summary>判断对象是否为空、空字符串、空列表</summary>
+        public static bool IsEmpty(this object o)
+        {
+            if (o == null)
+                return true;
+            if (o is string)
+                return string.IsNullOrEmpty(o as string);
+            if (o is IEnumerable)
+                return (o as IEnumerable).Count() == 0;
+            return false;
+        }
+
+        /// <summary>获取列表的长度</summary>
+        public static int Count(this IEnumerable data)
+        {
+            var n = 0;
+            var e = data.GetEnumerator();
+            while (e.MoveNext())
+            {
+                n++;
+            }
+            return n;
+        }
+
 
 
         //--------------------------------------------------

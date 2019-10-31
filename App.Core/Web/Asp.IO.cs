@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Principal;
 using System.Text;
 using System.Web;
@@ -97,29 +100,101 @@ namespace App.Core
         //------------------------------------------------------------
         // 输出二进制文件
         //------------------------------------------------------------
-        /// <summary>输出文件</summary>
-        public static void WriteFile(string filePath, string mimeType = "", string fileName = "")
+        /// <summary>输出文件（小于2G）</summary>
+        /// <param name="filePath">文件物理路径</param>
+        /// <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
+        /// <param name="attachName">附件名。若不为空，则启动附件下载方式。</param>
+        public static void WriteFile(string filePath, string mimeType = "", string attachName = "")
         {
-            WriteBinary(File.ReadAllBytes(filePath), mimeType, fileName);
+            if (mimeType.IsEmpty())
+                mimeType = filePath.GetMimeType();
+            WriteBinary(File.ReadAllBytes(filePath), mimeType, attachName);
+            /*
+            // 以下代码本机ok。部署到服务器后，输出异常，无法显示图片
+            var response = HttpContext.Current.Response;
+            if (mimeType.IsNotEmpty())
+                response.ContentType = mimeType;
+            if (attachName.IsNotEmpty())
+                response.AppendHeader("Content-Disposition", "attachment;filename=" + attachName);
+            response.Clear();
+            response.Buffer = true;
+            response.WriteFile(filePath);   // 在服务器端（IIS）上缓存。当下载文件比较大时，服务器压力会很大，iis支持2G大小的文件下载，
+            response.Flush();
+            response.Close();
+            */
         }
 
+        
+
         /// <summary>输出图像文件</summary>
-        public static void WriteImage(Image image, string mimeType = @"image/png", string fileName = "")
+        /// <param name="attachName">附件名。若不为空，则启动附件下载方式。</param>
+        public static void WriteImage(Image image, string mimeType = @"image/png", string attachName = "")
         {
-            WriteBinary(image.ToBytes(), mimeType, fileName);
+            WriteBinary(image.ToBytes(), mimeType, attachName);
         }
 
 
         /// <summary>输出二进制文件</summary>
-        public static void WriteBinary(byte[] bytes, string mimeType = "", string fileName = "")
+        /// <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
+        /// <param name="attachName">附件名。若不为空，则启动附件下载方式。</param>
+        public static void WriteBinary(byte[] bytes, string mimeType = "", string attachName = "")
         {
             var response = HttpContext.Current.Response;
-            response.ClearContent();
-            response.ContentType = mimeType;
-            if (fileName.IsNotEmpty())
-                response.AddHeader("Content-Disposition", "attachment; filename=" + fileName);
+            //response.ClearContent();
+            //response.CacheControl = "no-cache";
+            response.Cache.SetCacheability(HttpCacheability.NoCache);
+            if (mimeType.IsNotEmpty())
+                response.ContentType = mimeType;
+            if (attachName.IsNotEmpty())
+                response.AddHeader("Content-Disposition", "attachment; filename=" + attachName);
             response.BinaryWrite(bytes);
+            response.End();  // 结束请求，跳到ApplicationEndRequest事件
         }
+
+        /// <summary>输出超大文件（未测试）</summary>
+        /// <param name="filePath">文件物理路径</param>
+        /// <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
+        /// <param name="attachName">附件名。若不为空，则启动附件下载方式。</param>
+        public static void WriteBigFile(string filePath, string mimeType = "", string attachName = "")
+        {
+            if (mimeType.IsEmpty())
+                mimeType = filePath.GetMimeType();
+            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                WriteStream(fs, mimeType, attachName);
+            }
+        }
+
+        /// <summary>输出流（未测试）</summary>
+        /// <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
+        /// <param name="attachName">附件名。若不为空，则启动附件下载方式。</param>
+        public static void WriteStream(Stream stream, string mimeType = "", string attachName = "")
+        {
+            long contentLength = stream.Length;
+
+            // 头部
+            var response = HttpContext.Current.Response;
+            response.ClearContent();
+            if (mimeType.IsNotEmpty())
+                response.ContentType = mimeType;
+            if (attachName.IsNotEmpty())
+                response.AddHeader("Content-Disposition", "attachment; filename=" + attachName);
+            response.AddHeader("Content-Length", contentLength.ToString());
+
+            // 循环输出流
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+            long send = 0;
+            while (send < contentLength)
+            {
+                int n = stream.Read(buffer, 0, bufferSize);
+                response.OutputStream.Write(buffer, 0, n);
+                send += n;
+            }
+            response.OutputStream.Flush(); // 释放内存
+            response.OutputStream.Close();
+        }
+
 
         //------------------------------------------------------------
         // 输出错误
@@ -129,7 +204,7 @@ namespace App.Core
         {
             HttpContext context = HttpContext.Current;
             context.Response.StatusCode = errorCode;
-            context.Response.StatusDescription = info.SubText(512);
+            context.Response.StatusDescription = info.SubText(0, 512);
             context.Response.End();
         }
 
@@ -173,8 +248,6 @@ namespace App.Core
                 return "";
             if (ex.InnerException != null)
                 ex = ex.InnerException;
-
-
 
             var sb = new StringBuilder();
             sb.AppendFormat("<h1>错误信息</h1>");

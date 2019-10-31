@@ -125,3 +125,91 @@ c:\nuget.exe pack ${ProjectPath}
                     ;
             }
         }
+
+		/// <summary>字符串是否为空</summary>
+        public static bool IsEmpty(this string text)
+        {
+            return String.IsNullOrEmpty(text);
+        }
+
+        /// <summary>字符串是否为空</summary>
+        public static bool IsNotEmpty(this string text)
+        {
+            return !IsEmpty(text);
+        }
+
+        /// <summary>列表是否为空</summary>
+        public static bool IsEmpty<T>(this IEnumerable<T> items)
+        {
+            if (items is string)
+                return IsEmpty(items as string);
+            if (items == null || items.Count() == 0)
+                return true;
+            return false;
+        }
+
+        /// <summary>列表是否为空</summary>
+        public static bool IsNotEmpty<T>(this IEnumerable<T> items)
+        {
+            return !IsEmpty(items);
+        }
+		            //return (o == null) ? true : o.ToString().IsEmpty();
+
+
+					        /*
+        /// <summary>按位大写输出，如"86-FB-26-9D-19-0D-2C-85-F6-E0-46-8C-EC-A4-2A-20"</summary>
+        public static string ToByteSeperateString(this byte[] bytes)
+        {
+            return BitConverter.ToString(bytes);
+        }
+        */            var sb = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i++)
+                sb.AppendFormat("{0:x2}", bytes[i]);
+            return sb.ToString();
+
+
+			/// <summary>安全裁剪字符串（可替代SubString()方法）</summary>
+        /// <param name="length">裁剪长度</param>
+        public static string SubText(this string text, int length)
+        {
+            if (text.IsEmpty()) return "";
+            var n = text.Length;
+            if (n <= length)
+                return text.Substring(0, n);
+            return text.Substring(0, length);
+        }
+
+		 /// <summary>
+    /// 字节数组编解码方式
+    /// </summary>
+    public enum ByteEncoder
+    {
+        /// <summary>转化为16进制，如：86fb269d190d2c85f6e0468ceca42a20</summary>
+        Hex,
+
+        /// <summary>Base64字符串编码，如"hvsmnRkNLIX24EaM7KQqIA=="</summary>
+        Base64
+    }
+
+/// <summary>转化为指定格式的字符串数组</summary>
+        /// <param name="codedText">编码过的字符串。格式如：0a8b7f</param>
+        public static byte[] ToBytes(this string codedText, ByteEncoder enc)
+        {
+            switch (enc)
+            {
+                case ByteEncoder.Hex:      return codedText.ParseHexString();
+                case ByteEncoder.Base64:   return codedText.ToBase64Bytes();
+                default:                   return codedText.ParseHexString();
+            }
+        }
+
+        /// <summary>解析字符串数组</summary>
+        public static string ToString(this byte[] bytes, ByteEncoder enc)
+        {
+            switch (enc)
+            {
+                case ByteEncoder.Hex:      return bytes.ToHexString();
+                case ByteEncoder.Base64:   return bytes.ToBase64String();
+                default:                   return bytes.ToHexString();
+            }
+        }

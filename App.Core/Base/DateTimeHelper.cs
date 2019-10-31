@@ -101,10 +101,11 @@ namespace App.Core
         // 时间戳
         //------------------------------------------------
         /// <summary>日期格式转成时间戳字符串（从1970年到现在的秒数）</summary>
+        /// <remarks>由于精度问题，可能有1s的误差</remarks>
         public static string ToTimeStamp(this DateTime dt)
         {
             TimeSpan ts = dt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, 0);
-            return Convert.ToInt64(ts.TotalSeconds).ToString();
+            return Convert.ToInt64(ts.TotalSeconds).ToString(); 
         }
 
 
@@ -114,9 +115,9 @@ namespace App.Core
         public static DateTime ParseTimeStamp(this string timeStamp)
         {
             DateTime dt = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
-            long lTime = long.Parse(timeStamp + "0000000");
-            TimeSpan toNow = new TimeSpan(lTime);
-            return dt.Add(toNow);
+            long ticks = long.Parse(timeStamp + "0000000");
+            TimeSpan span = new TimeSpan(ticks);
+            return dt.Add(span);
         }
 
 

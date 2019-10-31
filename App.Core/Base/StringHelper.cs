@@ -17,6 +17,16 @@ namespace App.Core
     /// </summary>
     public static class StringHelper
     {
+        /// <summary>是否包含</summary>
+        public static bool Contains(this string source, string value, bool ignoreCase)
+        {
+            if (source.IsEmpty() || value.IsEmpty())
+                return false;
+
+            var sc = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            return (source.IndexOf(value, sc) >= 0);
+        }
+
         /// <summary>转化为逗号分隔的字符串</summary>
         public static string ToSeparatedString(this IEnumerable source, char seperator = ',')
         {
@@ -223,15 +233,20 @@ namespace App.Core
             return sb.ToString();
         }
 
+        
         /// <summary>安全裁剪字符串（可替代SubString()方法）</summary>
-        public static string SubText(this string text, int n)
+        /// <param name="startIndex">开始字符位置。base-0</param>
+        public static string SubText(this string text, int startIndex, int length)
         {
             if (text.IsEmpty()) return "";
-            var l = text.Length;
-            if (l <= n)
-                return text.Substring(0, l);
-            else
-                return text.Substring(0, n);
+            var n = text.Length;
+            if (startIndex >= n)
+                return "";
+            if (length == -1)
+                return text.Substring(startIndex);
+            if (startIndex + length > n)
+                return text.Substring(startIndex);
+            return text.Substring(startIndex, length);
         }
 
         /// <summary>裁掉尾部的匹配字符串</summary>
@@ -283,18 +298,20 @@ namespace App.Core
         }
 
         /// <summary>转化为文件大小文本（如 1.3M）</summary>
-        public static string ToSizeText(this long bytes)
+        public static string ToSizeText(this long bytes, string format="{0:#.##}")
         {
             if (bytes < 0)
                 return "0";
+            else if (bytes >= 1024L * 1024 * 1024 * 1024)
+                return string.Format(format, (double)bytes / (1024L * 1024 * 1024 * 1024)) + " TB";
             else if (bytes >= 1024 * 1024 * 1024)
-                return string.Format("{0:0.00} GB", (double)bytes / (1024 * 1024 * 1024));
+                return string.Format(format, (double)bytes / (1024 * 1024 * 1024)) + " GB";
             else if (bytes >= 1024 * 1024)
-                return string.Format("{0:0.00} MB", (double)bytes / (1024 * 1024));
+                return string.Format(format, (double)bytes / (1024 * 1024)) + " MB";
             else if (bytes >= 1024)
-                return string.Format("{0:0.00} KB", (double)bytes / 1024);
+                return string.Format(format, (double)bytes / 1024) + " KB";
             else
-                return string.Format("{0:0.00} bytes", bytes);
+                return string.Format("{0} bytes", bytes);
         }
 
         //--------------------------------------------------

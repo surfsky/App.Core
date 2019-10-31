@@ -16,38 +16,13 @@ using System.Xml;
 
 namespace App.Core
 {
+   
     /// <summary>
     /// 编解码辅助
     /// </summary>
     public static partial class Convertor
     {
-        //--------------------------------------------------
-        // 流
-        //--------------------------------------------------
-        /// <summary>将文本转化为流</summary>
-        public static MemoryStream ToStream(this string text, Encoding encoding = null)
-        {
-            return text.ToBytes(encoding).ToStream();
-        }
-
-        /// <summary>将字节数组转化为流</summary>
-        public static MemoryStream ToStream(this byte[] bytes)
-        {
-            MemoryStream stream = new MemoryStream();
-            stream.Write(bytes, 0, bytes.Length);
-            stream.Seek(0, SeekOrigin.Begin);
-            return stream;
-        }
-
-        /// <summary> 将 Stream 转成 byte[] </summary> 
-        public static byte[] ToBytes(this Stream stream)
-        {
-            byte[] bytes = new byte[stream.Length];
-            stream.Read(bytes, 0, bytes.Length);
-            stream.Seek(0, SeekOrigin.Begin);
-            return bytes;
-        }
-
+        
         //--------------------------------------------------
         // 字节数组
         //--------------------------------------------------
@@ -90,6 +65,21 @@ namespace App.Core
         }
         */
 
+        /// <summary>将图像转换为字节数组</summary>
+        public static byte[] ToBytes(this Image img)
+        {
+            if (img == null)
+                return null;
+            else
+            {
+                MemoryStream ms = new MemoryStream();
+                img.Save(ms, ImageFormat.Png);
+                byte[] bytes = ms.ToArray();
+                ms.Close();
+                return bytes;
+            }
+        }
+
         /// <summary>字符串转换为字节数组</summary>
         public static byte[] ToBytes(this string txt, Encoding encoding = null)
         {
@@ -104,19 +94,33 @@ namespace App.Core
             return encoding.GetString(bytes);
         }
 
-        /// <summary>将图像转换为字节数组</summary>
-        public static byte[] ToBytes(this Image img)
+        
+        
+        //--------------------------------------------------
+        // 流
+        //--------------------------------------------------
+        /// <summary>将文本转化为流</summary>
+        public static MemoryStream ToStream(this string text, Encoding encoding = null)
         {
-            if (img == null)
-                return null;
-            else
-            {
-                MemoryStream ms = new MemoryStream();
-                img.Save(ms, ImageFormat.Png);
-                byte[] bytes = ms.ToArray();
-                ms.Close();
-                return bytes;
-            }
+            return text.ToBytes(encoding).ToStream();
+        }
+
+        /// <summary>将字节数组转化为流</summary>
+        public static MemoryStream ToStream(this byte[] bytes)
+        {
+            MemoryStream stream = new MemoryStream();
+            stream.Write(bytes, 0, bytes.Length);
+            stream.Seek(0, SeekOrigin.Begin);
+            return stream;
+        }
+
+        /// <summary> 将 Stream 转成 byte[] </summary> 
+        public static byte[] ToBytes(this Stream stream)
+        {
+            byte[] bytes = new byte[stream.Length];
+            stream.Read(bytes, 0, bytes.Length);
+            stream.Seek(0, SeekOrigin.Begin);
+            return bytes;
         }
 
 
@@ -168,33 +172,6 @@ namespace App.Core
         }
 
         //--------------------------------------------------
-        // ASCII
-        //--------------------------------------------------
-        /// <summary>按位转为 ASCII 字符串，如：86fb269d190d2c85f6e0468ceca42a20</summary>
-        public static string ToASCString(this byte[] bytes)
-        {
-            var sb = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i++)
-                sb.AppendFormat("{0:x2}", bytes[i]);
-            return sb.ToString();
-        }
-
-        /// <summary>按位转为 ASCII 字符串，如：86fb269d190d2c85f6e0468ceca42a20</summary>
-        public static byte[] ToASCBytes(this string text)
-        {
-            Encoding enc = Encoding.ASCII;
-            return enc.GetBytes(text);
-        }
-
-        /*
-        /// <summary>按位大写输出，如"86-FB-26-9D-19-0D-2C-85-F6-E0-46-8C-EC-A4-2A-20"</summary>
-        public static string ToByteSeperateString(this byte[] bytes)
-        {
-            return BitConverter.ToString(bytes);
-        }
-        */
-
-        //--------------------------------------------------
         // Base64
         //--------------------------------------------------
         /// <summary>转化为Base64字符串编码，如"hvsmnRkNLIX24EaM7KQqIA=="</summary>
@@ -203,40 +180,77 @@ namespace App.Core
             return Convert.ToBase64String(bytes);
         }
 
-        /// <summary>解析Base64字符串</summary>
+        /// <summary>解析Base64字符串，如"hvsmnRkNLIX24EaM7KQqIA=="</summary>
         public static byte[] ToBase64Bytes(this string text)
         {
             return Convert.FromBase64String(text);
         }
 
         //--------------------------------------------------
+        // ASCII
+        //--------------------------------------------------
+        /// <summary>按位转为 ASCII 字符串，如：86fb269d190d2c85f6e0468ceca42a20</summary>
+        public static string ToASCString(this byte[] bytes)
+        {
+            return Encoding.ASCII.GetString(bytes);
+        }
+
+        /// <summary>按位转为 ASCII 字符串，如：86fb269d190d2c85f6e0468ceca42a20</summary>
+        public static byte[] ToASCBytes(this string text)
+        {
+            return Encoding.ASCII.GetBytes(text);
+        }
+
+        //--------------------------------------------------
         // 16 进制
         //--------------------------------------------------
-        /// <summary>将byte数组转化为16进制字符串（如9A F8 7C 3E）</summary>
-        public static string ToHexString(this byte[] bytes, bool insertSpace = true)
+        /// <summary>转化为16进制字符串</summary>
+        public static string ToHexString(this string text, Encoding enc = null)
+        {
+            enc = enc ?? Encoding.UTF8;
+            var bytes = enc.GetBytes(text);
+            return ToHexString(bytes);
+        }
+
+        /// <summary>将byte数组转化为16进制字符串（如 86fb269d190d2c85f6e0468ceca42a20）</summary>
+        /// <param name="insertSpace">是否插入空格</param>
+        public static string ToHexString(this byte[] bytes, bool insertSpace = false)
         {
             if ((bytes == null) || (bytes.Length == 0))
                 return "";
             else
             {
-                string format = insertSpace ? "{0:X2} " : "{0:X2}";
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
+                var format = insertSpace ? "{0:X2} " : "{0:X2}";
                 for (int i = 0; i < bytes.Length; i++)
                     sb.Append(string.Format(format, bytes[i]));
                 return sb.ToString();
             }
         }
 
-        /// <summary>16进制字符串转化为字符串数组</summary>
-        public static byte[] ToHexBytes(this string hex)
+        /// <summary>解析16进制字符串，转化为字节数组（如：86fb269d190d2c85f6e0468ceca42a20）</summary>
+        /// <param name="hexText">16进制文本，如 86fb26 或 86 fb 26</param>
+        public static byte[] ToHexBytes(this string hexText)
         {
-            string[] hexs = hex.Trim().Split(' ');
-            byte[] bytes = new byte[hexs.Length];
-            for (int i = 0; i < hexs.Length; i++)
+            if (hexText.Contains(' '))
             {
-                bytes[i] = (byte)(int.Parse(hexs[i]));
+                string[] hexs = hexText.Trim().Split(' ');
+                byte[] bytes = new byte[hexs.Length];
+                for (int i = 0; i < hexs.Length; i++)
+                    bytes[i] = (byte)(int.Parse(hexs[i]));
+                return bytes;
             }
-            return bytes;
+            else
+            {
+                var n = hexText.Length / 2;
+                byte[] bytes = new byte[n];
+                for (int i=0; i<n; i++)
+                {
+                    var b = hexText.SubText(i * 2, 2);
+                    bytes[i] = byte.Parse(b, System.Globalization.NumberStyles.HexNumber);
+                }
+                return bytes;
+            }
         }
 
         //--------------------------------------------------

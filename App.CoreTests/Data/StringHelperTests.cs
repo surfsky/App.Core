@@ -81,5 +81,50 @@ function do() {
             var a1 = t1.Split<int>();
             var a2 = t2.Split<string>();
         }
+
+        [TestMethod()]
+        public void SubTextTest()
+        {
+            var text = "0123456789";
+            Assert.AreEqual(text.SubText(0, 8), "01234567");
+            Assert.AreEqual(text.SubText(0, 10), "0123456789");
+            Assert.AreEqual(text.SubText(0, 12), "0123456789");
+            Assert.AreEqual(text.SubText(0, 5), "01234");
+            Assert.AreEqual(text.SubText(5, 12), "56789");
+            Assert.AreEqual(text.SubText(0, 12), "0123456789");
+        }
+
+        [TestMethod()]
+        public void ContainsTest()
+        {
+            var str = "Hello world";
+            Assert.IsTrue(str.Contains("Hello", true));
+            Assert.IsTrue(str.Contains("hello", true));
+            Assert.IsFalse(str.Contains("hello", false));
+            Assert.IsFalse(str.Contains("", true));
+        }
+
+        [TestMethod()]
+        public void ToSizeTextTest()
+        {
+            long size1 = 786;
+            long size2 = (long)(15.78 * 1024);
+            long size3 = (long)(15.70 * 1024 * 1024);
+            long size4 = (long)(15.782 * 1024 * 1024 * 1024);
+            long size5 = (long)(15.786 * 1024 * 1024 * 1024 * 1024);
+            Assert.AreEqual(size1.ToSizeText(), "786 bytes");
+            Assert.AreEqual(size2.ToSizeText(), "15.78 KB");
+            Assert.AreEqual(size3.ToSizeText(), "15.7 MB");
+            Assert.AreEqual(size4.ToSizeText(), "15.78 GB");
+            Assert.AreEqual(size5.ToSizeText(), "15.79 TB");
+
+            Assert.AreEqual(size3.ToSizeText("{0:0.00}"), "15.70 MB");
+        }
+
+        [TestMethod()]
+        public void ToSizeTextTest1()
+        {
+            Assert.Fail();
+        }
     }
 }

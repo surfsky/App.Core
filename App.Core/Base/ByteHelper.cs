@@ -79,7 +79,7 @@ namespace App.Core
         public static string GetHexText(this byte[] bytes, long start=0, long? length=null)
         {
             byte[] bytes2 = GetBytes(bytes, start, length);
-            return bytes2.ToHexString();
+            return bytes2.ToHexString(true);
         }
 
 

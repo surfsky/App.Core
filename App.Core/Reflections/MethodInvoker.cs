@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace App.Core
 {
     /// <summary>
-    /// 方法操作辅助方法（调用方法）
+    /// 方法调用器
     /// </summary>
     public class MethodInvoker
     {

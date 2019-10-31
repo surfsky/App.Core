@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Principal;
 using System.Text;
 using System.Web;
@@ -84,6 +85,7 @@ namespace App.Core
             }
         }
 
+        
 
         //-------------------------------------
         // Html
@@ -146,7 +148,7 @@ namespace App.Core
         // Url & Path
         //-------------------------------------------
         /// <summary>是否是本网站文件</summary>
-        public static bool IsLocalFile(string url)
+        public static bool IsSiteFile(this string url)
         {
             url = Asp.ResolveUrl(url);
             Uri uri = new Uri(url);
@@ -154,7 +156,7 @@ namespace App.Core
         }
 
         /// <summary>将虚拟路径转化为物理路径。等同于Server.MapPath()</summary>
-        public static string MapPath(string virtualPath)
+        public static string MapPath(this string virtualPath)
         {
             return Server.MapPath(virtualPath);
         }
@@ -165,7 +167,7 @@ namespace App.Core
         /// （1）../default.aspx 转化为 http://..../application1/default.aspx
         /// （2）~/default.aspx 转化为 http://..../application1/default.aspx
         /// </summary>
-        public static string ResolveFullUrl(string relativeUrl)
+        public static string ResolveFullUrl(this string relativeUrl)
         {
             if (relativeUrl.IsEmpty())
                 return "";
@@ -180,7 +182,7 @@ namespace App.Core
         /// （1）../default.aspx 转化为 /application1/default.aspx
         /// （2）~/default.aspx 转化为 /application1/default.aspx
         /// </summary>
-        public static string ResolveUrl(string relativeUrl)
+        public static string ResolveUrl(this string relativeUrl)
         {
             return relativeUrl.IsEmpty() ? "" : new Control().ResolveUrl(relativeUrl);
         }
@@ -191,7 +193,7 @@ namespace App.Core
         /// （1）/pages/default.aspx 转化为 default.aspx
         /// （2）~/default.aspx      转化为 ../default.aspx
         /// </summary>
-        public static string ResolveClientUrl(string relativeUrl)
+        public static string ResolveClientUrl(this string relativeUrl)
         {
             return relativeUrl.IsEmpty() ? "" : new Control().ResolveClientUrl(relativeUrl);
         }
@@ -205,6 +207,13 @@ namespace App.Core
         public static string GetQueryString(string queryKey)
         {
             return HttpContext.Current.Request.QueryString[queryKey];
+        }
+
+        /// <summary>获取查询字符串</summary>
+        public static T GetQuery<T>(string queryKey)
+        {
+            var txt = HttpContext.Current.Request.QueryString[queryKey];
+            return txt.Parse<T>();
         }
 
         /// <summary>获取查询字符串中的整型参数值</summary>
@@ -232,7 +241,7 @@ namespace App.Core
         {
             double result = -1;
             string str = HttpContext.Current.Request.QueryString[queryKey];
-            if (!string.IsNullOrEmpty(str) && double.TryParse(str, out result))
+            if (str.IsNotEmpty() && double.TryParse(str, out result))
                 return result;
             return null;
         }
@@ -242,7 +251,7 @@ namespace App.Core
         {
             bool result = false;
             string str = HttpContext.Current.Request.QueryString[queryKey];
-            if (!string.IsNullOrEmpty(str) && Boolean.TryParse(str, out result))
+            if (str.IsNotEmpty() && Boolean.TryParse(str, out result))
                 return result;
             return null;
         }
@@ -269,10 +278,18 @@ namespace App.Core
         {
             if (context == null)
                 context = HttpContext.Current;
-            var type = WebHandlerParser.GetCompiledType(url, url, context);
-            if (type.FullName.StartsWith("ASP.") && type.BaseType != null)
-                type = type.BaseType;
-            return type;
+            try
+            {
+                var type = WebHandlerParser.GetCompiledType(url, url, context);
+                if (type.FullName.StartsWith("ASP.") && type.BaseType != null)
+                    type = type.BaseType;
+                return type;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return null;
+            }
         }
     }
 
@@ -288,16 +305,8 @@ namespace App.Core
         }
         internal static Type GetCompiledType(string virtualPath, string physicalPath, HttpContext context)
         {
-            try
-            {
-                var parser = new WebHandlerParser(context, virtualPath, physicalPath);
-                return parser.GetCompiledTypeFromCache();
-            }
-            catch (Exception  ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                return null;
-            }
+            var parser = new WebHandlerParser(context, virtualPath, physicalPath);
+            return parser.GetCompiledTypeFromCache();
         }
         protected override string DefaultDirectiveName
         {

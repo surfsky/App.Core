@@ -49,7 +49,7 @@ namespace App.Core
             Array.Copy(daysBytes, daysBytes.Length - 2, bytes, bytes.Length - 6, 2);
             Array.Copy(msBytes,   msBytes.Length - 4,   bytes, bytes.Length - 4, 4);
 
-            return bytes.ToASCString();
+            return bytes.ToHexString();
             //return new Guid(bytes).ToString("N");
         }
     }

@@ -18,11 +18,18 @@ namespace App.Core.Model
         public string DefaultValue { get; set; }
         public string Remark { get; set; }
         public int Length { get; set; }
+        public bool Optional { get; set; } = false;
 
         public ParamAttribute(string name, string description)
         {
             this.Name = name;
             this.Description = description;
+        }
+        public ParamAttribute(string name, string description, bool optional)
+        {
+            this.Name = name;
+            this.Description = description;
+            this.Optional = optional;
         }
         public ParamAttribute(string name, string description, Type type)
         {
