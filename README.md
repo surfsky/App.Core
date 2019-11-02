@@ -300,3 +300,7 @@ Nuget: install-package App.Corer
 1.7.3
 + ReflectionHelper.GetEventSubscribers()
 + TypeBuilder
+
+1.7.4
+* Asp.BuildRequestCoreInfo -> BuildRequestInfo
++ ReflectionHelper.GetAttributes()

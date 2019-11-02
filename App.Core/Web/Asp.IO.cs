@@ -232,7 +232,7 @@ namespace App.Core
             try
             {
                 sb.Append(BuildExceptionInfo(ex));
-                sb.Append(BuildRequestCoreInfo());
+                sb.Append(BuildRequestInfo());
                 sb.Append(BuildRequestParamsInfo());
                 sb.Append(BuildServerInfo());
                 sb.Append(BuildClientInfo());
@@ -283,7 +283,7 @@ namespace App.Core
         }
 
         /// <summary>打印请求基础信息</summary>
-        public static string BuildRequestCoreInfo()
+        public static string BuildRequestInfo()
         {
             var sb = new StringBuilder();
             sb.AppendFormat("<h1>请求信息</h1>");

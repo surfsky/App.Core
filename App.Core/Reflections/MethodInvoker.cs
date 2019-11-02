@@ -13,20 +13,21 @@ namespace App.Core
     /// </summary>
     public class MethodInvoker
     {
-        /// <summary>调用方法</summary>
+        /// <summary>调用静态方法</summary>
         public static object InvokeMethod(Type type, string methodName, Dictionary<string, object> args)
         {
             var info = type.GetMethod(methodName);
             return InvokeMethod(null, info, args);
         }
 
+        /// <summary>调用成员方法</summary>
         public static object InvokeMethod(object obj, string methodName, Dictionary<string, object> args)
         {
             var info = obj.GetType().GetMethod(methodName);
             return InvokeMethod(obj, info, args);
         }
 
-        /// <summary>调用方法</summary>
+        /// <summary>调用成员方法</summary>
         public static object InvokeMethod(object obj, MethodInfo info, Dictionary<string, object> args)
         {
             object[] parameters = BuildMethodParameters(info, args);

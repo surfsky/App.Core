@@ -33,6 +33,20 @@ namespace App.Core
             return (arr.Length == 0) ? null : arr[0];
         }
 
+        /// <summary>获取指定特性</summary>
+        public static List<T> GetAttributes<T>(this Type type) where T : Attribute
+        {
+            T[] arr = (T[])type.GetCustomAttributes(typeof(T), true);
+            return arr.ToList();
+        }
+
+        /// <summary>获取指定特性</summary>
+        public static List<T> GetAttributes<T>(this PropertyInfo p) where T : Attribute
+        {
+            T[] arr = (T[])p.GetCustomAttributes(typeof(T), true);
+            return arr.ToList();
+        }
+
         //------------------------------------------------
         // 事件
         //------------------------------------------------
