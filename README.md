@@ -1,8 +1,9 @@
 ﻿# Description
 
-AppPlat Core utility library (ui-independ, platform-independ)
+AppPlat Core utility library (ui-independent, platform-independent)
 
-This module supports many useful extensions and methods, such as:
+This library supports many useful convinient extensions and methods, such as:
+
     - ToXXX
     - CastXXX
     - ParseXXX

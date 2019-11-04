@@ -7,3 +7,14 @@
 /App.Core/bin/Debug/*.pdb
 /App.CoreTests/obj
 /App.CoreTests/bin/Debug/*.pdb
+/App.AspTest/obj
+/App.AspTest/App_Data
+/App.AspTest/bin/Antlr3.Runtime.pdb
+/App.AspTest/bin/App.AspTest.pdb
+/App.AspTest/bin/Microsoft.AspNet.FriendlyUrls.xml
+/App.AspTest/bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+/App.AspTest/bin/Newtonsoft.Json.xml
+/App.AspTest/bin/System.Web.Optimization.xml
+/packages
+/TestResults
+/.vs
