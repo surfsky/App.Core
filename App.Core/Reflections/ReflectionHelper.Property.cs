@@ -179,7 +179,7 @@ namespace App.Core
             return GetMemberInfo(property).Name;
         }
 
-        /// <summary>获取对象的属性名。可用于获取一些匿名对象的属性名。GetPropertyName(() => user.Name</summary>
+        /// <summary>获取对象的属性名。可用于获取一些匿名对象的属性名。GetPropertyName(() => user.Name)</summary>
         public static string GetPropertyName<T>(this Expression<Func<T>> expr)
         {
             return (((MemberExpression)(expr.Body)).Member).Name;

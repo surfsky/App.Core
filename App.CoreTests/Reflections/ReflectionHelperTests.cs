@@ -15,11 +15,10 @@ namespace App.Core.Tests
         [TestMethod()]
         public void GetPropertyNameTest()
         {
-            //var name = ReflectionHelper.GetPropertyName<DAL.UserAsset>(t => t.CreateOrderItem.Order);
-            //var order = new DAL.Order() { ID = 1, Summary = "OrderSummary" };
-            //var orderItem = new DAL.OrderItem() { Order = order, Title="OrderItemTitle" };
-            //var asset = new DAL.UserAsset() { CreateOrderItem = orderItem };
-            //var o = asset.GetPropertyValue(t => t.CreateOrderItem.Order.Summary);
+            //var name = ReflectionHelper.GetPropertyName<Person>(t => t.Name);
+            var p = new Person() {Name="kevin", Sex=SexType.Male };
+            var n = p.GetPropertyValue(t => t.Name);
+            Assert.AreEqual(n, "kevin");
         }
 
         [TestMethod()]
@@ -43,7 +42,7 @@ namespace App.Core.Tests
         public void GetMethodNameTest()
         {
             var person = new Person("Kevin");
-            //return ReflectionHelper.GetMethodName<Person>(t => t.Cry);
+            //ReflectionHelper.GetMemberInfo<Person>(t => t.Cry);
         }
     }
 }

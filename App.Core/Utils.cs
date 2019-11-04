@@ -15,6 +15,15 @@ namespace App.Core
     public static class Utils
     {
         //--------------------------------------------------
+        // String
+        //--------------------------------------------------
+        /// <summary>获取文本</summary>
+        public static string GetText(string format, params object[] args)
+        {
+            return (args.Length == 0) ? format : string.Format(format, args);
+        }
+
+        //--------------------------------------------------
         // 为空
         //--------------------------------------------------
         /// <summary>判断对象是否不为空、空字符串、空列表</summary>

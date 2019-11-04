@@ -50,20 +50,20 @@ namespace App.Core
         /// <summary>打印到调试窗口</summary>
         public static void Trace(string format, params object[] args)
         {
-            System.Diagnostics.Trace.WriteLine(GetText(format, args));
+            System.Diagnostics.Trace.WriteLine(Utils.GetText(format, args));
         }
 
 
         /// <summary>打印到控制台窗口</summary>
         public static void Console(string format, params object[] args)
         {
-            System.Console.WriteLine(GetText(format, args));
+            System.Console.WriteLine(Utils.GetText(format, args));
         }
 
         /// <summary>打印到调试窗口</summary>
         public static void Debug(string format, params object[] args)
         {
-            System.Diagnostics.Debug.WriteLine(GetText(format, args));
+            System.Diagnostics.Debug.WriteLine(Utils.GetText(format, args));
         }
 
         /// <summary>打印到所有输出窗口</summary>
@@ -74,11 +74,7 @@ namespace App.Core
             //Debug(format, args);
         }
 
-        /// <summary>获取文本</summary>
-        public static string GetText(string format, object[] args)
-        {
-            return (args.Length == 0) ? format : string.Format(format, args);
-        }
+        
 
         //------------------------------------------------------------
         // 配置相关 *.config>AppSetting

@@ -64,6 +64,13 @@ namespace App.Core
         //------------------------------------------------------------
         // 输出文本
         //------------------------------------------------------------
+        /// <summary>输出一段文本</summary>
+        public static void Write(string format, object[] args)
+        {
+            var response = HttpContext.Current.Response;
+            response.Write(Utils.GetText(format, args));
+        }
+
         /// <summary>输出文本</summary>
         public static void WriteText(string text, string mimeType = @"text/html", string fileName = "", Encoding encoding = null, bool addMobileMeta = false)
         {

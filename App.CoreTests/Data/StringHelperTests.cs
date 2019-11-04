@@ -120,11 +120,5 @@ function do() {
 
             Assert.AreEqual(size3.ToSizeText("{0:0.00}"), "15.70 MB");
         }
-
-        [TestMethod()]
-        public void ToSizeTextTest1()
-        {
-            Assert.Fail();
-        }
     }
 }

@@ -12,28 +12,6 @@ namespace App.Core.Tests
     public class UtilsTests
     {
         [TestMethod()]
-        public void IIFTest()
-        {
-            var score = 2000;
-            var result = score.IIF(t => t > 1000, "High", "Low");
-        }
-
-        [TestMethod()]
-        public void HasBitTest()
-        {
-            SexType all = SexType.Male | SexType.Female;
-            bool isMale = all.HasFlag(SexType.Male);
-        }
-
-        [TestMethod()]
-        public void IndexOfTest()
-        {
-            var items = new string[] { "ID", "Name", "Url" };
-            var n = items.IndexOf(t => t == "Name");
-            Assert.AreEqual(n, 1);
-        }
-
-        [TestMethod()]
         public void IsEmptyTest()
         {
             // string
@@ -49,7 +27,7 @@ namespace App.Core.Tests
             Assert.IsTrue(arr.IsEmpty());
             arr = new List<string> { };
             Assert.IsTrue(arr.IsEmpty());
-            arr = new List<string> { "aa"};
+            arr = new List<string> { "aa" };
             Assert.IsTrue(arr.IsNotEmpty());
 
             // object
@@ -58,6 +36,27 @@ namespace App.Core.Tests
             p = new Person();
             Assert.IsTrue(p.IsNotEmpty());
 
+        }
+        [TestMethod()]
+        public void IIFTest()
+        {
+            var score = 2000;
+            var result = score.IIF(t => t > 1000, "High", "Low");
+        }
+
+        [TestMethod()]
+        public void IndexOfTest()
+        {
+            var items = new string[] { "ID", "Name", "Url" };
+            var n = items.IndexOf(t => t == "Name");
+            Assert.AreEqual(n, 1);
+        }
+
+        [TestMethod()]
+        public void GetTextTest()
+        {
+            Assert.AreEqual(Utils.GetText("hello world"), "hello world");
+            Assert.AreEqual(Utils.GetText("hello {0}", "world"), "hello world");
         }
     }
 }
