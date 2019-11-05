@@ -47,9 +47,9 @@ namespace App.Core.Tests
 
 
         // 方法
-        public void Cry()
+        public void Cry(string msg, int times)
         {
-            IO.Trace("I am crying");
+            IO.Trace(msg);
         }
 
 

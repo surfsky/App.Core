@@ -1,60 +1,574 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>概述</title>
+    <title>Description</title>
 </head>
 <body>
 
-    <h1 id="section">概述</h1>
-<p>AppPlat 核心辅助类库（UI无关、平台无关）</p>
-<pre><code>- Convertors : 各种数据类型的相互转换
-- Data       : 数据、数据类型转换、序列化相关
-- Draw	     : 绘图相关
-- Linq	     : Linq和EF相关
-- Math       : 算法相关
-- Net        : 网络相关
-- Web        : Asp.net 网站相关（由于非常常用，就不分离出来了）
-- Utils      : 遍历扩展方法
+    <h1 id="description">Description</h1>
+<p>AppPlat Core utility library (ui-independent, platform-independent)</p>
+<p>This library supports many useful convinient extensions and methods, such as:</p>
+<pre><code>- ToXXX
+- CastXXX
+- ParseXXX
+- Reflection
+- Encode/Decode
+- Interop
+- EF extensions
+- ...
 </code></pre>
 <h1 id="nuget-install">Nuget Install</h1>
 <pre><code>
 Nuget: install-package App.Corer
 </code></pre>
 <blockquote>
-<p>由于 App.Core nuget名称已经被用了，只能用App.Corer 了，注意区分</p>
+<p>The desired name <em>App.Core</em> has been used in nuget，so I have to use <em>App.Corer</em>, ATTENTION*</p>
 </blockquote>
-<h1 id="section-1">备注</h1>
-<ul>
-<li>该类库着重可移植性和基础性，不涉及UI、平台相关代码。</li>
-<li>该类库属于基础类库，变更频率不宜过快。</li>
-<li>版本发布遵照“主版本号.次版本号.修订版本号”结构。如
-<ul>
-<li>1.1.2 与 1.1.0 兼容，只是修改了bug</li>
-<li>1.2.0 与 1.1.0 相比，api可能不兼容</li>
-<li>2.0.0 与 1.0.0 相比，结构可能会大改，api 基本不兼容</li>
-</ul>
-</li>
-<li>处于兼容性及减轻历史负担的折衷考虑
-<ul>
-<li>0.x.x 版本会直接抛弃老 api，不考虑兼容性</li>
-<li>即将废弃的api会标注上 [Obsolete]，该api只保留2个次版本</li>
-<li>在后继第3个次版本时，会废弃该api（事不过三原则）</li>
-</ul>
-</li>
-</ul>
-<h1 id="section-2">常用功能</h1>
+<h1 id="examples">Examples</h1>
 <h2 id="utils">Utils</h2>
+<pre><code class="language-csharp">        [TestMethod()]
+        public void IsEmptyTest()
+        {
+            // string
+            string text = null;
+            Assert.IsTrue(text.IsEmpty());
+            text = &quot;&quot;;
+            Assert.IsTrue(text.IsEmpty());
+            text = &quot;aa&quot;;
+            Assert.IsTrue(text.IsNotEmpty());
+
+            // list
+            List&lt;string&gt; arr = null;
+            Assert.IsTrue(arr.IsEmpty());
+            arr = new List&lt;string&gt; { };
+            Assert.IsTrue(arr.IsEmpty());
+            arr = new List&lt;string&gt; { &quot;aa&quot; };
+            Assert.IsTrue(arr.IsNotEmpty());
+
+            // object
+            Person p = null;
+            Assert.IsTrue(p.IsEmpty());
+            p = new Person();
+            Assert.IsTrue(p.IsNotEmpty());
+
+        }
+        [TestMethod()]
+        public void IIFTest()
+        {
+            var score = 2000;
+            var result = score.IIF(t =&gt; t &gt; 1000, &quot;High&quot;, &quot;Low&quot;);
+        }
+
+        [TestMethod()]
+        public void IndexOfTest()
+        {
+            var items = new string[] { &quot;ID&quot;, &quot;Name&quot;, &quot;Url&quot; };
+            var n = items.IndexOf(t =&gt; t == &quot;Name&quot;);
+            Assert.AreEqual(n, 1);
+        }
+</code></pre>
+<h2 id="cache">Cache</h2>
+<pre><code class="language-csharp">        [TestMethod()]
+        public void GetCacheTest()
+        {
+            var key = &quot;Name&quot;;
+            var name1 = IO.GetCache(key, () =&gt; &quot;Kevin&quot;);
+            var name2 = IO.GetCache&lt;string&gt;(key);
+            Assert.AreEqual(name1, name2);
+            IO.SetCache(key, &quot;John&quot;);
+            var name3 = IO.GetCache&lt;string&gt;(key);
+            Assert.AreEqual(name3, &quot;John&quot;);
+        }
+</code></pre>
+<h2 id="file-name-and-url">File name and url</h2>
+<pre><code class="language-csharp">        [TestMethod()]
+        public void GetFileNameTest()
+        {
+            string url = &quot;http://oa.wzcc.com/oamain.aspx?a=x&amp;b=xx&quot;;
+            var name = url.GetFileName();
+            var ext = url.GetFileExtension();
+            var folder = url.GetFileFolder();
+            var q = url.GetQuery().ToString();
+            var u = url.TrimQuery();
+        }
+
+        [TestMethod()]
+        public void GetNextNameTest()
+        {
+            var name1 = &quot;c:\\folder\\filename.doc?x=1&quot;;
+
+            //
+            var name2 = name1.GetNextName(@&quot;_{0}&quot;).GetNextName(@&quot;_{0}&quot;);
+            Assert.AreEqual(name2, &quot;c:\\folder\\filename_3.doc?x=1&quot;);
+
+            //
+            var name3 = name1.GetNextName(@&quot;-{0}&quot;).GetNextName(@&quot;-{0}&quot;);
+            Assert.AreEqual(name3, &quot;c:\\folder\\filename-3.doc?x=1&quot;);
+
+            //
+            var name4 = name1.GetNextName(@&quot;({0})&quot;).GetNextName(@&quot;({0})&quot;);
+            Assert.AreEqual(name4, &quot;c:\\folder\\filename(3).doc?x=1&quot;);
+        }
+</code></pre>
+<h2 id="parse">Parse</h2>
+<pre><code class="language-csharp">[TestMethod()]
+        public void ToEnumTest()
+        {
+            object o;
+            ProductType type = ProductType.Repair;
+            o = type.GetDescription();
+            o = &quot;Goods&quot;.ParseEnum&lt;ProductType&gt;();
+            o = &quot;1&quot;.ParseEnum&lt;ProductType&gt;();
+        }
+[TestMethod()]
+        public void ParseSimplyXmlTest()
+        {
+            var xml = &quot;&lt;Person&gt;&lt;Name&gt;Kevin&lt;/Name&gt;&lt;Age&gt;21&lt;/Age&gt;&lt;Birthday&gt;2001-01-01&lt;/Birthday&gt;&lt;Sex&gt;&lt;/Sex&gt;&lt;/Person&gt;&quot;;
+            var o = xml.ParseXml&lt;Person&gt;();
+            var name = o.Name;
+            var age = o.Age;
+            var birthday = o.Birthday;
+        }
+
+
+
+        [TestMethod()]
+        public void ParseDynamicTest()
+        {
+            var json = &quot;{name:'Kevin', age:21}&quot;;
+            var o = json.ParseDynamic();
+            string name = o.name;
+            int age = o.age;
+        }
+
+        [TestMethod()]
+        public void ParseJObjectTest()
+        {
+            var json = &quot;{name:'Kevin', age:21}&quot;;
+            var o = json.ParseJObject();
+
+            var nameObject = o[&quot;name&quot;];
+            var ageObject = o[&quot;age&quot;];
+
+            var nameString = (string)o[&quot;name&quot;];
+            var ageInt = (int)o[&quot;age&quot;];
+
+            string name = o[&quot;name&quot;].ToText();
+            int? age = o[&quot;age&quot;].ToString().ParseInt();  //.ToInt();
+        }
+
+
+        [TestMethod()]
+        public void ParseDictTest()
+        {
+            var txt = &quot;id=1&amp;name=Kevin&quot;;
+            var dict = txt.ParseDict();
+            var id = dict[&quot;id&quot;];
+            var age = dict[&quot;age&quot;];
+            dict[&quot;age&quot;] = &quot;5&quot;;
+            age = dict[&quot;age&quot;];
+            dict.Remove(&quot;id&quot;);
+            dict.Remove(&quot;birthday&quot;);
+            txt = dict.ToString();
+        }
+
+        [TestMethod()]
+        public void ToBinaryStringTest()
+        {
+            int n = 99;
+            var text = n.ToBitString();
+            var bytes = text.ToBitBytes();
+            var m = bytes.ToInt32();
+        }
+
+        [TestMethod()]
+        public void UnicodeTest()
+        {
+            var txt1 = @&quot;亲爱的，你慢慢飞，小心前面带刺的玫瑰...&quot;;
+            var txt2 = @&quot;\u4eb2\u7231\u7684\uff0c\u4f60\u6162\u6162\u98de\uff0c\u5c0f\u5fc3\u524d\u9762\u5e26\u523a\u7684\u73ab\u7470...&quot;;
+            var encode = txt1.UnicodeEncode();
+            var decode = txt2.UnicodeDecode();
+            Assert.IsTrue(encode == txt2);
+            Assert.IsTrue(decode == txt1);
+        }
+
+        [TestMethod()]
+        public void ParseDateTest()
+        {
+            string txt3 = null;
+            var dt1 = &quot;2019-01-01&quot;.ParseDate();
+            var dt2 = &quot;&quot;.ParseDate();
+            var dt3 = txt3.ParseDate();
+        }
+
+
+
+        [TestMethod()]
+        public void ParseBoolTest()
+        {
+            string t = null;
+            Assert.AreEqual(&quot;true&quot;.ParseBool(), true);
+            Assert.AreEqual(&quot;false&quot;.ParseBool(), false);
+            Assert.AreEqual(&quot;True&quot;.ParseBool(), true);
+            Assert.AreEqual(&quot;False&quot;.ParseBool(), false);
+            Assert.AreEqual(&quot;Yes&quot;.ParseBool(), null);
+            Assert.AreEqual(&quot;&quot;.ParseBool(), null);
+            Assert.AreEqual(t.ParseBool(), null);
+        }
+
+        [TestMethod()]
+        public void ParseEnumTest()
+        {
+            Assert.AreEqual(&quot;Male&quot;.ParseEnum&lt;SexType&gt;(), SexType.Male);
+            Assert.AreEqual(&quot;0&quot;.ParseEnum&lt;SexType&gt;(), SexType.Male);
+            Assert.AreEqual(&quot;Male,Female&quot;.ParseEnums&lt;SexType&gt;(), new List&lt;SexType&gt;() { SexType.Male, SexType.Female });
+            Assert.AreEqual(&quot;0,1&quot;.ParseEnums&lt;SexType&gt;(), new List&lt;SexType&gt;() { SexType.Male, SexType.Female });
+        }
+
+        [TestMethod()]
+        public void ParseTest()
+        {
+            string s = &quot;1&quot;;
+            var o = s.Parse&lt;string&gt;();
+            var n = s.Parse&lt;int&gt;();
+            var b = s.Parse&lt;bool?&gt;();
+            Assert.AreEqual(o, &quot;1&quot;);
+            Assert.AreEqual(n, 1);
+            Assert.AreEqual(b, null);
+        }
+
+        [TestMethod()]
+        public void ToASCStringTest()
+        {
+            var txt = &quot;abcdefg&quot;;
+            var bytes = txt.ToASCBytes();
+            var asc = bytes.ToASCString();
+            Assert.AreEqual(txt, asc);
+        }
+
+        [TestMethod()]
+        public void ToHexStringTest()
+        {
+            var enc = Encoding.UTF8;
+            var txt = &quot;abcdefg&quot;;
+            var bytes = txt.ToBytes(enc);
+
+            var hexText = txt.ToHexString(enc);
+            var bytes2 = hexText.ToHexBytes();
+
+            var txt2 = bytes2.ToString(enc);
+            Assert.AreEqual(txt, txt2);
+        }
+
+</code></pre>
+<h2 id="setting">Setting</h2>
+<pre><code class="language-csharp">        [TestMethod()]
+        public void GetAppSettingTest()
+        {
+            var o1 = IO.GetAppSetting&lt;int?&gt;(&quot;MachineID&quot;);
+            var o2 = IO.GetAppSetting&lt;int?&gt;(&quot;machineID&quot;);
+            var o3 = IO.GetAppSetting&lt;int?&gt;(&quot;NotExist&quot;);
+            Assert.AreEqual(o1, o2);
+            Assert.AreEqual(o3, null);
+        }
+</code></pre>
+<h2 id="encrypt">Encrypt</h2>
+<pre><code class="language-csharp">[TestMethod()]
+        public void DesEncryptTest()
+        {
+            var key = &quot;12345678&quot;;
+            var msg = &quot;Hello world&quot;;
+            var encrypt = msg.DesEncrypt(key);
+            var decrypt = encrypt.DesDecrypt(key);
+        }
+
+        [TestMethod()]
+        public void RSACreateKeyPairTest()
+        {
+            var msg = &quot;hello world&quot;;
+            var pair = EncryptHelper.RSACreateKeyPair();
+            string encrytedMsg = EncryptHelper.RSAEncrypt(msg, pair.Key);
+            string decrytedMsg = EncryptHelper.RSADecrypt(encrytedMsg, pair.Value);
+        }
+
+        [TestMethod()]
+        public void MD5Test()
+        {
+            var txt = &quot;Hello world!&quot;;
+            var m3 = txt.MD5();        // &quot;86FB269D190D2C85F6E0468CECA42A20&quot;
+            var m4 = txt.MD5();        // &quot;86FB269D190D2C85F6E0468CECA42A20&quot;
+            var s = txt.SHA1();        // &quot;D3486AE9136E7856BC42212385EA797094475802&quot;
+            var s2 = txt.HmacSHA256(); // &quot;852D2FEC4BDA6ADD8F12C5C1DFF8420510AC5B85EF432140C7097AAEE3C270CA&quot;
+
+            var t2 = &quot;expireDt=1571896546&amp;name=190929.%E7%94%B5%E4%BF%A1%E7%9F%A5%E8%AF%86%E5%BA%93.sketch&amp;nonceStr=6727658767&amp;url=%2fFiles%2fArticles%2f191011-fb27021dfe9145adac4bde7f6f4b17b5.sketch&amp;key=SignKey&quot;;
+            var m1 = t2.MD5();         // &quot;C6CEBD9247AAB3A6EDAA7629F404CC50&quot;
+            var m2 = t2.MD5();         // &quot;C6CEBD9247AAB3A6EDAA7629F404CC50&quot;
+            Assert.AreEqual(m1, m2);
+        }
+</code></pre>
+<h2 id="convertor">Convertor</h2>
+<pre><code class="language-csharp">[TestMethod()]
+        public void ToEnumTest()
+        {
+            object o;
+            ProductType type = ProductType.Repair;
+            o = type.GetDescription();
+            o = &quot;Goods&quot;.ParseEnum&lt;ProductType&gt;();
+            o = &quot;1&quot;.ParseEnum&lt;ProductType&gt;();
+        }
+
+        [TestMethod()]
+        public void ToTextTest()
+        {
+            string txt = null;
+            var info = txt.ToText(&quot;&quot;);
+
+            DateTime dt = DateTime.Now;
+            info = dt.ToText(&quot;{0:yyyy-MM-dd}&quot;);
+            info = dt.ToText(&quot;yyyy-MM-dd&quot;);
+
+            DateTime? dt2 = null;
+            info = dt2.ToText(&quot;yyyy-MM-dd&quot;);
+        }
+</code></pre>
+<h2 id="reflection">Reflection</h2>
+<pre><code class="language-csharp">        [TestMethod()]
+        public void GetPropertyNameTest()
+        {
+            //var name = ReflectionHelper.GetPropertyName&lt;Person&gt;(t =&gt; t.Name);
+            var p = new Person() {Name=&quot;kevin&quot;, Sex=SexType.Male };
+            var n = p.GetPropertyValue(t =&gt; t.Name);
+            Assert.AreEqual(n, &quot;kevin&quot;);
+        }
+
+        [TestMethod()]
+        public void GetCurrentMethodNameTest()
+        {
+            var method = ReflectionHelper.GetCurrentMethodInfo();
+            Assert.AreEqual(method.Name, &quot;GetCurrentMethodNameTest&quot;);
+        }
+
+        [TestMethod()]
+        public void GetEventDelegatesTest()
+        {
+            var person = new Person(&quot;Kevin&quot;);
+            person.Speak += (t) =&gt; { IO.Trace(t); };
+            var subscribers = ReflectionHelper.GetEventSubscribers(person, nameof(Person.Speak));
+            foreach (var t in subscribers)
+                IO.Trace(&quot;sender={0}, method={1}&quot;, t.Target.GetType().FullName, t.Method.Name);
+        }
+</code></pre>
+<h2 id="string">String</h2>
+<pre><code class="language-csharp">[TestMethod()]
+        public void TrimEndTest()
+        {
+            var t1 = &quot;ProductNameID&quot;;
+            var t2 = t1.ReplaceRegex(&quot;Name&quot;, &quot;Key&quot;);
+            var t3 = t2.TrimEnd(&quot;ID&quot;);
+        }
+
+        [TestMethod()]
+        public void RemoveBlankTest()
+        {
+            var t1 = @&quot;
+                &lt;script&gt;ProductNameID&lt;/script&gt;
+                &lt;!- sfdsfdsfdsfdremark -&gt;
+                Text \r\n Enter \v\f ProductNameIDProductNameIDProductNameIDProductNameID
+                etc 
+                &quot;;
+            var t2 = t1.RemoveHtml();
+            var t3 = t1.RemoveBlank();
+            var t4 = t1.RemoveBlankTranslator();
+            var t5 = t1.Slim();
+            var t6 = t1.RemoveTag();
+
+            var t7 = t1.RemoveHtml().Slim().RemoveBlankTranslator().Summary(20);
+            var t10 = t1.RemoveTag().RemoveBlankTranslator().Slim().Summary(20);
+        }
+
+        [TestMethod()]
+        public void QuoteTest()
+        {
+            var t1 = &quot;\&quot;Text is 'text' \&quot;  is \r\n 'Enter' \v\f \t Prtempl&quot;;
+            var t2 = t1.Quote();
+            var t3 = t2.Unquote();
+            Assert.AreEqual(t3, t1);
+            var t4 = t1.Escape('t');
+            var t5 = t4.Unescape();
+            Assert.AreEqual(t5, t1);
+        }
+
+        [TestMethod()]
+        public void RemoveHtmlTest()
+        {
+            var t1 = @&quot;
+hello world
+&lt;script&gt;
+function do() {
+    console.write('hello world');
+}
+&lt;/script&gt;
+&lt;style&gt;
+@font-face {
+	font-family: 宋体;
+}
+&lt;/style&gt;
+&quot;;
+            var t2 = t1.RemoveHtml();
+            var t3 = t1.RemoveStyleBlock();
+            var t4 = t1.RemoveStyleBlock();
+            Assert.AreEqual(t2, &quot;hello world&quot;);
+        }
+
+
+        [TestMethod()]
+        public void SplitTest()
+        {
+            var t1 = &quot;1,2,3,4,5&quot;;
+            var t2 = &quot;1 2 3 4 5&quot;;
+            var a1 = t1.Split&lt;int&gt;();
+            var a2 = t2.Split&lt;string&gt;();
+        }
+
+        [TestMethod()]
+        public void SubTextTest()
+        {
+            var text = &quot;0123456789&quot;;
+            Assert.AreEqual(text.SubText(0, 8), &quot;01234567&quot;);
+            Assert.AreEqual(text.SubText(0, 10), &quot;0123456789&quot;);
+            Assert.AreEqual(text.SubText(0, 12), &quot;0123456789&quot;);
+            Assert.AreEqual(text.SubText(0, 5), &quot;01234&quot;);
+            Assert.AreEqual(text.SubText(5, 12), &quot;56789&quot;);
+            Assert.AreEqual(text.SubText(0, 12), &quot;0123456789&quot;);
+        }
+
+        [TestMethod()]
+        public void ContainsTest()
+        {
+            var str = &quot;Hello world&quot;;
+            Assert.IsTrue(str.Contains(&quot;Hello&quot;, true));
+            Assert.IsTrue(str.Contains(&quot;hello&quot;, true));
+            Assert.IsFalse(str.Contains(&quot;hello&quot;, false));
+            Assert.IsFalse(str.Contains(&quot;&quot;, true));
+        }
+
+        [TestMethod()]
+        public void ToSizeTextTest()
+        {
+            long size1 = 786;
+            long size2 = (long)(15.78 * 1024);
+            long size3 = (long)(15.70 * 1024 * 1024);
+            long size4 = (long)(15.782 * 1024 * 1024 * 1024);
+            long size5 = (long)(15.786 * 1024 * 1024 * 1024 * 1024);
+            Assert.AreEqual(size1.ToSizeText(), &quot;786 bytes&quot;);
+            Assert.AreEqual(size2.ToSizeText(), &quot;15.78 KB&quot;);
+            Assert.AreEqual(size3.ToSizeText(), &quot;15.7 MB&quot;);
+            Assert.AreEqual(size4.ToSizeText(), &quot;15.78 GB&quot;);
+            Assert.AreEqual(size5.ToSizeText(), &quot;15.79 TB&quot;);
+
+            Assert.AreEqual(size3.ToSizeText(&quot;{0:0.00}&quot;), &quot;15.70 MB&quot;);
+        }
+</code></pre>
+<h2 id="snowflakeid">SnowflakeID</h2>
+<pre><code class="language-csharp">[TestMethod()]
+        public void SnowflakeIDTest()
+        {
+            // 生成
+            var snow = new SnowflakeID(1);
+            var ids = new List&lt;long&gt;();
+            for (int i = 0; i &lt; 1000; i++)
+            {
+                long id = snow.NewID();
+                ids.Add(id);
+            }
+
+            // 解析
+            foreach (var id in ids)
+            {
+                IO.Write(&quot;{0} : {1}&quot;, id.ToString(), id.ToBitString());
+                var snowId = SnowflakeID.Parse(1259605479504482304);
+                var timestamp = snowId.TimeStamp;
+                var machine = snowId.Machine;
+                var sequence = snowId.Sequence;
+            }
+        }
+
+        [TestMethod()]
+        public  static void TestShift()
+        {
+            ulong n1 = 12;
+            ulong n2 = 12 &lt;&lt; 4;
+            IO.Write(&quot;{0} {1}&quot;, n1.ToBitString(), n2.ToBitString());
+        }
+</code></pre>
+<h2 id="interop">Interop</h2>
+<pre><code class="language-csharp">[TestMethod()]
+        public void EvalTest()
+        {
+            var eval = new CsEvaluator();
+            var b = eval.EvalBool(&quot;5 &gt; 4&quot;);
+            var d = eval.EvalDecimal(&quot;2.5&quot;);
+            var o = eval.Eval(&quot;new DateTime(2018,1,1)&quot;);
+            var t = eval.EvalDateTime(&quot;new DateTime(2018,1,1)&quot;);
+        }
+</code></pre>
+<h2 id="linq">Linq</h2>
+<pre><code class="language-csharp">[TestMethod()]
+        public void SortTest()
+        {
+            var persons = Person.GetPersons();
+            var page0 = persons.AsQueryable().SortAndPage(t =&gt; t.Age, true, 0, 3).ToList();
+            var page1 = persons.AsQueryable().SortAndPage(t =&gt; t.Age, true, 1, 3).ToList();
+            var page2 = persons.AsQueryable().SortAndPage(t =&gt; t.Age, true, 2, 3).ToList();
+            var page3 = persons.AsQueryable().SortAndPage(t =&gt; t.Age, true, 3, 3).ToList();
+            var page4 = persons.AsQueryable().SortAndPage(t =&gt; t.Age, true, 4, 3).ToList();
+            Assert.AreEqual(page0.Count, 3);
+            Assert.AreEqual(page1.Count, 3);
+            Assert.AreEqual(page2.Count, 3);
+            Assert.AreEqual(page3.Count, 1);
+            Assert.AreEqual(page4.Count, 0);
+        }
+</code></pre>
+<h2 id="url">Url</h2>
+<pre><code class="language-csharp">[TestMethod()]
+        public void UrlTest()
+        {
+            // 完整url测试
+            var url = new Url(&quot;http://www.company.com:8080/a/b/c.aspx?mode=new&amp;parentid=1&quot;);
+            url[&quot;mode&quot;] = &quot;edit&quot;;
+            url[&quot;id&quot;] = &quot;5&quot;;
+            url[&quot;more&quot;] = &quot;8&quot;;
+            url.Remove(&quot;parentid&quot;);
+            var txt = url.QueryString;
+
+            // 仅参数部分
+            url = new Url(&quot;mode=new&amp;id=1&quot;);
+            var mode = url[&quot;mode&quot;];
+            var id = url[&quot;id&quot;];
+            url[&quot;mode&quot;] = &quot;edit&quot;;
+            txt = url.QueryString;
+
+            // 仅前面部分
+            url = new Url(&quot;http://www.company.com:8080/a/b/c.aspx&quot;);
+            mode = url[&quot;mode&quot;];
+            id = url[&quot;id&quot;];
+            url[&quot;mode&quot;] = &quot;edit&quot;;
+            txt = url.QueryString;
+        }
+</code></pre>
+<h1 id="more">More</h1>
+<h2 id="utils-1">Utils</h2>
 <pre><code>IsEmpty()         : 字符串为null或为空判断, 对象为空判断
 IsNotEmpty()      : if (name.IsNotEmpt()) 比 if (!name.IsEmpty()) 更为自然
 ToText()          : 对象转化为字符串，对象可以为空。可用于替代 ToString() 方法。
 </code></pre>
-<h2 id="convertor">Convertor</h2>
+<h2 id="convertor-1">Convertor</h2>
 <pre><code>ToXXX()           : 转换对象类型，如 ToInt, ToEnum, ToXml, ToJson, ToMd5, ToBase64, ToUrlEncode, ToHtmlEncode
 ParseXXX()        : 解析文本为对象，如 ParseInt, ParseEnum, ParseXml, ParseJson
 CastXXX()         : 遍历并转换数据类型，如 var items = array.CastInt();
 Take()            : 遍历并找到匹配的数据，如 var items = students.Take(t =&gt; t.Sex==Sex.Male);
 </code></pre>
-<h2 id="linq">Linq</h2>
+<h2 id="linq-1">Linq</h2>
 <pre><code>SortBy            : 
 SortAndPage       : 
 Between           : 
@@ -66,7 +580,7 @@ XOR               : XOR 异或编码
 DesXXX            : DES 编解码
 RsaXXX            : RAS 编解码
 </code></pre>
-<h2 id="interop">Interop</h2>
+<h2 id="interop-1">Interop</h2>
 <pre><code>JsEvaluator       : 解析并运行 Javascript 脚本
 CsEvaluator       : 解析并运行 CSharp 脚本
 </code></pre>
@@ -107,6 +621,25 @@ public enum EditorType
 var txt = EditorType.Auto.GetDescription(); // &quot;自动选择&quot;
 ```
 </code></pre>
+<h1 id="section">备注</h1>
+<ul>
+<li>该类库着重可移植性和基础性，不涉及UI、平台相关代码。</li>
+<li>该类库属于基础类库，变更频率不宜过快。</li>
+<li>版本发布遵照“主版本号.次版本号.修订版本号”结构。如
+<ul>
+<li>1.1.2 与 1.1.0 兼容，只是修改了bug</li>
+<li>1.2.0 与 1.1.0 相比，api可能不兼容</li>
+<li>2.0.0 与 1.0.0 相比，结构可能会大改，api 基本不兼容</li>
+</ul>
+</li>
+<li>处于兼容性及减轻历史负担的折衷考虑
+<ul>
+<li>0.x.x 版本会直接抛弃老 api，不考虑兼容性</li>
+<li>即将废弃的api会标注上 [Obsolete]，该api只保留2个次版本</li>
+<li>在后继第3个次版本时，会废弃该api（事不过三原则）</li>
+</ul>
+</li>
+</ul>
 <h2 id="history">History</h2>
 <p>2019-05</p>
 <ul>
@@ -186,6 +719,211 @@ ToBase64Bytes</li>
 <ul>
 <li>ParseXXX(...) 将不抛出异常，若解析失败，则返回null</li>
 <li>Fix RegexHelper bugs: AABB, ABAB, Int....etc</li>
+</ul>
+<p>1.3.0</p>
+<ul>
+<li>Asp.GetCacheData() 迁移到IO.GetCacheData()，采用 HttpRuntime.Cache，替代 HttpContext.Current.Cache, 可用于非Web环境。</li>
+<li>修正 AssemblyVersion，采用 Assembly.GetEntryAssembly() 替代 CallingAssembly</li>
+</ul>
+<p>1.4.0</p>
+<ul>
+<li>object ParseBasicType<T>(..) 返回值改为  T ParseBaseType<T>(...)</li>
+<li>废除ToInt，ToFloat，ToDouble(this object o)等方法，请用ParseXXX()方法替代，侵入性过强。</li>
+<li>废除 public static byte[] ToBytes(this object o)，侵入性过强。以后扩展方法尽量不直接用this object参数</li>
+<li>Convertor.ToCommonString -&gt; ToSeparatedString</li>
+</ul>
+<p>1.4.4</p>
+<ul>
+<li>UIAttribute 增加3个构造方法</li>
+<li>UISetting 增加Groups属性</li>
+</ul>
+<p>1.4.5</p>
+<ul>
+<li>IO.GetCache(), SetCache(), RemoveCache()</li>
+</ul>
+<p>1.4.6 /7/9</p>
+<ul>
+<li>App.Core.Data -&gt; App.Core.Base</li>
+<li>BytesExtension -&gt; ByteHelper</li>
+<li>EnumInfo.Info -&gt; ToString()</li>
+<li>
+<ul>
+<li>Type.GetDescription()</li>
+</ul>
+</li>
+</ul>
+<p>1.5.0</p>
+<ul>
+<li>Asp.IsRequestValid</li>
+</ul>
+<p>1.5.1</p>
+<ul>
+<li>EditorType.Switch</li>
+<li>EditorType.EnumGroup</li>
+<li>UIAttribute.GetUIGroup(this Type type)</li>
+</ul>
+<p>1.5.3</p>
+<ul>
+<li>ShowType [Flags], ExportType [Flags]</li>
+<li>RegexHelper.IsMatch\ReplaceRegex 增加大小写忽略选项</li>
+</ul>
+<p>1.5.4</p>
+<ul>
+<li>FreeDictionary -&gt; App.Core</li>
+<li>fix CastInt64</li>
+</ul>
+<p>1.5.5/6</p>
+<ul>
+<li>fix Asp.BuildRequestHtml</li>
+</ul>
+<ul>
+<li>HistoryAttribute</li>
+<li>ParamAttribute</li>
+</ul>
+<p>1.5.7</p>
+<ul>
+<li>Asp.GetHandler</li>
+</ul>
+<p>1.5.8</p>
+<ul>
+<li>Convertor.Parse<T>()</li>
+</ul>
+<p>1.5.9</p>
+<ul>
+<li>StringHelper.Split<T>()</li>
+</ul>
+<p>1.5.10</p>
+<ul>
+<li>Asp.GetCompiledType no exception</li>
+<li>Utils.IndexOf<T>(Func&lt;T, bool&gt; condition)</li>
+</ul>
+<p>1.5.11</p>
+<ul>
+<li>MathHelper.Inc(ref int i, int n, int? max) change param 1 to ref</li>
+<li>Asp.GetHandler don't throw exception</li>
+</ul>
+<p>1.5.12</p>
+<ul>
+<li>MathHelper.Inc(int i, int n, int? max) recover</li>
+</ul>
+<p>1.5.13</p>
+<ul>
+<li>Utils.IsEmpty() support null, string, IEnumerable</li>
+</ul>
+<p>1.5.14</p>
+<ul>
+<li>Fix MathHelper.Inc, Dec bug</li>
+</ul>
+<p>1.5.15</p>
+<ul>
+<li>IO.GetQueryString(this url)</li>
+<li>GZipper</li>
+</ul>
+<ul>
+<li>ToHexBytes() ToHexString()</li>
+<li>StringHelper.SubText(int startIndex, int length)</li>
+</ul>
+<p>1.6.0</p>
+<ul>
+<li>EFExtension.SortBy() -&gt; Sort()</li>
+</ul>
+<p>1.6.1</p>
+<ul>
+<li>EFExtension.Page() fix bug</li>
+</ul>
+<p>1.6.2</p>
+<ul>
+<li>IO.Mimes</li>
+</ul>
+<ul>
+<li>IO.GetMimeType()</li>
+<li>Asp.WriteFile() auto fix mimetype</li>
+</ul>
+<p>1.6.3</p>
+<ul>
+<li>StringHelper.Contains(this string text, string value, bool ignoreCase=true)</li>
+</ul>
+<p>1.6.4</p>
+<ul>
+<li>Asp.WriteFile(string filePath, string mimeType = &quot;&quot;, string attachName = &quot;&quot;) rename last parameter to avoid chaos</li>
+</ul>
+<p>1.6.5</p>
+<ul>
+<li>ParamAttribute.Optional</li>
+<li>IO.GetAppSetting<T>(string key)</li>
+<li>Asp.GetQuery<T>(string key)</li>
+</ul>
+<p>1.6.6</p>
+<ul>
+<li>Net.IPs</li>
+</ul>
+<ul>
+<li>Asp.WriteFile() buffer mode</li>
+</ul>
+<ul>
+<li>Asp.WriteBigFile()</li>
+<li>Asp.WriteStream()</li>
+</ul>
+<p>1.6.8</p>
+<ul>
+<li>Asp.IsLocalFile -&gt; IsSiteFile</li>
+<li>Asp.MapPath... -&gt; extension function</li>
+</ul>
+<p>1.6.9</p>
+<ul>
+<li>AuthHelper.LoadPrincipalFromCookie no exception</li>
+</ul>
+<p>1.7.0</p>
+<ul>
+<li>Asp.WriteFile: CacheControl = &quot;no-cache&quot;;</li>
+<li>SetCachePolicy(httpcontext -&gt; httpResponse)</li>
+</ul>
+<p>1.7.1</p>
+<ul>
+<li>StringHelper.ToSizeText  supports TB</li>
+</ul>
+<p>1.7.2</p>
+<ul>
+<li>StringHelper.ToSizeText  supports format</li>
+<li>IO.MimeType update office file mimetype</li>
+</ul>
+<p>1.7.3</p>
+<ul>
+<li>ReflectionHelper.GetEventSubscribers()</li>
+<li>TypeBuilder</li>
+</ul>
+<p>1.7.4</p>
+<ul>
+<li>Asp.BuildRequestCoreInfo -&gt; BuildRequestInfo</li>
+</ul>
+<ul>
+<li>ReflectionHelper.GetAttributes()</li>
+</ul>
+<p>1.7.5</p>
+<ul>
+<li>Utils.GetText(format, args)</li>
+<li>Asp.Write(format, args)</li>
+<li>App.AspTest project</li>
+</ul>
+<p>1.7.6</p>
+<ul>
+<li>Modify StringHelper.ToSeparatedString(string text, string seperator)</li>
+<li>Fix ReflectionHelper.GetTypeString()</li>
+<li>Add ReflectionHelper.GetMethodString()</li>
+</ul>
+<p>1.7.7</p>
+<ul>
+<li>move HistoryAttribute to App.Core</li>
+<li>move ParamAttribute to App.Core, and simply construnctor</li>
+<li>move RegexValidationAttribute to App.Core</li>
+</ul>
+<p>1.7.8</p>
+<ul>
+<li>Param.Optional -&gt; Require, add Regex</li>
+</ul>
+<p>1.7.9</p>
+<ul>
+<li>Param.Require -&gt; true</li>
 </ul>
 
 

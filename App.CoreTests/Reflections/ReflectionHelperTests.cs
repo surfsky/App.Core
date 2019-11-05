@@ -16,7 +16,7 @@ namespace App.Core.Tests
         public void GetPropertyNameTest()
         {
             //var name = ReflectionHelper.GetPropertyName<Person>(t => t.Name);
-            var p = new Person() {Name="kevin", Sex=SexType.Male };
+            var p = new Person() { Name = "kevin", Sex = SexType.Male };
             var n = p.GetPropertyValue(t => t.Name);
             Assert.AreEqual(n, "kevin");
         }
@@ -43,6 +43,34 @@ namespace App.Core.Tests
         {
             var person = new Person("Kevin");
             //ReflectionHelper.GetMemberInfo<Person>(t => t.Cry);
+        }
+
+        [TestMethod()]
+        public void GetTypeStringTest()
+        {
+            var t1 = typeof(List<string>).GetTypeString();
+            var t2 = typeof(Dictionary<string, int>).GetTypeString();
+            var t3 = typeof(string).GetTypeString();
+            var t4 = typeof(int).GetTypeString();
+            var t5 = typeof(bool?).GetTypeString();
+            var t6 = typeof(A<string, int>).GetTypeString();
+
+            Assert.AreEqual(t1, "List<String>");
+            Assert.AreEqual(t2, "Dictionary<String, Int32>");
+            Assert.AreEqual(t3, "String");
+            Assert.AreEqual(t4, "Int32");
+            Assert.AreEqual(t5, "Boolean?");
+            Assert.AreEqual(t6, "A<String, Int32>");
+        }
+
+        class A<T1, T2> { }
+
+        [TestMethod()]
+        public void GetMethodStringTest()
+        {
+            var m = typeof(Person).GetMethod(nameof(Person.Cry));
+            var t = m.GetMethodString();
+            Assert.AreEqual(t, "Void Cry(String msg, Int32 times)");
         }
     }
 }

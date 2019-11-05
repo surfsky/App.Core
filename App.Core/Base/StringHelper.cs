@@ -17,6 +17,17 @@ namespace App.Core
     /// </summary>
     public static class StringHelper
     {
+        /// <summary>将最后出现的字符串及后面的部分删除掉。如"a.asp".TrimEndFrom(".") => "a"</summary>
+        public static string TrimEndFrom(this string name, string key)
+        {
+            if (name.IsEmpty())
+                return "";
+            var n = name.LastIndexOf(key);
+            if (n != -1)
+                return name.Substring(0, n);
+            return name;
+        }
+
         /// <summary>是否包含</summary>
         public static bool Contains(this string source, string value, bool ignoreCase)
         {
@@ -28,7 +39,7 @@ namespace App.Core
         }
 
         /// <summary>转化为逗号分隔的字符串</summary>
-        public static string ToSeparatedString(this IEnumerable source, char seperator = ',')
+        public static string ToSeparatedString(this IEnumerable source, string seperator = ",")
         {
             if (source == null)
                 return "";

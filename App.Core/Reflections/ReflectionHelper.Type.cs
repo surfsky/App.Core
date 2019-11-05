@@ -69,8 +69,17 @@ namespace App.Core
             if (type.IsNullable())
             {
                 type = type.GetNullableDataType();
-                return GetTypeString(type) + "?";
+                return GetTypeString(type, shortName) + "?";
             }
+            if (type.IsGenericType)
+            {
+                var gType = type.GetGenericTypeDefinition();
+                var types = type.GetGenericArguments();
+                var name = shortName ? gType.Name : gType.FullName;
+                name = name.TrimEndFrom("`");
+                return string.Format("{0}<{1}>", name, types.Select(t => t.GetTypeString()).ToSeparatedString(", "));
+            }
+            /*
             if (type.IsGenericList())
             {
                 type = type.GetGenericDataType();
@@ -78,13 +87,30 @@ namespace App.Core
             }
             if (type.IsGenericDict())
             {
-                type = type.GetGenericDataType();
-                return string.Format("Dictionary<{0}>", GetTypeString(type));
+                var gType = type.GetGenericTypeDefinition();
+                var types = type.GetGenericArguments();
+                return string.Format("Dictionary<{0}>", types.Cast(t=> t.GetTypeString()).ToSeparatedString(", "));
             }
+            */
             if (type.IsValueType)
-                return type.Name.ToString();
-            return shortName ? type.Name.ToString() : type.FullName.ToString();
+                return type.Name;
+            return shortName ? type.Name : type.FullName;
         }
+
+
+        /// <summary>获取方法描述字符串</summary>
+        public static string GetMethodString(this MethodInfo m)
+        {
+            var ps = m.GetParameters();
+            var staticString = m.IsStatic ? "static " : "";
+            return string.Format("{0}{1} {2}({3})",
+                staticString,
+                m.ReturnType.GetTypeString(),
+                m.Name,
+                ps.Select(p => $"{p.ParameterType.GetTypeString()} {p.Name}").ToSeparatedString(", ")
+                );
+        }
+
 
         /// <summary>获取类型的概述信息（可解析枚举类型）</summary>
         public static string GetTypeSummary(this Type type)

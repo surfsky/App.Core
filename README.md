@@ -518,7 +518,7 @@ function do() {
         }
 ```
 
-##Interop
+## Interop
 ```csharp
 [TestMethod()]
         public void EvalTest()
@@ -867,3 +867,20 @@ function do() {
 + Utils.GetText(format, args)
 + Asp.Write(format, args)
 + App.AspTest project
+
+1.7.6
+* Modify StringHelper.ToSeparatedString(string text, string seperator)
+* Fix ReflectionHelper.GetTypeString()
+* Add ReflectionHelper.GetMethodString()
+
+1.7.7
+* move HistoryAttribute to App.Core
+* move ParamAttribute to App.Core, and simply construnctor
+* move RegexValidationAttribute to App.Core
+
+
+1.7.8
+* Param.Optional -> Require, add Regex
+
+1.7.9
+* Param.Require -> true
