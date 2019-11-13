@@ -38,7 +38,7 @@ namespace App.Core
         }
 
 
-        /// <summary>JSON -> OBJECT</summary>
+        /// <summary>JSON -> OBJECT (注意该方法无法解析简单数据类型)</summary>
         public static object ParseJson(this string txt, Type type, JsonSerializerSettings settings = null)
         {
             settings = settings ?? GetDefaultJsonSettings();
@@ -52,13 +52,41 @@ namespace App.Core
             return JsonConvert.DeserializeObject<T>(txt, settings);
         }
 
+        //--------------------------------------------
+        // JObject
+        //--------------------------------------------
         /// <summary>Json 字符串转换为 JObject 对象。获取节点值可用： var name = o["Name1"]["Name2"].ToString(); var age = (int)o["age"];</summary>
         public static JObject ParseJObject(this string json)
         {
             return JObject.Parse(json);
         }
 
-        //
+        /// <summary>将对象转化为JObject对象（将忽略空属性）</summary>
+        /// <param name="settings">定义json序列化时的格式</param>
+        public static JObject AsJObject(this object o, JsonSerializerSettings settings=null)
+        {
+            if (o is JObject)
+                return o as JObject;
+            settings = settings ?? GetDefaultJsonSettings();
+            var serializaer = JsonSerializer.Create(settings);
+            return JObject.FromObject(o, serializaer);
+        }
+
+        /// <summary>增加属性（将忽略空值）</summary>
+        public static JObject AddProperty(this JObject jo, string name, object value)
+        {
+            if (value == null)
+                return jo;
+            jo[name] = JToken.FromObject(value);
+            return jo;
+        }
+
+
+
+        //------------------------------------------------
+        // 配置
+        //------------------------------------------------
+        /// <summary>Json 序列化默认配置</summary>
         public static JsonSerializerSettings GetDefaultJsonSettings()
         {
             JsonSerializerSettings settings = new JsonSerializerSettings();
@@ -66,8 +94,8 @@ namespace App.Core
             settings.NullValueHandling = NullValueHandling.Ignore;                      // 忽略null值
             settings.DateFormatHandling = DateFormatHandling.MicrosoftDateFormat;       // 日期格式
             settings.DateFormatString = "yyyy-MM-dd HH:mm:ss";                          // 
-            settings.Formatting = Newtonsoft.Json.Formatting.Indented;                                  // 递进
-            settings.MaxDepth = 10;                                                     // 设置序列化的最大层数  
+            settings.Formatting = Newtonsoft.Json.Formatting.Indented;                  // 递进
+            settings.MaxDepth = 5;                                                      // 设置序列化的最大层数  
             settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;              // 指定如何处理循环引用
             settings.Converters.Add(new StringEnumConverter());                         // 枚举输出为字符串
             return settings;

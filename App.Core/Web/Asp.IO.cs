@@ -65,7 +65,7 @@ namespace App.Core
         // 输出文本
         //------------------------------------------------------------
         /// <summary>输出一段文本</summary>
-        public static void Write(string format, object[] args)
+        public static void Write(string format, params object[] args)
         {
             var response = HttpContext.Current.Response;
             response.Write(Utils.GetText(format, args));

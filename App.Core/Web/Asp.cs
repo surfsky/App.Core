@@ -210,68 +210,29 @@ namespace App.Core
         }
 
         /// <summary>获取查询字符串</summary>
-        public static T GetQuery<T>(string queryKey)
+        public static T? GetQuery<T>(string queryKey) where T : struct
         {
-            var txt = HttpContext.Current.Request.QueryString[queryKey];
-            return txt.Parse<T>();
+            return GetQueryString(queryKey).Parse<T?>();
         }
 
         /// <summary>获取查询字符串中的整型参数值</summary>
         public static int? GetQueryInt(string queryKey)
         {
-            int result = -1;
-            string str = HttpContext.Current.Request.QueryString[queryKey];
-            if (!string.IsNullOrEmpty(str) && Int32.TryParse(str, out result))
-                return result;
-            return null;
+            return GetQueryString(queryKey).ParseInt();
         }
 
         /// <summary>获取查询字符串中的整型参数值</summary>
         public static Int64? GetQueryLong(string queryKey)
         {
-            Int64 result = -1;
-            string str = HttpContext.Current.Request.QueryString[queryKey];
-            if (!string.IsNullOrEmpty(str) && Int64.TryParse(str, out result))
-                return result;
-            return null;
-        }
-
-        /// <summary>获取查询字符串中的小数参数值</summary>
-        public static double? GetQueryDouble(string queryKey)
-        {
-            double result = -1;
-            string str = HttpContext.Current.Request.QueryString[queryKey];
-            if (str.IsNotEmpty() && double.TryParse(str, out result))
-                return result;
-            return null;
+            return GetQueryString(queryKey).ParseLong();
         }
 
         /// <summary>获取查询字符串中的boolean参数值</summary>
         public static bool? GetQueryBool(string queryKey)
         {
-            bool result = false;
-            string str = HttpContext.Current.Request.QueryString[queryKey];
-            if (str.IsNotEmpty() && Boolean.TryParse(str, out result))
-                return result;
-            return null;
+            return GetQueryString(queryKey).ParseBool();
         }
 
-        /// <summary>获取查询字符串中的日期时间参数值</summary>
-        public static DateTime? GetQueryDate(string queryKey)
-        {
-            DateTime result;
-            string str = HttpContext.Current.Request.QueryString[queryKey];
-            if (!string.IsNullOrEmpty(str) && DateTime.TryParse(str, out result))
-                return result;
-            return null;
-        }
-
-        /// <summary>获取查询字符串中的枚举参数值（支持枚举字符串或枚举数字）</summary>
-        public static T? GetQueryEnum<T>(string queryKey) where T : struct
-        {
-            string str = HttpContext.Current.Request.QueryString[queryKey];
-            return str.ParseEnum<T>();
-        }
 
         /// <summary>获取 URL 对应的处理器类</summary>
         public static Type GetHandler(string url, HttpContext context=null)

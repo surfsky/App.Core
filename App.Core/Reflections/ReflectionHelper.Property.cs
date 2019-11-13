@@ -105,6 +105,17 @@ namespace App.Core
         //------------------------------------------------
         // Linq 强类型方法
         //------------------------------------------------
+        /// <summary>获取类的成员信息。GetMemberInfo&lt;User&gt;(t =&gt; t.Name);</summary>
+        public static MemberInfo GetMemberInfo<T, TMember>(this Expression<Func<T, TMember>> property)
+        {
+            MemberExpression me;
+            if (property.Body is UnaryExpression)
+                me = ((UnaryExpression)property.Body).Operand as MemberExpression;    // array.Length 数组长度是一元操作符
+            else
+                me = property.Body as MemberExpression;
+            return me.Member;
+        }
+
         /// <summary>获取表达式属性信息</summary>
         public static PropertyInfo GetPropertyInfo<T>(this Expression<Func<T, object>> expr)
         {
@@ -137,14 +148,14 @@ namespace App.Core
         }
 
 
-        /// <summary>获取表达式属性名。var name = GetPropertyName<User>(t => t.Dept.Name);</summary>
+        /// <summary>获取表达式属性名。var name = GetPropertyName&lt;User&gt;(t =&gt; t.Dept.Name);</summary>
         public static string GetExpressionName<T>(this Expression<Func<T, object>> expr)
         {
             return (expr == null) ? "" : GetExpressionName(expr.Body);
         }
 
 
-        /// <summary>获取表达式属性名。var name = GetPropertyName<User>(t => t.Dept.Name);</summary>
+        /// <summary>获取表达式属性名。var name = GetPropertyName&lt;User&gt;(t =&gt; t.Dept.Name);</summary>
         public static string GetExpressionName(this Expression expr)
         {
             // 一元操作符: array.Length, Convert(t.CreatDt)
@@ -173,27 +184,16 @@ namespace App.Core
         }
 
 
-        /// <summary>获取类的属性名。var name = GetPropertyName&lt;User, string&gt;(t => t.Name);</summary>
+        /// <summary>获取类的属性名。var name = GetPropertyName&lt;User, string&gt;(t =&gt; t.Name);</summary>
         public static string GetPropertyName<T, TMember>(this Expression<Func<T, TMember>> property)
         {
             return GetMemberInfo(property).Name;
         }
 
-        /// <summary>获取对象的属性名。可用于获取一些匿名对象的属性名。GetPropertyName(() => user.Name)</summary>
+        /// <summary>获取对象的属性名。可用于获取一些匿名对象的属性名。GetPropertyName(() =&gt; user.Name)</summary>
         public static string GetPropertyName<T>(this Expression<Func<T>> expr)
         {
             return (((MemberExpression)(expr.Body)).Member).Name;
-        }
-
-        /// <summary>获取类的成员信息。GetMemberInfo<User>(t => t.Name);</summary>
-        public static MemberInfo GetMemberInfo<T, TMember>(this Expression<Func<T, TMember>> property)
-        {
-            MemberExpression me;
-            if (property.Body is UnaryExpression)
-                me = ((UnaryExpression)property.Body).Operand as MemberExpression;    // array.Length 数组长度是一元操作符
-            else
-                me = property.Body as MemberExpression;
-            return me.Member;
         }
 
         

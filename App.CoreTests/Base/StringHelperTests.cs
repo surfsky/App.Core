@@ -14,9 +14,9 @@ namespace App.Core.Tests
         [TestMethod()]
         public void TrimEndTest()
         {
-            var t1 = "ProductNameID";
-            var t2 = t1.ReplaceRegex("Name", "Key");
-            var t3 = t2.TrimEnd("ID");
+            Assert.AreEqual("ProductNameID".TrimEnd("ID"), "ProductName");
+            Assert.AreEqual("ProductNameID".TrimEnd("Name"), "ProductNameID");
+            Assert.AreEqual("Product$".TrimEnd("$"), "Product");
         }
 
         [TestMethod()]
@@ -119,6 +119,19 @@ function do() {
             Assert.AreEqual(size5.ToSizeText(), "15.79 TB");
 
             Assert.AreEqual(size3.ToSizeText("{0:0.00}"), "15.70 MB");
+        }
+
+        [TestMethod()]
+        public void AddQueryStringTest()
+        {
+            var url = "a.aspx?a=1";
+            var q = "a=2&b=3";
+            Assert.AreEqual(url.AddQueryString(q), "a.aspx?a=2&b=3");
+
+
+            var url2 = "a=1";
+            var q2 = "a=2&b=3";
+            Assert.AreEqual(url2.AddQueryString(q2), "a=2&b=3");
         }
     }
 }

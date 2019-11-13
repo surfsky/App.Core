@@ -32,53 +32,104 @@ namespace App.Core
         //--------------------------------------------------
         // 将文本解析为值或对象
         //--------------------------------------------------
-        /// <summary>将文本解析为数字及衍生类型(枚举、布尔、日期）</summary>
+        /// <summary>是否是基础类型（数字、枚举、布尔、日期）</summary>
+        public static bool IsBasicType(this Type type)
+        {
+            if (type.IsNullable())
+                type = type.GetRealType();
+            if (type == typeof(string))    return true;
+            if (type == typeof(int))       return true;
+            if (type == typeof(long))      return true;
+            if (type == typeof(short))     return true;
+            if (type == typeof(uint))      return true;
+            if (type == typeof(ulong))     return true;
+            if (type == typeof(ushort))    return true;
+            if (type == typeof(float))     return true;
+            if (type == typeof(double))    return true;
+            if (type == typeof(decimal))   return true;
+            if (type == typeof(bool))      return true;
+            if (type == typeof(DateTime))  return true;
+            if (type.IsEnum())             return true;
+            return false;
+        }
+
+        /// <summary>解析为指定类型对象（数字、枚举、布尔、日期、类对象）</summary>
         public static T Parse<T>(this string text)
         {
-            return (T)text.ParseBasicType(typeof(T));
+            var type = typeof(T);
+            if (type.IsBasicType())
+                return (T)text.ParseBasicType(typeof(T));
+            return (T)text.ParseJson(type);
         }
 
-        /// <summary>将文本解析为数字及衍生类型(枚举、布尔、日期）</summary>
-        public static T ParseBasicType<T>(this string text) where T : struct
+        /// <summary>解析为指定类型对象（数字、枚举、布尔、日期、类对象）</summary>
+        public static object Parse(this string text, Type type)
         {
-            return (T)text.ParseBasicType(typeof(T));
+            if (type.IsBasicType())
+                return text.ParseBasicType(type);
+            return text.ParseJson(type);
         }
 
-        /// <summary>将文本转化为数字及衍生类型(枚举、布尔、日期）</summary>
+
+        /// <summary>将文本解析为基础数据类型（数字、枚举、布尔、日期）</summary>
         /// <remarks>ParseBasicType, ParseSimpleType, ParseValue, ParseNumber</remarks>
         public static object ParseBasicType(this string text, Type type)
         {
             if (type == typeof(string))
                 return text;
 
+            // 可空类型
             if (type.IsNullable())
             {
+                if (text.IsEmpty())
+                    return null;
                 type = type.GetRealType();
                 if (type == typeof(int))      return text.ParseInt();
                 if (type == typeof(long))     return text.ParseLong();
+                if (type == typeof(short))    return text.ParseShort();
+                if (type == typeof(uint))     return text.ParseUInt();
                 if (type == typeof(ulong))    return text.ParseULong();
+                if (type == typeof(ushort))   return text.ParseUShort();
                 if (type == typeof(float))    return text.ParseFloat();
                 if (type == typeof(double))   return text.ParseDouble();
                 if (type == typeof(decimal))  return text.ParseDecimal();
-                if (type == typeof(short))    return text.ParseShort();
                 if (type == typeof(bool))     return text.ParseBool();
                 if (type == typeof(DateTime)) return text.ParseDate();
                 if (type.IsEnum())            return text.ParseEnum(type);
             }
-            else
+
+            // 非可空类型，如果文本为空，输出默认值
+            if (text.IsEmpty())
             {
-                if (type == typeof(int))      return text.ParseInt().Value;
-                if (type == typeof(long))     return text.ParseLong().Value;
-                if (type == typeof(ulong))    return text.ParseULong().Value;
-                if (type == typeof(float))    return text.ParseFloat().Value;
-                if (type == typeof(double))   return text.ParseDouble().Value;
-                if (type == typeof(decimal))  return text.ParseDecimal().Value;
-                if (type == typeof(short))    return text.ParseShort().Value;
-                if (type == typeof(bool))     return text.ParseBool().Value;
-                if (type == typeof(DateTime)) return text.ParseDate().Value;
-                if (type.IsEnum())            return text.ParseEnum(type);
+                if (type == typeof(int))      return 0;
+                if (type == typeof(long))     return 0;
+                if (type == typeof(short))    return 0;
+                if (type == typeof(uint))     return 0;
+                if (type == typeof(ulong))    return 0;
+                if (type == typeof(ushort))   return 0;
+                if (type == typeof(float))    return 0;
+                if (type == typeof(double))   return 0;
+                if (type == typeof(decimal))  return 0;
+                if (type == typeof(bool))     return true;
+                if (type == typeof(DateTime)) return new DateTime();
+                if (type.IsEnum())            return "0".ParseEnum(type);
             }
 
+            // 非可空类型，如果文本非空，解析之
+            if (type == typeof(int))      return text.ParseInt().Value;
+            if (type == typeof(long))     return text.ParseLong().Value;
+            if (type == typeof(short))    return text.ParseShort().Value;
+            if (type == typeof(uint))     return text.ParseUInt().Value;
+            if (type == typeof(ulong))    return text.ParseULong().Value;
+            if (type == typeof(ushort))   return text.ParseUShort().Value;
+            if (type == typeof(float))    return text.ParseFloat().Value;
+            if (type == typeof(double))   return text.ParseDouble().Value;
+            if (type == typeof(decimal))  return text.ParseDecimal().Value;
+            if (type == typeof(bool))     return text.ParseBool().Value;
+            if (type == typeof(DateTime)) return text.ParseDate().Value;
+            if (type.IsEnum())            return text.ParseEnum(type);
+
+            // 剩下的不解析了
             return text;
         }
 
@@ -165,6 +216,14 @@ namespace App.Core
             return null;
         }
 
+        /// <summary>Parse string to uint?</summary>
+        public static uint? ParseUInt(this string text)
+        {
+            if (UInt32.TryParse(text, out UInt32 val))
+                return val;
+            return null;
+        }
+
         /// <summary>Parse string to int64?</summary>
         public static long? ParseLong(this string text)
         {
@@ -180,6 +239,13 @@ namespace App.Core
                 return val;
             return null;
         }
+        /// <summary>Parse string to ushort?</summary>
+        public static ushort? ParseUShort(this string text)
+        {
+            if (UInt16.TryParse(text, out UInt16 val))
+                return val;
+            return null;
+        }
 
         /// <summary>Parse string to ulong?</summary>
         public static ulong? ParseULong(this string text)
@@ -190,6 +256,7 @@ namespace App.Core
         }
 
         /// <summary>Parse string to bool?</summary>
+        /// <param name="text">true|false|True|False</param>
         public static bool? ParseBool(this string text)
         {
             if (bool.TryParse(text, out bool val))

@@ -154,7 +154,7 @@ namespace App.Core
             return HttpUtility.HtmlDecode(text);
         }
 
-        /// <summary>组装QueryString。如：a=1&b=2&c=3</summary>
+        /// <summary>组装QueryString。如：a=1&amp;b=2&amp;c=3</summary>
         public static string ToQueryString(this Dictionary<string, string> data)
         {
             if (data == null || data.Count == 0)

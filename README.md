@@ -884,3 +884,42 @@ function do() {
 
 1.7.9
 * Param.Require -> true
+
+1.7.10
+* ParamAttribute + ToString(); Require -> Required
+* UIAttribute + Remark + ToString()
+
+1.8.0
+* Fix StringHelper.TrimEnd() bug
+
+
+1.8.1
+* Asp.Write(string format, params object[] args)
+
+1.8.2
++ RegexHelper.ReplaceRegex(text, matchRegex, callback)
+
+1.8.3
++ ReflectionHelper.SearchMethods
+
+1.8.4
+* ReflectionHelper.GetMethods(type, methodName, searchAncestors)
+ 
+1.8.5
++ Add MethodInfo.GetAttributes<T>
+* Adjust ParamAttribute construction functions
+* Adjust ReflectionHelper.GetCurrentMethod()
+* export xml file to nuget, for programming time
+
+
+1.8.6
+* UISetting.Items auto init data, not null
+* ParamAttribute.Type init data is null
+
+1.8.7
++ UIAttribute.Name
+
+1.8.8
+* EditorType
+* ShowType
+

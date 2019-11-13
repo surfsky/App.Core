@@ -21,6 +21,7 @@ namespace App.Core
     /// </summary>
     public static partial class Convertor
     {
+
         /// <summary>转化为整型列表</summary>
         public static List<int> CastInt(this IEnumerable source)
         {
@@ -76,7 +77,7 @@ namespace App.Core
             return result;
         }
 
-        /// <summary>遍历过滤（同Where，但名字会冲突; Query; Search; Filter）</summary>
+        /// <summary>遍历过滤（同Where，但名字会冲突; 可考虑用 Query; Search; Filter）</summary>
         public static List<T> Search<T>(this IEnumerable<T> source, Func<T, bool> func)
         {
             var result = new List<T>();

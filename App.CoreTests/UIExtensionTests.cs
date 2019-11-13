@@ -15,15 +15,17 @@ namespace App.Core.Tests
         [TestMethod()]
         public void GetDescriptionTest()
         {
-            object o;
+            var p = new Person() { Sex = SexType.Male };
             var sex = SexType.Female;
-            var p = new Person();
 
+            object o;
+            o = p.GetDescription();
+            o = p.GetDescription(t => t.Name);
             o = sex.GetDescription();
             o = sex.GetUIGroup();
             o = sex.GetUIAttribute();
-            o = p.GetDescription(t => t.Name);
             o = UIExtension.GetDescription<Person>(t => t.Name);
+            o = typeof(Person).GetProperty(nameof(Person.Name)).GetDescription();
         }
     }
 }

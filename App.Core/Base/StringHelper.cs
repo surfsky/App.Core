@@ -17,6 +17,16 @@ namespace App.Core
     /// </summary>
     public static class StringHelper
     {
+        /// <summary>为 Url 增加并合并 QueryString</summary>
+        public static string AddQueryString(this string url, string queryString)
+        {
+            var u = new Url(url);
+            var dict = queryString.ParseDict();
+            foreach (var key in dict.Keys)
+                u[key] = dict[key];
+            return u.ToString();
+        }
+
         /// <summary>将最后出现的字符串及后面的部分删除掉。如"a.asp".TrimEndFrom(".") => "a"</summary>
         public static string TrimEndFrom(this string name, string key)
         {
@@ -263,9 +273,12 @@ namespace App.Core
         /// <summary>裁掉尾部的匹配字符串</summary>
         public static string TrimEnd(this string text, string match)
         {
-            if (text.IsEmpty()) return "";
-            var reg = string.Format("{0}$", match);
-            return  Regex.Replace(text, reg, "", RegexOptions.IgnoreCase);
+            if (text.IsEmpty()) 
+                return "";
+            int n = text.LastIndexOf(match);
+            if (n == -1)
+                return text;
+            return text.Substring(0, n);
         }
 
         /// <summary>获取遮罩文本（XXXXXXXXXX****XXXX）</summary>

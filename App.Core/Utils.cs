@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,28 @@ namespace App.Core
         public static string GetText(string format, params object[] args)
         {
             return (args.Length == 0) ? format : string.Format(format, args);
+        }
+
+
+        /// <summary>获取资源文本</summary>
+        /// <remarks>请配置AppCoreConfig.UseGlobal 和 ResType 属性</remarks>
+        public static string GetResText(this string resName)
+        {
+            bool useGlobal = AppCoreConfig.Instance.UseGlobal;
+            if (useGlobal)
+                return GetResText(resName, AppCoreConfig.Instance.ResType);
+            return resName;
+        }
+
+        /// <summary>获取资源文本</summary>
+        public static string GetResText(this string resName, Type resType)
+        {
+            if (resType != null)
+            {
+                ResourceManager resManager = new ResourceManager(resType);
+                return resManager.GetString(resName);
+            }
+            return resName;
         }
 
         //--------------------------------------------------
@@ -57,10 +80,17 @@ namespace App.Core
         }
 
 
-
         //--------------------------------------------------
         // 逻辑、断言
         //--------------------------------------------------
+        /// <summary>断言（如果逻辑表达式不成立，则抛出异常）</summary>
+        public static void Assert(bool condition, string failInfo)
+        {
+            if (!condition)
+                throw new Exception(failInfo);
+        }
+
+
         /// <summary>模拟VBA的 IIF 函数。逻辑如 var result = o.IIF(t=>t>0, "Positive", "Nagetive");</summary>
         public static TResult IIF<TSource, TResult>(this TSource o, Func<TSource, bool> condition, TResult trueValue, TResult falseValue)
         {
@@ -69,14 +99,6 @@ namespace App.Core
             else
                 return falseValue;
         }
-
-        /// <summary>断言（如果逻辑表达式不成立，则抛出异常）</summary>
-        public static void Assert(bool condition, string failInfo)
-        {
-            if (!condition)
-                throw new Exception(failInfo);
-        }
-
 
         //--------------------------------------------------
         // 列表

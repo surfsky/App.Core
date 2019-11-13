@@ -15,37 +15,52 @@ namespace App.Core
     /// </summary>
     public  static partial class ReflectionHelper
     {
-        
+        //------------------------------------------------
+        // 方法
+        //------------------------------------------------
+        /// <summary>获取类的方法（包括祖先的）。注意 Type.GetMethods()只能获取当前类下的方法。</summary>
+        /// <param name="searchAncestors">是否检索祖先的同名方法</param>
+        public static List<MethodInfo> GetMethods(this Type type, string methodName, bool searchAncestors=true)
+        {
+            var methods = new List<MethodInfo>();
+
+            // 遍历到父节点，寻找指定方法
+            var t = type;
+            var ms = new List<MethodInfo>();
+            while (t != null)
+            {
+                ms = t.GetMethods().Where(m => m.Name == methodName).ToList();
+                methods.AddRange(ms);
+                if (!searchAncestors)
+                    break;
+                t = t.BaseType;
+            }
+            return methods;
+        }
+
+
         //------------------------------------------------
         // 特性
         //------------------------------------------------
-        /// <summary>获取指定特性</summary>
-        public static T GetAttribute<T>(this Type type) where T : Attribute
+        /// <summary>获取指定特性列表（支持Type、Property、Method等）</summary>
+        public static List<T> GetAttributes<T>(this MemberInfo m) where T : Attribute
         {
-            T[] arr = (T[])type.GetCustomAttributes(typeof(T), true);
-            return (arr.Length == 0) ? null : arr[0];
+            // 这种方法会获取包含基类的Attribute，不合适
+            // return (T[])m.GetCustomAttributes(typeof(T), true).ToList();  
+            // 准确获取完全一致的  Attribute，不包含基类
+            return m.GetCustomAttributes()
+                .Where(t => t.GetType() == typeof(T))
+                .Select(t => t as T)
+                .ToList()
+                ;
         }
 
-        /// <summary>获取指定特性</summary>
-        public static T GetAttribute<T>(this PropertyInfo p) where T : Attribute
+        /// <summary>获取指定特性（不抛出异常）</summary>
+        public static T GetAttribute<T>(this MemberInfo m) where T : Attribute
         {
-            T[] arr = (T[])p.GetCustomAttributes(typeof(T), true);
-            return (arr.Length == 0) ? null : arr[0];
+            return m.GetAttributes<T>().FirstOrDefault();
         }
 
-        /// <summary>获取指定特性</summary>
-        public static List<T> GetAttributes<T>(this Type type) where T : Attribute
-        {
-            T[] arr = (T[])type.GetCustomAttributes(typeof(T), true);
-            return arr.ToList();
-        }
-
-        /// <summary>获取指定特性</summary>
-        public static List<T> GetAttributes<T>(this PropertyInfo p) where T : Attribute
-        {
-            T[] arr = (T[])p.GetCustomAttributes(typeof(T), true);
-            return arr.ToList();
-        }
 
         //------------------------------------------------
         // 事件
@@ -69,9 +84,9 @@ namespace App.Core
         // 方法
         //------------------------------------------------
         /// <summary>获取当前方法信息</summary>
-        public static MethodBase GetCurrentMethodInfo()
+        public static MethodInfo GetCurrentMethod()
         {
-            return new System.Diagnostics.StackTrace().GetFrame(1).GetMethod();
+            return new System.Diagnostics.StackTrace().GetFrame(1).GetMethod() as MethodInfo;
         }
 
         /*

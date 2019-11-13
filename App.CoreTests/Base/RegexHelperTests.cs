@@ -74,14 +74,14 @@ namespace App.Core.Tests
 
             // 剩下的就是单标签和回车符
             List<ContentPart> items = new List<ContentPart>();
-            var parts = text.Split(new string[] { "\r" }, StringSplitOptions.RemoveEmptyEntries);            
+            var parts = text.Split(new string[] { "\r" }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var part in parts)
             {
                 // 尝试解析图像标签
                 string pattern = @"<img\s*src=['""](?<src>[^'""]*)['""].*>";
                 Regex r = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
                 var m = r.Match(part);
-                
+
                 if (m.Success)
                     items.Add(new ContentPart("img", m.Result("${src}")));
                 else
@@ -121,6 +121,7 @@ namespace App.Core.Tests
         [TestMethod()]
         public void ReplaceRegexTest()
         {
+            //
             var txt = "03/01/2019";
             var day1 = txt.ReplaceRegex(
                 @"\b(\d{1,2})/(\d{1,2})/(\d{2,4})\b",
@@ -132,6 +133,11 @@ namespace App.Core.Tests
                 );
             Assert.AreEqual(day1, "2019-03-01");
             Assert.AreEqual(day2, "2019-03-01");
+
+            //
+            var text1 = "world wororld worororld";
+            var text2 = text1.ReplaceRegex(@"wor\w*ld", (m) => m.Length.ToString());
+            Assert.AreEqual(text2, "5 7 9");
         }
 
         [TestMethod()]

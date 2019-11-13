@@ -66,10 +66,10 @@
     <Compile Include="Base\EnumHelperTests.cs" />
     <Compile Include="ConvertorTests.cs" />
     <Compile Include="Database\SnowflakeIDTests.cs" />
-    <Compile Include="Data\DynamicXmlTests.cs" />
-    <Compile Include="Data\RegexHelperTests.cs" />
-    <Compile Include="Data\SerializeHelperTests.cs" />
-    <Compile Include="Data\StringHelperTests.cs" />
+    <Compile Include="Base\DynamicXmlTests.cs" />
+    <Compile Include="Base\RegexHelperTests.cs" />
+    <Compile Include="Base\SerializeHelperTests.cs" />
+    <Compile Include="Base\StringHelperTests.cs" />
     <Compile Include="EncryptHelperTests.cs" />
     <Compile Include="ExtensionsTests.cs" />
     <Compile Include="Database\IDGeneratorTests.cs" />
@@ -82,6 +82,12 @@
     <Compile Include="Model\ParamAttributeTests.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Reflections\MethodInvokerTests.cs" />
     <Compile Include="Reflections\ReflectionHelperTests.cs" />
     <Compile Include="ThreadPondTests.cs" />
     <Compile Include="UIExtensionTests.cs" />
@@ -99,6 +105,12 @@
       <Project>{c887d0a1-20f6-44da-87df-ea8d45ace744}</Project>
       <Name>App.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

@@ -230,6 +230,19 @@ namespace App.Core
             return Regex.Replace(text, matchRegex, replaceRegex, options);
         }
 
+        /// <summary>查找匹配字符串，并自行替换</summary>
+        /// <param name="text"></param>
+        /// <param name="matchRegex"></param>
+        /// <param name="callback">替换方法</param>
+        /// <example>
+        /// var text1 = "world wororld worororld";
+        /// var text2 = text1.ReplaceRegex(@"wor\w*ld", (m) => m.Length.ToString());
+        /// Assert.AreEqual(text2, "5 7 9"); 
+        /// </example>
+        public static string ReplaceRegex(this string text, string matchRegex, Func<Match, string> callback)
+        {
+            return Regex.Replace(text, matchRegex, new MatchEvaluator(callback), RegexOptions.IgnoreCase);
+        }
 
         //------------------------------
         // Misc

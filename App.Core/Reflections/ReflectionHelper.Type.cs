@@ -63,6 +63,14 @@ namespace App.Core
             return type;
         }
 
+        /// <summary>获取实体的真实类型（而不是临时的代理类型）</summary>
+        public static Type GetEntityType(this Type type)
+        {
+            if (type.FullName.StartsWith("System.Data.Entity.DynamicProxies"))
+                return type.BaseType;
+            return type;
+        }
+
         /// <summary>获取类型字符串（可处理可空类型）</summary>
         public static string GetTypeString(this Type type, bool shortName = true)
         {
@@ -112,12 +120,12 @@ namespace App.Core
         }
 
 
-        /// <summary>获取类型的概述信息（可解析枚举类型）</summary>
-        public static string GetTypeSummary(this Type type)
+        /// <summary>获取类型的数据信息（可解析枚举类型）</summary>
+        public static string GetTypeValues(this Type type)
         {
-            if (type.IsNullable())
-                type = type.GetNullableDataType();
-
+            if (type == null)
+                return "";
+            type = type.GetRealType();
             var sb = new StringBuilder();
             if (type.IsEnum)
             {
@@ -186,7 +194,7 @@ namespace App.Core
         }
 
         /// <summary>是否是泛型类型</summary>
-        public static bool IsGenericType(this Type type)
+        public static bool IsGeneric(this Type type)
         {
             return type.IsGenericType;
         }
@@ -196,6 +204,22 @@ namespace App.Core
         {
             return (type.IsPrimitive || type == typeof(string) || type == typeof(DateTime) || type.IsEnum);
         }
+
+        /// <summary>是否是简单值类型: String + DateTime + 枚举 + 基元类型(Boolean， Byte， SByte， Int16， UInt16， Int32， UInt32， Int64， UInt64， IntPtr， UIntPtr， Char，Double，和Single)</summary>
+        public static bool IsNumber(this Type type)
+        {
+            if (type == typeof(Int16))   return true;
+            if (type == typeof(Int32))   return true;
+            if (type == typeof(Int64))   return true;
+            if (type == typeof(UInt16))  return true;
+            if (type == typeof(UInt32))  return true;
+            if (type == typeof(UInt64))  return true;
+            if (type == typeof(Double))  return true;
+            if (type == typeof(Single))  return true;
+            if (type == typeof(Decimal)) return true;
+            return false;
+        }
+
 
         /// <summary>是否是可空类型</summary>
         public static bool IsNullable(this Type type)

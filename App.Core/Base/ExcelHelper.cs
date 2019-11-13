@@ -63,7 +63,7 @@ namespace App.Core
             {
                 sb.AppendLine("   <Row>");
                 foreach (var attr in attrs)
-                    sb.AppendLine("    <Cell><Data ss:Type=\"String\">" + attr.FullTitle + "</Data></Cell>");
+                    sb.AppendLine("    <Cell><Data ss:Type=\"String\">" + attr.ToString() + "</Data></Cell>");
                 sb.AppendLine("   </Row>");
             }
 

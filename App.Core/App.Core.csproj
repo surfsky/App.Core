@@ -22,6 +22,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Debug\App.Core.xml</DocumentationFile>
+    <NoWarn>CS1591,CS1570,CS1571,CS1572,CS1573</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -65,12 +67,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppCoreConfig.cs" />
+    <Compile Include="Attributes\SearcherAttribute.cs" />
+    <Compile Include="Attributes\TAttribute.cs" />
+    <Compile Include="Attributes\UIExtension.cs" />
+    <Compile Include="Attributes\UISetting.cs" />
     <Compile Include="Convertor.Encoder.cs" />
     <Compile Include="Convertor.Parse.cs" />
     <Compile Include="Convertor.List.cs" />
     <Compile Include="Maths\GZiper.cs" />
-    <Compile Include="Model\HistoryAttribute.cs" />
-    <Compile Include="Model\ParamAttribute.cs" />
+    <Compile Include="Attributes\HistoryAttribute.cs" />
+    <Compile Include="Attributes\ParamAttribute.cs" />
     <Compile Include="Net\Net.cs" />
     <Compile Include="Reflections\ReflectionHelper.Property.cs" />
     <Compile Include="Reflections\ReflectionHelper.Type.cs" />
@@ -100,7 +107,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Reflections\MethodInvoker.cs" />
-    <Compile Include="Model\RegexValidationAttribute.cs" />
+    <Compile Include="Attributes\RegexValidationAttribute.cs" />
     <Compile Include="Reflections\TypeBuilder.cs" />
     <Compile Include="ThreadHelper.cs" />
     <Compile Include="Net\SocketClient.cs" />
@@ -131,12 +138,12 @@
     <Compile Include="Web\ResourceHelper.cs" />
     <Compile Include="Web\ScriptHelper.cs" />
     <Compile Include="Base\StringHelper.cs" />
-    <Compile Include="UIAttribute.cs" />
+    <Compile Include="Attributes\UIAttribute.cs" />
     <Compile Include="Web\Asp.cs" />
     <Compile Include="Web\Url.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.Core.config" />
     <None Include="App.Core.pfx" />
     <None Include="packages.config" />
     <EmbeddedResource Include="Resources\Agent Red.TTF" />

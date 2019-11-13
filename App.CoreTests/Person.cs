@@ -13,11 +13,22 @@ namespace App.Core.Tests
     {
         [UI("正常",    "男")] Male = 0,
         [UI("正常",    "女")] Female = 1,
-        [UI("不正常",  "人妖")] RenYao = 2
+        [UI("不正常",  "未知")] Unknown = 2
     }
 
     /// <summary>
-    /// 人员测试类
+    /// 巨人
+    /// </summary>
+    public class Giant : Person
+    {
+        public Giant(string name)
+        {
+            this.Name = "Giant " + name;
+        }
+    }
+
+    /// <summary>
+    /// 人
     /// </summary>
     public class Person
     {

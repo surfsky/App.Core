@@ -58,5 +58,23 @@ namespace App.Core.Tests
             Assert.AreEqual(Utils.GetText("hello world"), "hello world");
             Assert.AreEqual(Utils.GetText("hello {0}", "world"), "hello world");
         }
+
+        [TestMethod()]
+        public void GetResTextTest()
+        {
+            // 简单测试
+            var key = "Name";
+            var resType = typeof(App.CoreTests.Properties.Resources);
+            var text = key.GetResText(resType);
+            Assert.AreEqual(text, "名称");
+
+            // 全局化开关测试
+            AppCoreConfig.Instance.UseGlobal = true;
+            AppCoreConfig.Instance.ResType = typeof(App.CoreTests.Properties.Resources);
+            Assert.AreEqual(key.GetResText(), "名称");
+
+            AppCoreConfig.Instance.UseGlobal = false;
+            Assert.AreEqual(key.GetResText(), "Name");
+        }
     }
 }

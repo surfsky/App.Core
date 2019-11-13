@@ -97,7 +97,7 @@ namespace App.Core
                 FormsAuthenticationTicket authTicket = ParseTicket(cookieValue, out string user, out string[] roles);
                 HttpContext.Current.User = new UserRolePrincipal(new FormsIdentity(authTicket), roles);
             }
-            catch (Exception ex)
+            catch
             {
                 HttpContext.Current.User = null;
             }

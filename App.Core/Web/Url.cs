@@ -75,10 +75,13 @@ namespace App.Core
             return Dict.Keys.Contains(key);
         }
 
-        /// <summary>转化为查询字符串。如http://../page.aspx?a=x&b=x</summary>
+        /// <summary>转化为查询字符串。如http://../page.aspx?a=x&amp;b=x</summary>
         public override string ToString()
         {
-            return string.Format("{0}?{1}", this.PurePath, this.QueryString).TrimEnd('?');
+            return this.PurePath.IsEmpty() 
+                ? this.QueryString
+                : string.Format("{0}?{1}", this.PurePath, this.QueryString).TrimEnd('?')
+                ;
         }
 
 

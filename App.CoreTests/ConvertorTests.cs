@@ -171,6 +171,37 @@ namespace App.Core.Tests
             Assert.IsTrue(decode == txt1);
         }
 
+
+        [TestMethod()]
+        public void ParseTest()
+        {
+            Assert.AreEqual("1".Parse<string>(), "1");
+            Assert.AreEqual("1".Parse<int>(), 1);
+            Assert.AreEqual("1".Parse<bool?>(), null);
+
+            var s = new Person("Jack").ToJson();
+            var p = s.Parse<Person>();
+            Assert.AreEqual(p.Name, "Jack");
+        }
+
+
+        [TestMethod()]
+        public void ToTest()
+        {
+            Assert.AreEqual(1.To<string>(), "1");
+            Assert.AreEqual(1.To<int>(), 1);
+            Assert.AreEqual("true".To<bool>(), true);
+            Assert.AreEqual("true".To<bool?>(), true);
+            Assert.AreEqual("2010-01-01".To<DateTime>().Year, 2010);
+            Assert.AreEqual(SexType.Male.To<int>(), (int)SexType.Male);
+            Assert.AreEqual("Male".To<SexType>(), SexType.Male);
+            Assert.AreEqual(0.To<SexType>(), SexType.Male);
+
+            Assert.AreEqual(new Person("Jack").To<Person>().Name, "Jack");
+            Assert.AreEqual(new Giant("Jack").To<Person>().Name, "Giant Jack");
+            Assert.AreEqual(new Person("Jack").To<Giant>().Name, "Giant Jack");
+        }
+
         [TestMethod()]
         public void ParseDateTest()
         {
@@ -180,17 +211,19 @@ namespace App.Core.Tests
             var dt3 = txt3.ParseDate();
         }
 
-
-
         [TestMethod()]
         public void ParseBoolTest()
         {
-            string t = null;
             Assert.AreEqual("true".ParseBool(), true);
             Assert.AreEqual("false".ParseBool(), false);
             Assert.AreEqual("True".ParseBool(), true);
             Assert.AreEqual("False".ParseBool(), false);
+            //
+            string t = null;
+            Assert.AreEqual("1".ParseBool(), null);
+            Assert.AreEqual("0".ParseBool(), null);
             Assert.AreEqual("Yes".ParseBool(), null);
+            Assert.AreEqual("No".ParseBool(), null);
             Assert.AreEqual("".ParseBool(), null);
             Assert.AreEqual(t.ParseBool(), null);
         }
@@ -204,17 +237,6 @@ namespace App.Core.Tests
             Assert.AreEqual("0,1".ParseEnums<SexType>(), new List<SexType>() { SexType.Male, SexType.Female });
         }
 
-        [TestMethod()]
-        public void ParseTest()
-        {
-            string s = "1";
-            var o = s.Parse<string>();
-            var n = s.Parse<int>();
-            var b = s.Parse<bool?>();
-            Assert.AreEqual(o, "1");
-            Assert.AreEqual(n, 1);
-            Assert.AreEqual(b, null);
-        }
 
         [TestMethod()]
         public void ToASCStringTest()
@@ -238,5 +260,6 @@ namespace App.Core.Tests
             var txt2 = bytes2.ToString(enc);
             Assert.AreEqual(txt, txt2);
         }
+
     }
 }

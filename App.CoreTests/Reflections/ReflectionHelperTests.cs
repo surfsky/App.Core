@@ -24,7 +24,7 @@ namespace App.Core.Tests
         [TestMethod()]
         public void GetCurrentMethodNameTest()
         {
-            var method = ReflectionHelper.GetCurrentMethodInfo();
+            var method = ReflectionHelper.GetCurrentMethod();
             Assert.AreEqual(method.Name, "GetCurrentMethodNameTest");
         }
 
@@ -71,6 +71,40 @@ namespace App.Core.Tests
             var m = typeof(Person).GetMethod(nameof(Person.Cry));
             var t = m.GetMethodString();
             Assert.AreEqual(t, "Void Cry(String msg, Int32 times)");
+        }
+
+        [TestMethod()]
+        public void GetMethodsTest()
+        {
+            var methods = typeof(Giant).GetMethods("ToString");
+            Assert.AreEqual(methods[0].DeclaringType, typeof(Giant));
+            Assert.AreEqual(methods[1].DeclaringType, typeof(Person));
+            Assert.AreEqual(methods[2].DeclaringType, typeof(Object));
+
+            var ms = typeof(Giant).GetMethods("ToString", false);
+            Assert.AreEqual(ms.Count, 1);
+        }
+
+        [UI("title1")]
+        [T("title2")]
+        [Param("param1", "param1")]
+        [Param("param2", "param2")]
+        [TestMethod()]
+        public void GetAttributesTest()
+        {
+            var m = ReflectionHelper.GetCurrentMethod();
+            Assert.AreEqual(m.GetAttributes<ParamAttribute>().Count, 2);
+            Assert.AreEqual(m.GetAttributes<UIAttribute>().Count, 1);
+            Assert.AreEqual(m.GetAttributes<TAttribute>().Count, 1);
+        }
+
+        [Param("param1", "param1")]
+        [Param("param2", "param2")]
+        [TestMethod()]
+        public void GetAttributeTest()
+        {
+            var m = ReflectionHelper.GetCurrentMethod();
+            Assert.AreEqual(m.GetAttribute<ParamAttribute>().Name, "param1");
         }
     }
 }
