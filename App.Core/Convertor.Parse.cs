@@ -269,6 +269,8 @@ namespace App.Core
         public static FreeDictionary<string, string> ParseDict(this string text)
         {
             var dict = new FreeDictionary<string, string>();
+            if (text.IsEmpty())
+                return dict;
             var regex = new Regex(@"(^|&)?(\w+)=([^&]+)(&|$)?", RegexOptions.Compiled);
             var matches = regex.Matches(text);
             foreach (Match match in matches)

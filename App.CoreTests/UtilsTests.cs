@@ -76,5 +76,17 @@ namespace App.Core.Tests
             AppCoreConfig.Instance.UseGlobal = false;
             Assert.AreEqual(key.GetResText(), "Name");
         }
+
+        [TestMethod()]
+        public void AsListTest()
+        {
+            var a = "test";
+            var list =  a.AsList();
+            Assert.AreEqual(list.Count, 1);
+
+            bool? b = null;
+            var list2 = b.AsList();
+            Assert.AreEqual(list2.Count, 0);
+        }
     }
 }

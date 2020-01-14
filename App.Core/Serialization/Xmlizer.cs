@@ -267,9 +267,9 @@ namespace App.Core
             foreach (var property in properties)
             {
                 // 跳过加忽略标签的节点
-                if (ReflectionHelper.GetAttribute<NonSerializedAttribute>(property) != null
-                    || ReflectionHelper.GetAttribute<JsonIgnoreAttribute>(property) != null
-                    || ReflectionHelper.GetAttribute<System.Xml.Serialization.XmlIgnoreAttribute>(property) != null
+                if (Reflector.GetAttribute<NonSerializedAttribute>(property) != null
+                    || Reflector.GetAttribute<JsonIgnoreAttribute>(property) != null
+                    || Reflector.GetAttribute<System.Xml.Serialization.XmlIgnoreAttribute>(property) != null
                     )
                     continue;
                 var subObj = property.GetValue(obj);

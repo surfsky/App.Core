@@ -7,6 +7,7 @@ using System.Net;
 using System.Security.Principal;
 using System.Text;
 using System.Web;
+using System.Web.Compilation;
 using System.Web.SessionState;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -21,24 +22,30 @@ namespace App.Core
         //-------------------------------------
         // HttpContext
         //-------------------------------------
-        public static HttpServerUtility Server { get { return HttpContext.Current.Server; } }
+        public static HttpServerUtility Server          => HttpContext.Current.Server;
+        public static HttpResponse Response             => HttpContext.Current.Response;
+        public static HttpSessionState Session          => HttpContext.Current.Session;
+        public static HttpApplicationState Application  => HttpContext.Current.Application;
+        public static Page Page                         => HttpContext.Current.Handler as Page;
+        public static IPrincipal User                   => HttpContext.Current.User;
+        public static string Url                        => HttpContext.Current.Request.Url.ToString(); 
+        public static string RawUrl                     => HttpContext.Current.Request.RawUrl;
         public static HttpRequest Request
         {
             get
             {
-                try   { return HttpContext.Current.Request; }
+                try { return HttpContext.Current.Request; }
                 catch { return null; }
             }
         }
-        public static HttpResponse Response { get { return HttpContext.Current.Response; } }
-        public static HttpSessionState Session { get { return HttpContext.Current.Session; } }
-        public static HttpApplicationState Application { get { return HttpContext.Current.Application; } }
-        public static Page Page { get { return HttpContext.Current.Handler as Page; } }
-        public static IPrincipal User { get { return HttpContext.Current.User; } }
-        public static string Url { get { return HttpContext.Current.Request.Url.ToString(); } }
 
+        /// <summary>是否是网站运行环境</summary>
+        public static bool IsWeb                        => HttpContext.Current != null;
 
-        /// <summary>获取主机根路径</summary>
+        /// <summary>请求是否有效（避免触发“HttpRequest在上下文中不可用”的异常）</summary>
+        public static bool IsRequestOk                  => Request != null;
+
+        /// <summary>主机根路径（如http://www.abc.com/）</summary>
         public static string Root
         {
             get
@@ -51,19 +58,6 @@ namespace App.Core
             }
         }
 
-        /// <summary>是否是网站运行环境</summary>
-        public static bool IsWeb
-        {
-            get {return HttpContext.Current != null;}
-        }
-
-        /// <summary>请求是否有效（避免触发“HttpRequest在上下文中不可用”的异常）</summary>
-        public static bool IsRequestValid
-        {
-            get { return Request != null; }
-        }
-
-
         /// <summary>获取客户端真实IP</summary>
         public static string ClientIP
         {
@@ -71,12 +65,12 @@ namespace App.Core
             {
                 try
                 {
+                    //return request.UserHostAddress;
                     HttpRequest request = HttpContext.Current.Request;
                     return (request.ServerVariables["HTTP_VIA"] != null)
                         ? request.ServerVariables["HTTP_X_FORWARDED_FOR"].ToString()   // 使用代理，尝试去找原始地址
                         : request.ServerVariables["REMOTE_ADDR"].ToString()            // 
                         ;
-                    //return request.UserHostAddress;
                 }
                 catch
                 {
@@ -169,6 +163,7 @@ namespace App.Core
         /// </summary>
         public static string ResolveFullUrl(this string relativeUrl)
         {
+            relativeUrl = relativeUrl.TrimStartTo("~");
             if (relativeUrl.IsEmpty())
                 return "";
             if (relativeUrl.ToLower().StartsWith("http"))
@@ -184,6 +179,7 @@ namespace App.Core
         /// </summary>
         public static string ResolveUrl(this string relativeUrl)
         {
+            relativeUrl = relativeUrl.TrimStartTo("~");
             return relativeUrl.IsEmpty() ? "" : new Control().ResolveUrl(relativeUrl);
         }
 
@@ -195,6 +191,7 @@ namespace App.Core
         /// </summary>
         public static string ResolveClientUrl(this string relativeUrl)
         {
+            relativeUrl = relativeUrl.TrimStartTo("~");
             return relativeUrl.IsEmpty() ? "" : new Control().ResolveClientUrl(relativeUrl);
         }
 
@@ -203,16 +200,31 @@ namespace App.Core
         //-------------------------------------
         // QueryString
         //-------------------------------------
-        /// <summary>获取查询字符串</summary>
-        public static string GetQueryString(string queryKey)
+        /// <summary>获取请求参数</summary>
+        public static T? GetParam<T>(string queryKey) where T : struct
         {
-            return HttpContext.Current.Request.QueryString[queryKey];
+            return Request.Params[queryKey].Parse<T?>();
+        }
+
+        /// <summary>获取请求参数</summary>
+        public static string GetParam(string queryKey)
+        {
+            return Request.Params[queryKey];
         }
 
         /// <summary>获取查询字符串</summary>
         public static T? GetQuery<T>(string queryKey) where T : struct
         {
             return GetQueryString(queryKey).Parse<T?>();
+        }
+
+        /// <summary>获取查询字符串</summary>
+        public static string GetQueryString(string queryKey, bool ignoreCase=true)
+        {
+            if (ignoreCase)
+                return Request.QueryString[queryKey];
+            var url = new Url(Request.RawUrl);
+            return url[queryKey];
         }
 
         /// <summary>获取查询字符串中的整型参数值</summary>
@@ -237,41 +249,25 @@ namespace App.Core
         /// <summary>获取 URL 对应的处理器类</summary>
         public static Type GetHandler(string url, HttpContext context=null)
         {
-            if (context == null)
-                context = HttpContext.Current;
-            try
+            var u = new Url(url);
+            var key = u.PurePath.ToLower().MD5();
+            return IO.GetDict<Type>(key, () =>
             {
-                var type = WebHandlerParser.GetCompiledType(url, url, context);
-                if (type.FullName.StartsWith("ASP.") && type.BaseType != null)
+                Type type = null;
+                try { type = BuildManager.GetCompiledType(url); }
+                catch { }
+                if (type != null && type.FullName.StartsWith("ASP.") && type.BaseType != null)
                     type = type.BaseType;
                 return type;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                return null;
-            }
+            });
+        }
+
+        /// <summary>允许跨域（未测试）</summary>
+        public static void EnableCros()
+        {
+            var origin = HttpContext.Current.Request.Headers["Origin"];
+            HttpContext.Current.Response.AppendHeader("Access-Control-Allow-Origin", origin);
         }
     }
 
-    /// <summary>
-    /// 页面请求处理器解析器。可获取页面请求对应的处理类。
-    /// （抄的 Asp.net 源码）
-    /// </summary>
-    internal class WebHandlerParser : SimpleWebHandlerParser
-    {
-        private WebHandlerParser(HttpContext context, string virtualPath, string physicalPath)
-            : base(context, virtualPath, physicalPath)
-        {
-        }
-        internal static Type GetCompiledType(string virtualPath, string physicalPath, HttpContext context)
-        {
-            var parser = new WebHandlerParser(context, virtualPath, physicalPath);
-            return parser.GetCompiledTypeFromCache();
-        }
-        protected override string DefaultDirectiveName
-        {
-            get { return "webhandler"; }
-        }
-    }
 }

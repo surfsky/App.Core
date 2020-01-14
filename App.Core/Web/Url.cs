@@ -31,7 +31,7 @@ namespace App.Core
 
         /// <summary>主机。如a.b.com</summary>
         public string Host { get; set; }
-        
+
         /// <summary>端口号</summary>
         public string Port { get; set; }
 
@@ -46,6 +46,9 @@ namespace App.Core
 
         /// <summary>文件扩展名（小写）。如 .aspx</summary>
         public string FileExtesion { get; set; }
+
+        /// <summary>文件路径。如 /Pages/</summary>
+        public string FileFolder => PurePath.TrimEndFrom("/", true);
 
         //---------------------------------------
         // 查询字符串操作
@@ -63,10 +66,23 @@ namespace App.Core
             set { Dict[key] = value; }
         }
 
+        /// <summary>设置查询字符串键值</summary>
+        public Url Set(string key, string value)
+        {
+            Dict[key] = value;
+            return this;
+        }
+
         /// <summary>删除查询字符串成员</summary>
         public void Remove(string key)
         {
             Dict.Remove(key);
+        }
+        /// <summary>删除查询字符串成员</summary>
+        public void Remove(params string[] keys)
+        {
+            foreach (var key in keys)
+                Dict.Remove(key);
         }
 
         /// <summary>是否具有查询字符串值</summary>
@@ -78,10 +94,12 @@ namespace App.Core
         /// <summary>转化为查询字符串。如http://../page.aspx?a=x&amp;b=x</summary>
         public override string ToString()
         {
-            return this.PurePath.IsEmpty() 
-                ? this.QueryString
-                : string.Format("{0}?{1}", this.PurePath, this.QueryString).TrimEnd('?')
-                ;
+            if (this.PurePath.IsEmpty())
+                return this.QueryString;
+            if (this.PurePath.GetFileExtension().IsEmpty())
+                return string.Format("{0}{1}?{2}", this.PurePath, this.FileExtesion, this.QueryString).TrimEnd('?');
+            else
+                return string.Format("{0}?{1}", this.PurePath, this.QueryString).TrimEnd('?');
         }
 
 
@@ -91,6 +109,7 @@ namespace App.Core
         /// <summary>创建URL对象</summary>
         public Url(string url)
         {
+            this.Dict = new FreeDictionary<string, string>();
             if (url.IsEmpty())
                 return;
 

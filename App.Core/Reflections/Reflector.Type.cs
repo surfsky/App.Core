@@ -13,14 +13,26 @@ namespace App.Core
     /// <summary>
     /// 反射相关静态方法和属性
     /// </summary>
-    public  static partial class ReflectionHelper
+    public  static partial class Reflector
     {
+        /// <summary>获取列表元素的数据类型（尝试返回第一个元素的数据类型）</summary>
+        public static Type GetItemType<T>(this IList<T> list)
+        {
+            Type type = list.GetType();
+            Type itemType = type.GetGenericDataType();
+            if (list.Count > 0)
+                itemType = list[0].GetType();
+            return itemType;
+        }
+
         //------------------------------------------------
         // 类型相关
         //------------------------------------------------
         /// <summary>尝试遍历获取类型（根据类型名、数据集名称）</summary>
         public static Type TryGetType(string typeName, string assemblyName = "", bool ignoreSystemType = true)
         {
+            if (typeName.IsEmpty())
+                return null;
             var type = Assembly.GetExecutingAssembly().GetType(typeName);
             if (type != null)
                 return type;
@@ -71,7 +83,37 @@ namespace App.Core
             return type;
         }
 
-        /// <summary>获取类型字符串（可处理可空类型）</summary>
+        /// <summary>获取类型简短名称（不输出版本号及签名，如 System.Nullable`1[[System.Int32]]）</summary>
+        /// <examples>
+        /// Type t1 = typeof(int);
+        /// Type t2 = typeof(int?);
+        /// Type t3 = typeof(List<int>);
+        /// Type t4 = typeof(List<SexType>);
+        /// Type t5 = typeof(Dictionary<string, int>);
+        /// Assert.AreEqual(t1.GetShortName(), "System.Int32");
+        /// Assert.AreEqual(t2.GetShortName(), "System.Nullable`1[[System.Int32]]");
+        /// Assert.AreEqual(t3.GetShortName(), "System.Collections.Generic.List`1[[System.Int32]]");
+        /// Assert.AreEqual(t4.GetShortName(), "System.Collections.Generic.List`1[[App.Core.Tests.SexType, App.CoreTest]]");
+        /// Assert.AreEqual(t5.GetShortName(), "System.Collections.Generic.Dictionary`2[[System.String],[System.Int32]]");
+        /// </examples>
+        public static string GetShortName(this Type type)
+        {
+            if (type.IsGenericType)
+            {
+                var gType = type.GetGenericTypeDefinition();
+                var types = type.GetGenericArguments();
+                var name = string.Format("{0}.{1}", gType.Namespace, gType.Name);
+                return string.Format("{0}[{1}]", name, types.Select(t => "[" + t.GetShortName() + "]").ToSeparatedString(","));
+            }
+            var assemblyName = type.Assembly.GetName().Name;
+            if (assemblyName == "mscorlib")
+                return type.FullName;
+            else
+                return string.Format("{0}, {1}", type.FullName, assemblyName);
+        }
+
+
+        /// <summary>获取类型字符串（如 Int32? List&lt;T&gt;）</summary>
         public static string GetTypeString(this Type type, bool shortName = true)
         {
             if (type.IsNullable())
@@ -87,24 +129,10 @@ namespace App.Core
                 name = name.TrimEndFrom("`");
                 return string.Format("{0}<{1}>", name, types.Select(t => t.GetTypeString()).ToSeparatedString(", "));
             }
-            /*
-            if (type.IsGenericList())
-            {
-                type = type.GetGenericDataType();
-                return string.Format("List<{0}>", GetTypeString(type));
-            }
-            if (type.IsGenericDict())
-            {
-                var gType = type.GetGenericTypeDefinition();
-                var types = type.GetGenericArguments();
-                return string.Format("Dictionary<{0}>", types.Cast(t=> t.GetTypeString()).ToSeparatedString(", "));
-            }
-            */
             if (type.IsValueType)
                 return type.Name;
             return shortName ? type.Name : type.FullName;
         }
-
 
         /// <summary>获取方法描述字符串</summary>
         public static string GetMethodString(this MethodInfo m)
@@ -120,8 +148,8 @@ namespace App.Core
         }
 
 
-        /// <summary>获取类型的数据信息（可解析枚举类型）</summary>
-        public static string GetTypeValues(this Type type)
+        /// <summary>获取枚举类型的数据信息</summary>
+        public static string GetEnumString(this Type type)
         {
             if (type == null)
                 return "";
@@ -130,7 +158,7 @@ namespace App.Core
             if (type.IsEnum)
             {
                 foreach (var item in Enum.GetValues(type))
-                    sb.AppendFormat("{0}-{1}({2}); ", (int)item, item.ToString(), item.GetDescription());
+                    sb.AppendFormat("{0}-{1}({2}); ", (int)item, item.ToString(), item.GetTitle());
             }
             return sb.ToString();
         }
@@ -174,6 +202,15 @@ namespace App.Core
             return type.GetInterface("IDictionary") != null;
         }
 
+        /// <summary>是否是集合（包括列表和字典）</summary>
+        public static bool IsCollection(this Type type)
+        {
+            // ICollection<T> : IEnumab.....
+            if (type.Name.Contains("ICollection"))
+                return true;
+            // 其它继承了 ICollection 的子类
+            return type.GetInterface("ICollection") != null;
+        }
 
         /// <summary>是否是泛型列表</summary>
         public static bool IsGenericList(this Type type)

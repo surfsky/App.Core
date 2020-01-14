@@ -39,17 +39,37 @@ namespace App.Core
 
 
         /// <summary>JSON -> OBJECT (注意该方法无法解析简单数据类型)</summary>
-        public static object ParseJson(this string txt, Type type, JsonSerializerSettings settings = null)
+        /// <param name="ignoreException">是否忽略异常。如果为true，解析失败时会返回null</param>
+        public static object ParseJson(this string txt, Type type, bool ignoreException = false, JsonSerializerSettings settings = null)
         {
-            settings = settings ?? GetDefaultJsonSettings();
-            return JsonConvert.DeserializeObject(txt, type, settings);
+            try
+            {
+                settings = settings ?? GetDefaultJsonSettings();
+                return JsonConvert.DeserializeObject(txt, type, settings);
+            }
+            catch (Exception ex)
+            {
+                if (ignoreException)
+                    return null;
+                throw ex;
+            }
         }
 
         /// <summary>JSON -> OBJECT</summary>
-        public static T ParseJson<T>(this string txt, JsonSerializerSettings settings = null)
+        /// <param name="ignoreException">是否忽略异常。如果为true，解析失败时会返回null</param>
+        public static T ParseJson<T>(this string txt, bool ignoreException = false, JsonSerializerSettings settings = null)
         {
-            settings = settings ?? GetDefaultJsonSettings();
-            return JsonConvert.DeserializeObject<T>(txt, settings);
+            try
+            {
+                settings = settings ?? GetDefaultJsonSettings();
+                return JsonConvert.DeserializeObject<T>(txt, settings);
+            }
+            catch (Exception ex)
+            {
+                if (ignoreException)
+                    return default(T);
+                throw ex;
+            }
         }
 
         //--------------------------------------------
@@ -98,6 +118,7 @@ namespace App.Core
             settings.MaxDepth = 5;                                                      // 设置序列化的最大层数  
             settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;              // 指定如何处理循环引用
             settings.Converters.Add(new StringEnumConverter());                         // 枚举输出为字符串
+            settings.Converters.Add(new TypeNameConverter());                           // 类型只输出名称和程序集，不输出版本号
             return settings;
         }
 
@@ -119,7 +140,7 @@ namespace App.Core
         public static object LoadJsonFile(string filePath, Type type, JsonSerializerSettings settings = null)
         {
             if (!File.Exists(filePath))  return null;
-            return File.ReadAllText(filePath).ParseJson(type, settings);
+            return File.ReadAllText(filePath).ParseJson(type, settings: settings);
         }
 
         /// <summary>读取 Json 文件</summary>
@@ -127,7 +148,7 @@ namespace App.Core
             where T : class
         {
             if (!File.Exists(filePath))  return null;
-            return File.ReadAllText(filePath).ParseJson<T>(settings);
+            return File.ReadAllText(filePath).ParseJson<T>(settings: settings);
         }
     }
 }

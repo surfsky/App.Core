@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 
 namespace App.Core
@@ -137,6 +138,48 @@ namespace App.Core
                     result = data[i];
             }
             return result;
+        }
+
+        /// <summary>转换为中文大写数字</summary>
+        public static string ToChinaNumber(this decimal money)
+        {
+            if (money == 0)
+                return "零元整";
+
+            string[] numList = { "零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖" };
+            string[] unitList = { "分", "角", "元", "拾", "佰", "仟", "万", "拾", "佰", "仟", "亿", "拾", "佰", "仟" };
+            var strMoney = new StringBuilder();
+            var strNum = decimal.Truncate(money * 100).ToString(); // 只取小数后2位
+            int len = strNum.Length;
+            int zero = 0;
+            for (int i = 0; i < len; i++)
+            {
+                int num = int.Parse(strNum.Substring(i, 1));
+                int unitNum = len - i - 1;
+                if (num == 0)
+                {
+                    zero++;
+                    if (unitNum == 2 || unitNum == 6 || unitNum == 10)
+                    {
+                        if (unitNum == 2 || zero < 4)
+                            strMoney.Append(unitList[unitNum]);
+                        zero = 0;
+                    }
+                }
+                else
+                {
+                    if (zero > 0)
+                    {
+                        strMoney.Append(numList[0]);
+                        zero = 0;
+                    }
+                    strMoney.Append(numList[num]);
+                    strMoney.Append(unitList[unitNum]);
+                }
+            }
+            if (zero > 0)
+                strMoney.Append("整");
+            return strMoney.ToString();
         }
     }
 }

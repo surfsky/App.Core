@@ -30,6 +30,25 @@ namespace App.Core
     /// </summary>
     public class ResourceHelper
     {
+        /// <summary>将嵌入资源输出为物理文件</summary>
+        /// <param name="assembly">程序集</param>
+        /// <param name="resourceName">嵌入资源的完整名称</param>
+        /// <param name="filePath">输出的文件路径（若存在则覆盖）</param>
+        public static void WriteResourceFile(Assembly assembly, string resourceName, string filePath)
+        {
+            // 读
+            Stream stream = assembly.GetManifestResourceStream(resourceName);
+            int len = (int)stream.Length;
+            byte[] buffer = new byte[len];
+            stream.Read(buffer, 0, len);
+            stream.Close();
+
+            // 写
+            FileStream fs = new FileStream(filePath, FileMode.Create);
+            fs.Write(buffer, 0, len);
+            fs.Close();
+        }
+
         /// <summary>获取数据集中的资源流</summary>
         /// <param name="assembly">数据集</param>
         /// <param name="resourceName">资源名称</param>

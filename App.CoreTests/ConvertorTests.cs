@@ -9,6 +9,14 @@ using System.Diagnostics;
 
 namespace App.Core.Tests
 {
+    public enum ProductType : int
+    {
+        Goods = 0,
+        Service = 1,
+        Repair = 2
+    }
+
+
     [TestClass()]
     public class ConvertorTests
     {
@@ -35,13 +43,12 @@ namespace App.Core.Tests
             ";
 
         [TestMethod()]
-        public void ToEnumTest()
+        public void ParseEnumTest()
         {
-            object o;
-            ProductType type = ProductType.Repair;
-            o = type.GetDescription();
-            o = "Goods".ParseEnum<ProductType>();
-            o = "1".ParseEnum<ProductType>();
+            Assert.AreEqual("Male".ParseEnum<SexType>(), SexType.Male);
+            Assert.AreEqual("0".ParseEnum<SexType>(), SexType.Male);
+            Assert.AreEqual("Male,Female".ParseEnums<SexType>().Count, 2);
+            Assert.AreEqual("0,1".ParseEnums<SexType>().Count, 2);
         }
 
         [TestMethod()]
@@ -229,16 +236,6 @@ namespace App.Core.Tests
         }
 
         [TestMethod()]
-        public void ParseEnumTest()
-        {
-            Assert.AreEqual("Male".ParseEnum<SexType>(), SexType.Male);
-            Assert.AreEqual("0".ParseEnum<SexType>(), SexType.Male);
-            Assert.AreEqual("Male,Female".ParseEnums<SexType>(), new List<SexType>() { SexType.Male, SexType.Female });
-            Assert.AreEqual("0,1".ParseEnums<SexType>(), new List<SexType>() { SexType.Male, SexType.Female });
-        }
-
-
-        [TestMethod()]
         public void ToASCStringTest()
         {
             var txt = "abcdefg";
@@ -261,5 +258,46 @@ namespace App.Core.Tests
             Assert.AreEqual(txt, txt2);
         }
 
+        [TestMethod()]
+        public void EachTest()
+        {
+            var items = new List<Person>();
+            items.Add(new Person() { Age = 1 });
+            items.Add(new Person() { Age = 2 });
+            items.Add(new Person() { Age = 3 });
+            items.Each(t => t.Age = t.Age + 10);
+            Assert.AreEqual(items[0].Age, 11);
+        }
+
+        [TestMethod()]
+        public void Each2Test()
+        {
+            var items = new List<Person>();
+            items.Add(new Person() { Age = 1 });
+            items.Add(new Person() { Age = 2 });
+            items.Add(new Person() { Age = 3 });
+            items.Each2((item, preItem) =>
+            {
+                int n = preItem?.Age ?? 0;
+                item.Age = item.Age + n;
+            });
+            Assert.AreEqual(items[1].Age, 3);
+        }
+
+        [TestMethod()]
+        public void MergeTest()
+        {
+            var p1 = new Person("1");
+            var p2 = new Person("2");
+            var p3 = new Person("3");
+            var p4 = new Person("4");
+            var p5 = new Person("5");
+            var p6 = new Person("6");
+
+            var list1 = new List<Person>() { p1, p2, p3 };
+            var list2 = new List<Person>() { p1, p4, p5 };
+            var list3 = list1.Merge(list2);
+            Assert.AreEqual(list3.Count, 5);
+        }
     }
 }

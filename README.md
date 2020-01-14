@@ -7,6 +7,7 @@ This library supports many useful convinient extensions and methods, such as:
     - ToXXX
     - CastXXX
     - ParseXXX
+    - AsXXX
     - Reflection
     - Encode/Decode
     - Interop
@@ -923,3 +924,30 @@ function do() {
 * EditorType
 * ShowType
 
+1.8.9
++ JsonHelper.AsJObject
++ JsonHelper.AddProperty
++ StringHelper.AddQueryString
+* Fix StringHelper.TrimEnd
++ TAttribute - ParamAttribute - UIAttribute
++ UIAttribute support globalizatin, Add AppCoreConfig.Instance
++ Fix GetAttribute&lt;T&gt;()
++ Parse<T>()
++ To<T>()
++ ToChinaNumber
++ Net.Ping
+
+1.9.0
++ Asp.ToVirtualPath()
++ IO.ToRelativePath()
++ ReflectionHelper.GetItemType()
++ GetDescription() support DisplayNameAttribute
++ GetDescription() -> GetTitle()
++ Each、Each2
+* GetPropertyValue support subproperty, eg user.Parent.Name
++ Asp.GetHandler() add cache
++ IO.GetDict()
++ Convertor.Merge(List, List)
++ Asp.GetParam()
++ DateTimeHelper.ToFriendlyText()
++ IO.CombinePath(), CombineWebPath()

@@ -17,7 +17,7 @@ namespace App.Core.Tests
         [Param("p1", "description12", typeof(string), false)]
         public void ParamAttributeTest()
         {
-            var method = ReflectionHelper.GetCurrentMethod() as MethodInfo;
+            var method = Reflector.GetCurrentMethod() as MethodInfo;
             var attrs = method.GetAttributes<ParamAttribute>();
             Assert.AreEqual(attrs.Count, 2);
 

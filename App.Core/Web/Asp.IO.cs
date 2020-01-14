@@ -20,6 +20,19 @@ namespace App.Core
     /// </summary>
     public static partial class Asp
     {
+        /// <summary>将物理路径转化为虚拟路径</summary>
+        public static string ToVirtualPath(this string physicalPath)
+        {
+            return physicalPath.ToRelativePath(Asp.MapPath("/")).Replace("\\", "/");
+        }
+
+        /// <summary>将 Window 路径转化为 Web 路径（替换反斜杠)</summary>
+        public static string ToWebPath(this string winPath)
+        {
+            return winPath.Replace("\\", "/");
+        }
+
+
 
         //------------------------------------------------------------
         // 网站文件处理
@@ -107,15 +120,30 @@ namespace App.Core
         //------------------------------------------------------------
         // 输出二进制文件
         //------------------------------------------------------------
+        /// <summary>输出附件</summary>
+        public static void WriteAttach(string filePath, string name)
+        {
+            // 附件名称
+            var attachName = filePath.GetFileName();
+            if (name.IsNotEmpty() && name.GetFileExtension().IsEmpty())
+            {
+                var ext = filePath.GetFileExtension();
+                attachName = $"{name}{ext}";
+            }
+
+            // 下载文件
+            WriteFile(filePath, attachName);
+        }
+
         /// <summary>输出文件（小于2G）</summary>
         /// <param name="filePath">文件物理路径</param>
-        /// <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
         /// <param name="attachName">附件名。若不为空，则启动附件下载方式。</param>
-        public static void WriteFile(string filePath, string mimeType = "", string attachName = "")
+        /// <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
+        public static void WriteFile(string filePath, string attachName = "", string mimeType = "")
         {
             if (mimeType.IsEmpty())
                 mimeType = filePath.GetMimeType();
-            WriteBinary(File.ReadAllBytes(filePath), mimeType, attachName);
+            WriteBinary(File.ReadAllBytes(filePath), attachName, mimeType);
             /*
             // 以下代码本机ok。部署到服务器后，输出异常，无法显示图片
             var response = HttpContext.Current.Response;
@@ -135,47 +163,45 @@ namespace App.Core
 
         /// <summary>输出图像文件</summary>
         /// <param name="attachName">附件名。若不为空，则启动附件下载方式。</param>
-        public static void WriteImage(Image image, string mimeType = @"image/png", string attachName = "")
+        public static void WriteImage(Image image, string attachName = "", string mimeType = @"image/png")
         {
-            WriteBinary(image.ToBytes(), mimeType, attachName);
+            WriteBinary(image.ToBytes(), attachName, mimeType);
         }
 
 
         /// <summary>输出二进制文件</summary>
         /// <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
         /// <param name="attachName">附件名。若不为空，则启动附件下载方式。</param>
-        public static void WriteBinary(byte[] bytes, string mimeType = "", string attachName = "")
+        public static void WriteBinary(byte[] bytes, string attachName, string mimeType)
         {
             var response = HttpContext.Current.Response;
-            //response.ClearContent();
-            //response.CacheControl = "no-cache";
-            response.Cache.SetCacheability(HttpCacheability.NoCache);
             if (mimeType.IsNotEmpty())
                 response.ContentType = mimeType;
             if (attachName.IsNotEmpty())
                 response.AddHeader("Content-Disposition", "attachment; filename=" + attachName);
+            response.Cache.SetCacheability(HttpCacheability.NoCache);
             response.BinaryWrite(bytes);
             response.End();  // 结束请求，跳到ApplicationEndRequest事件
         }
 
         /// <summary>输出超大文件（未测试）</summary>
         /// <param name="filePath">文件物理路径</param>
-        /// <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
         /// <param name="attachName">附件名。若不为空，则启动附件下载方式。</param>
-        public static void WriteBigFile(string filePath, string mimeType = "", string attachName = "")
+        /// <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
+        public static void WriteBigFile(string filePath, string attachName = "", string mimeType = "")
         {
             if (mimeType.IsEmpty())
                 mimeType = filePath.GetMimeType();
             using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                WriteStream(fs, mimeType, attachName);
+                WriteStream(fs, attachName, mimeType);
             }
         }
 
         /// <summary>输出流（未测试）</summary>
         /// <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
         /// <param name="attachName">附件名。若不为空，则启动附件下载方式。</param>
-        public static void WriteStream(Stream stream, string mimeType = "", string attachName = "")
+        public static void WriteStream(Stream stream, string attachName, string mimeType)
         {
             long contentLength = stream.Length;
 
@@ -241,8 +267,8 @@ namespace App.Core
                 sb.Append(BuildExceptionInfo(ex));
                 sb.Append(BuildRequestInfo());
                 sb.Append(BuildRequestParamsInfo());
-                sb.Append(BuildServerInfo());
                 sb.Append(BuildClientInfo());
+                //sb.Append(BuildServerInfo());
             }
             catch { }
             return sb.ToString();
@@ -253,17 +279,15 @@ namespace App.Core
         {
             if (ex == null)
                 return "";
-            if (ex.InnerException != null)
-                ex = ex.InnerException;
 
             var sb = new StringBuilder();
-            sb.AppendFormat("<h1>错误信息</h1>");
+            sb.AppendFormat("<h1>{0}</h1>", ex.GetType().FullName);
             sb.AppendFormat("<BR/>时间：{0}&nbsp;", DateTime.Now);
             sb.AppendFormat("<BR/>URL：{0}&nbsp;", Request?.Url);
             sb.AppendFormat("<BR/>来源：{0}&nbsp;", Request?.UrlReferrer);
             sb.AppendFormat("<BR/>错误：{0}", ex.Message);
-            sb.AppendFormat("<BR/>类名：{0}", ex.TargetSite.DeclaringType?.FullName);
-            sb.AppendFormat("<BR/>方法：{0}", ex.TargetSite.Name);
+            sb.AppendFormat("<BR/>类名：{0}", ex.TargetSite?.DeclaringType?.FullName);
+            sb.AppendFormat("<BR/>方法：{0}", ex.TargetSite?.Name);
             sb.AppendFormat("<BR/>堆栈：<pre>{0}</pre>", ex.StackTrace);
             /*
             var st = new System.Diagnostics.StackTrace(ex, true);
@@ -279,23 +303,20 @@ namespace App.Core
             */
 
             // 内部异常信息
-            /*
             if (ex.InnerException != null)
-            {
-                sb.AppendFormat("<h1>Inner Exception</h1>");
                 sb.Append(BuildExceptionInfo(ex.InnerException));
-            }
-            */
+
             return sb.ToString();
         }
 
         /// <summary>打印请求基础信息</summary>
-        public static string BuildRequestInfo()
+        public static string BuildRequestInfo(string title="请求信息")
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("<h1>请求信息</h1>");
-            sb.AppendFormat("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendFormat("<tr><td width=300>名称</td><td>内容</td></tr>");
+            if (title.IsNotEmpty())
+                sb.AppendFormat("<h1>{0}</h1>", title);
+            sb.AppendFormat("<table class='table table-sm table-hover'>");
+            sb.AppendFormat("<thead><tr><td width=300>名称</td><td>内容</td></tr></thead>");
             var heads = Request.Headers;
             foreach (string key in Request.QueryString.Keys)
                 sb.AppendFormat("<tr><td>QueryString[{0}]</td><td>{1}&nbsp;</td></tr>", key, Request.QueryString[key]);
@@ -308,12 +329,13 @@ namespace App.Core
         }
 
         /// <summary>打印请求参数</summary>
-        public static string BuildRequestParamsInfo()
+        public static string BuildRequestParamsInfo(string title= "请求详细参数")
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("<h1>请求详细参数</h1>");
-            sb.AppendFormat("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendFormat("<tr><td width=300>名称</td><td>内容</td></tr>");
+            if (title.IsNotEmpty())
+                sb.AppendFormat("<h1>{0}</h1>", title);
+            sb.AppendFormat("<table class='table table-sm table-hover'>");
+            sb.AppendFormat("<thead><tr><td width=300>名称</td><td>内容</td></tr></thead>");
             var ps = Request.Params;
             foreach (string key in ps.Keys)
             {
@@ -326,14 +348,15 @@ namespace App.Core
         }
 
         /// <summary>打印客户端信息</summary>
-        public static string BuildClientInfo()
+        public static string BuildClientInfo(string title="客户端信息")
         {
             var sb = new StringBuilder();
             var request = Request;
             HttpBrowserCapabilities bc = request.Browser;
-            sb.AppendFormat("<h1>客户端信息</h1>");
-            sb.AppendFormat("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendFormat("<tr><td width=300>名称</td><td>内容</td></tr>");
+            if (title.IsNotEmpty())
+                sb.AppendFormat("<h1>{0}</h1>", title);
+            sb.AppendFormat("<table class='table table-sm table-hover'>");
+            sb.AppendFormat("<thead><tr><td width=300>名称</td><td>内容</td></tr></thead>");
             sb.AppendFormat("<tr><td>客户器IP</td><td>{0}&nbsp;</td></tr>", request.UserHostAddress);
             sb.AppendFormat("<tr><td>客户机OS</td><td>{0}&nbsp;</td></tr>", bc.Platform);
             sb.AppendFormat("<tr><td>浏览器类型</td><td>{0}&nbsp;</td></tr>", bc.Type);
@@ -346,13 +369,15 @@ namespace App.Core
         }
 
         /// <summary>打印服务器端信息</summary>
-        public static string BuildServerInfo()
+        public static string BuildServerInfo(string title= "服务器参数")
         {
             var sb = new StringBuilder();
             var request = Request;
-            sb.AppendFormat("<h1>服务器信息</h1>");
-            sb.AppendFormat("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
-            sb.AppendFormat("<tr><td width=300>名称</td><td>内容</td></tr>");
+            if (title.IsNotEmpty())
+                sb.AppendFormat("<h1>{0}</h1>", title);
+            //sb.AppendFormat("<table border=1 style='border-collapse: collapse' width='100%' cellpadding='2' cellspacing='0'>");
+            sb.AppendFormat("<table class='table table-sm table-hover'>");
+            sb.AppendFormat("<thead><tr><td width=300>名称</td><td>内容</td></tr></thead>");
             sb.AppendFormat("<tr><td>服务器IP</td><td>{0}&nbsp;</td></tr>", request.ServerVariables["LOCAL_ADDR"]);
             sb.AppendFormat("<tr><td>服务器端口</td><td>{0}&nbsp;</td></tr>", request.ServerVariables["SERVER_PORT"]);
             sb.AppendFormat("<tr><td>IIS版本</td><td>{0}&nbsp;</td></tr>", request.ServerVariables["SERVER_SOFTWARE"]);

@@ -28,23 +28,35 @@ namespace App.Core.Tests
     }
 
     /// <summary>
+    /// 接口
+    /// </summary>
+    public interface ISpeek
+    {
+        void Speek(string msg, int times);
+    }
+
+    /// <summary>
     /// 人
     /// </summary>
-    public class Person
+    public class Person : ISpeek
     {
-        [UI("基础", "Name")]  public string Name { get; set; }
+        [UI("基础", "姓名")]  public string Name { get; set; }
         [UI("基础", "年龄")]  public int? Age { get; set; }
         [UI("基础", "三日")]  public DateTime? Birthday { get; set; }
         [UI("基础", "性别")]  public SexType? Sex { get; set; }
         [UI("基础", "关于")]  public string About { get; set; }
-        [UI("亲友", "兄弟")]  public Person Brother { get; set; }
-        [UI("亲友", "父母")]  public List<Person> Parents { get; set; }
+
+        [UI("亲友", "父亲")]  public Person Father { get; set; }
+        [UI("亲友", "母亲")]  public Person Mother { get; set; }
+        [UI("亲友", "父母")]  public List<Person> Children { get; set; }
         [UI("亲友", "朋友")]  public Dictionary<string, Person> Friends { get; set; }
-        [UI("其它", "关注")]  public List<string> Favorites { get; set; }
+
         [UI("其它", "分数")]  public Dictionary<string, float> Scores { get; set; }
+        [UI("其它", "兴趣")]  public List<string> Favorites { get; set; }
+        [UI("其它", "语言")]  protected string[] Languages { get; set; }
 
         // 事件
-        public event Action<string> Speak;
+        public event Action<string> Cry;
 
         // 构造函数
         public Person() { }
@@ -58,7 +70,7 @@ namespace App.Core.Tests
 
 
         // 方法
-        public void Cry(string msg, int times)
+        public void Speek(string msg, int times)
         {
             IO.Trace(msg);
         }
@@ -79,9 +91,9 @@ namespace App.Core.Tests
             p.Birthday = DateTime.Now.AddYears(-21);
             p.Sex = SexType.Male;
             p.About = "<This is me>";
-            p.Brother = new Person() { Name = "Kevin's brother" };
+            p.Father = new Person() { Name = "Kevin's brother" };
             p.Favorites = new List<string>() { "Art", "Computer" };
-            p.Parents = new List<Person>() { new Person("Monther"), new Person("Father") };
+            p.Children = new List<Person>() { new Person("Monther"), new Person("Father") };
             p.Scores = new Dictionary<string, float>()
             {
                 {"Math", 99},

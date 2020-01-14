@@ -43,5 +43,12 @@ namespace App.Core.Tests
             p.Age = 9;
             //p.Age.Inc(1);  // 属性或索引不能作为 out 或 ref 参数传递
         }
+
+        [TestMethod()]
+        public void ToChinaNumberTest()
+        {
+            decimal d = 1_2345_6789.456M;
+            var t = d.ToChinaNumber();
+        }
     }
 }

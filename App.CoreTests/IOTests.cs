@@ -105,5 +105,43 @@ namespace App.Core.Tests
             ips.ForEach(t => IO.Trace(t));
         }
 
+        [TestMethod()]
+        public void ToRelativePathTest()
+        {
+            var root = @"c:\";
+            Assert.AreEqual(@"c:\test\".ToRelativePath(root), @"\test\");
+            Assert.AreEqual(@"d:\test\".ToRelativePath(root), @"");
+        }
+
+        [TestMethod()]
+        public void GetDictTest()
+        {
+            Person p1 = IO.GetDict<Person>("Kevin", () => new Person("Kevin"));
+            Person p2 = IO.GetDict<Person>("Cherry", () => new Person("Cherry"));
+            var p3 = IO.GetDict<Person>("Kevin");
+            var p4 = IO.GetDict<Person>("Jerry");
+            Assert.AreEqual(p1.Name, p3.Name);
+            Assert.AreEqual(p4, null);
+        }
+
+        [TestMethod()]
+        public void CombinePathTest()
+        {
+            Assert.AreEqual(@"".CombinePath(@"index.aspx"), @"index.aspx");
+            Assert.AreEqual(@"\Admins\".CombinePath(@"index.aspx"), @"\Admins\index.aspx");
+            Assert.AreEqual(@"\Admins".CombinePath(@"index.aspx"),  @"\Admins\index.aspx");
+            Assert.AreEqual(@"/Admins\".CombinePath(@"index.aspx"), @"\Admins\index.aspx");
+            Assert.AreEqual(@"\Admins\".CombinePath(@"\Test\index.aspx"), @"\Admins\Test\index.aspx");
+        }
+
+        [TestMethod()]
+        public void CombineWebPathTest()
+        {
+            Assert.AreEqual(@"".CombineWebPath(@"index.aspx"), @"index.aspx");
+            Assert.AreEqual(@"\Admins\".CombineWebPath(@"index.aspx"), @"/Admins/index.aspx");
+            Assert.AreEqual(@"\Admins".CombineWebPath(@"index.aspx"),  @"/Admins/index.aspx");
+            Assert.AreEqual(@"/Admins\".CombineWebPath(@"index.aspx"), @"/Admins/index.aspx");
+            Assert.AreEqual(@"\Admins\".CombineWebPath(@"\Test\index.aspx"), @"/Admins/Test/index.aspx");
+        }
     }
 }

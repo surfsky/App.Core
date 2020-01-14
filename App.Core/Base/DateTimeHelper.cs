@@ -25,6 +25,29 @@ namespace App.Core
     /// </summary>
     public static class DateTimeHelper
     {
+        /// <summary>转化为格式友好的时间文本（如3分钟前）</summary>
+        public static string ToFriendlyText(this DateTime dt)
+        {
+            if (dt > DateTime.Now)
+            {
+                var span = dt - DateTime.Now;
+                if (span.TotalMinutes < 10)    return "马上";                                     // 十分钟内
+                else if (span.TotalHours < 1)  return Math.Ceiling(span.TotalMinutes) + "分钟后"; // 超过十分钟少于1小时
+                else if (span.TotalHours < 24) return Math.Ceiling(span.TotalHours) + "小时后";   // 超过1小时少于24小时
+                else if (span.TotalDays < 3)   return Math.Ceiling(span.TotalDays) + "天后";      // 超过1天少于3天内
+                return dt.ToString("yyyy-MM-dd");                                                 // 超过3天
+            }
+            else
+            {
+                var span = DateTime.Now - dt;
+                if (span.TotalMinutes < 10)    return "刚刚";                                     // 十分钟内
+                else if (span.TotalHours < 1)  return Math.Floor(span.TotalMinutes) + "分钟前";   // 超过十分钟少于1小时
+                else if (span.TotalHours < 24) return Math.Floor(span.TotalHours) + "小时前";     // 超过1小时少于24小时
+                else if (span.TotalDays < 3)   return Math.Floor(span.TotalDays) + "天前";        // 超过1天少于3天内
+                return dt.ToString("yyyy-MM-dd");                                                 // 超过3天
+            }
+        }
+
         /// <summary>截取年月日信息</summary>
         public static DateTime TrimDay(this DateTime dt)
         {

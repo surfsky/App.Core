@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Base\DateTimeHelperTests.cs" />
     <Compile Include="Base\EnumHelperTests.cs" />
+    <Compile Include="Base\PinYinTests.cs" />
     <Compile Include="ConvertorTests.cs" />
     <Compile Include="Database\SnowflakeIDTests.cs" />
     <Compile Include="Base\DynamicXmlTests.cs" />
@@ -71,12 +72,12 @@
     <Compile Include="Base\SerializeHelperTests.cs" />
     <Compile Include="Base\StringHelperTests.cs" />
     <Compile Include="EncryptHelperTests.cs" />
-    <Compile Include="ExtensionsTests.cs" />
     <Compile Include="Database\IDGeneratorTests.cs" />
     <Compile Include="Interop\CsEvaluatorTests.cs" />
     <Compile Include="Interop\JsEvaluatorTests.cs" />
     <Compile Include="IOTests.cs" />
     <Compile Include="Linq\EFExtensionTests.cs" />
+    <Compile Include="ListHelperTests.cs" />
     <Compile Include="Math\GZiperTests.cs" />
     <Compile Include="Math\MathHelperTests.cs" />
     <Compile Include="Model\ParamAttributeTests.cs" />
@@ -88,7 +89,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Reflections\MethodInvokerTests.cs" />
-    <Compile Include="Reflections\ReflectionHelperTests.cs" />
+    <Compile Include="Reflections\ReflectorTests.cs" />
+    <Compile Include="Serialization\JsonHelperTests.cs" />
     <Compile Include="ThreadPondTests.cs" />
     <Compile Include="UIExtensionTests.cs" />
     <Compile Include="UISettingTests.cs" />

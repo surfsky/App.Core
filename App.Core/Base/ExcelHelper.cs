@@ -16,9 +16,9 @@ namespace App.Core
         // 导出Excel文件
         public static void Export<T>(IList<T> objs, string fileName = "Export.xls", bool showFieldDescription=false)
         {
-            fileName = HttpUtility.UrlEncode(fileName, System.Text.Encoding.UTF8);
+            fileName = HttpUtility.UrlEncode(fileName, Encoding.UTF8);
             HttpContext.Current.Response.ClearContent();
-            HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
+            HttpContext.Current.Response.ContentEncoding = Encoding.UTF8;
             HttpContext.Current.Response.ContentType = "application/vnd.ms-excel; charset=utf-8";
             HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment;filename=" + fileName);
             HttpContext.Current.Response.Write(ToExcelXml<T>(objs, showFieldDescription)); // 还是用xml吧，每个字段都是字符串类型，避免客户输入不同格式的数据
@@ -28,9 +28,9 @@ namespace App.Core
         // 导出Excel文件
         public static void Export(DataTable dt, string fileName = "Export.xls")
         {
-            fileName = HttpUtility.UrlEncode(fileName, System.Text.Encoding.UTF8);
+            fileName = HttpUtility.UrlEncode(fileName, Encoding.UTF8);
             HttpContext.Current.Response.ClearContent();
-            HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
+            HttpContext.Current.Response.ContentEncoding = Encoding.UTF8;
             HttpContext.Current.Response.ContentType = "application/vnd.ms-excel; charset=utf-8";
             HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment;filename=" + fileName);
             HttpContext.Current.Response.Write(ToExcelXml(dt)); // 还是用xml吧，每个字段都是字符串类型，避免客户输入不同格式的数据
@@ -40,7 +40,11 @@ namespace App.Core
         // 输出 Excel Xml
         public static string ToExcelXml<T>(IList<T> objs, bool showFieldDescription=false)
         {
-            var type = typeof(T);
+            if (objs.IsEmpty())
+                return "";
+
+            //var type = typeof(T);
+            var type = objs[0].GetType();
             var attrs = new UISetting(type).Items;
             var props = type.GetProperties();
 
@@ -74,7 +78,7 @@ namespace App.Core
                 sb.AppendLine("   <Row>");
                 foreach (var prop in props)
                 {
-                    var val = obj.GetPropertyValue(prop.Name).ToText();
+                    var val = obj.GetValue(prop.Name).ToText();
                     sb.AppendLine("    <Cell><Data ss:Type=\"String\">" + val.Replace("<", "＜") + "</Data></Cell>");
                 }
                 sb.AppendLine("   </Row>");

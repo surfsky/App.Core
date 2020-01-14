@@ -133,5 +133,22 @@ function do() {
             var q2 = "a=2&b=3";
             Assert.AreEqual(url2.AddQueryString(q2), "a=2&b=3");
         }
+
+        [TestMethod()]
+        public void TrimStartToTest()
+        {
+            Assert.AreEqual("a.asp".TrimStartTo("."), "asp");
+            Assert.AreEqual("a.asp".TrimStartTo(".", true), ".asp");
+            Assert.AreEqual("a.".TrimStartTo("."), "");
+            Assert.AreEqual("asp".TrimStartTo("."), "asp");
+        }
+
+        [TestMethod()]
+        public void SetQueryStringTest()
+        {
+            Assert.AreEqual("a.aspx?a=1".SetQueryString("a", "2"), "a.aspx?a=2");
+            Assert.AreEqual("a.aspx?a=1".SetQueryString("b", "2"), "a.aspx?a=1&b=2");
+            Assert.AreEqual("a=1".SetQueryString("b", "2"), "a=1&b=2");
+        }
     }
 }

@@ -13,19 +13,20 @@ namespace App.Core.Tests
     public class UIExtensionTests
     {
         [TestMethod()]
-        public void GetDescriptionTest()
+        public void GetTitleTest()
         {
             var p = new Person() { Sex = SexType.Male };
             var sex = SexType.Female;
+            var type = p.GetType();
 
             object o;
-            o = p.GetDescription();
-            o = p.GetDescription(t => t.Name);
-            o = sex.GetDescription();
+            o = type.GetTitle();
+            o = type.GetTitle(t => t.Name);
+            o = p.GetTitle(t => t.Name);
+            o = type.GetProperty(nameof(Person.Name)).GetTitle();
+            o = sex.GetTitle();
             o = sex.GetUIGroup();
             o = sex.GetUIAttribute();
-            o = UIExtension.GetDescription<Person>(t => t.Name);
-            o = typeof(Person).GetProperty(nameof(Person.Name)).GetDescription();
         }
     }
 }

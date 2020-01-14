@@ -15,9 +15,14 @@
         <member name="P:App.Core.AppCoreConfig.ResType">
             <summary>资源名称</summary>
         </member>
+        <member name="T:App.Core.ScopeAttribute">
+            <summary>
+            服务范围标签
+            </summary>
+        </member>
         <member name="T:App.Core.SearcherAttribute">
             <summary>
-            检索方法标注
+            检索方法
             </summary>
         </member>
         <member name="T:App.Core.TAttribute">
@@ -42,6 +47,9 @@
         <member name="M:App.Core.UIExtension.GetUIAttributes(System.Type)">
             <summary>获取类拥有的 UIAttribute 列表</summary>
         </member>
+        <member name="M:App.Core.UIExtension.GetPropertyUI(System.Reflection.PropertyInfo)">
+            <summary>获取属性的 UI 配置信息</summary>
+        </member>
         <member name="M:App.Core.UIExtension.GetUIAttribute(System.Type)">
             <summary>获取类型说明</summary>
         </member>
@@ -54,16 +62,21 @@
         <member name="M:App.Core.UIExtension.GetUIAttribute(System.Object)">
             <summary>获取枚举值的文本说明（来自UIAttribute或DescriptionAttribute）</summary>
         </member>
-        <member name="M:App.Core.UIExtension.GetDescription(System.Reflection.MemberInfo)">
-            <summary>获取说明（来自TAttribute, UIAttribute, DescriptionAttribute）</summary>
+        <member name="M:App.Core.UIExtension.GetTitle(System.Reflection.MemberInfo)">
+            <summary>获取标题（来自TAttribute, UIAttribute, DescriptionAttribute, DisplayNameAttribute）</summary>
             <param name="info">类型或成员</param>
         </member>
-        <member name="M:App.Core.UIExtension.GetDescription(System.Object)">
-            <summary>获取枚举值的文本说明。RoleType.Admin.GetDescription()</summary>
+        <member name="M:App.Core.UIExtension.GetTitle(System.Object)">
+            <summary>获取枚举值标题。RoleType.Admin.GetTitle()</summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:App.Core.UIExtension.GetDescription``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})" -->
-        <member name="M:App.Core.UIExtension.GetDescription``1(``0,System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
-            <summary>获取属性的文本说明。product.GetDescription(t =&lt; t.Name)</summary>
+        <member name="M:App.Core.UIExtension.GetTitle``1(``0,System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>获取属性标题。product.GetTitle(t =&lt; t.Name)</summary>
+        </member>
+        <member name="M:App.Core.UIExtension.GetTitle``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>获取表达式标题。t.Dept.Name => 部门名称</summary>
+        </member>
+        <member name="M:App.Core.UIExtension.GetTitle(System.Linq.Expressions.Expression)">
+            <summary>获取表达式标题。t.Dept.Name => 部门名称</summary>
         </member>
         <member name="M:App.Core.UIExtension.GetUIType(System.Reflection.PropertyInfo)">
             <summary>获取属性对应的 UI 类型（尝试取属性的 UI.EditorType 标注值，没有的话取属性的自身类型）</summary>
@@ -85,20 +98,90 @@
             UI 设置。可根据该类动态设置用户界面（如网格、表单等）
             </summary>
         </member>
-        <member name="P:App.Core.UISetting.ID">
-            <summary>实体ID</summary>
-        </member>
         <member name="P:App.Core.UISetting.Title">
             <summary>标题</summary>
         </member>
-        <member name="P:App.Core.UISetting.ModelType">
+        <member name="P:App.Core.UISetting.EntityType">
             <summary>数据模型类型</summary>
+        </member>
+        <member name="P:App.Core.UISetting.Method">
+            <summary>关联的方法</summary>
         </member>
         <member name="P:App.Core.UISetting.Items">
             <summary>成员</summary>
         </member>
         <member name="P:App.Core.UISetting.Groups">
             <summary>分组</summary>
+        </member>
+        <member name="M:App.Core.UISetting.BuildGroups">
+            <summary>构建组结构</summary>
+        </member>
+        <member name="M:App.Core.UISetting.#ctor(System.Reflection.MethodInfo)">
+            <summary>
+            从方法构建 UISetting 对象。该方法返回类型必须为IQueryable&lt;Org&gt;
+            （如果没有ParamAttribute则显示所有参数；如果有，则只保留标注过的参数）
+            </summary>
+        </member>
+        <member name="T:App.Core.UISetting`1">
+            <summary>UI配置信息（泛型版本）</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.BuildItems">
+            <summary>根据类型构建Items</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.Get(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
+            <summary>获取成员</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.Remove(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
+            <summary>删除成员</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetColumn(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Nullable{System.Int32},App.Core.ColumnType,System.Nullable{System.Boolean},System.Object)">
+            <summary>设置列成员</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetTreeColumn(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Nullable{System.Int32})">
+            <summary>设置树列成员</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetEditor(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},App.Core.EditorType,System.Object)">
+            <summary>设置表单成员</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetMode(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},App.Core.PageMode)">
+            <summary>设置显示模式（何种页面模式下才显示）</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetIcon(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Nullable{System.Drawing.Size})">
+            <summary>添加图标成员（只读图像）</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetImage(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Nullable{System.Drawing.Size})">
+            <summary>添加图像成员</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetGrid(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.String,System.String)">
+            <summary>添加网格成员</summary>
+            <param name="query">查询参数（如resKey={0})</param>
+            <remarks>创建控件方法见：FormRender.CreateGrid</remarks>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetPopupGrid(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.String)">
+            <summary>添加弹出网格成员</summary>
+            <param name="query">查询参数（如resKey={0})</param>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetPopupList(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.String)">
+            <summary>添加列表成员</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetPopupList(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>添加列表成员</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetPopupTree(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.String,System.String)">
+            <summary>添加弹出树成员</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetPopupForm(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Nullable{System.Int32},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.Nullable{System.Boolean})">
+            <summary>添加弹出表单成员</summary>
+        </member>
+        <member name="T:App.Core.PinYin">
+            <summary>
+            汉语拼音相关
+            </summary>
+        </member>
+        <member name="M:App.Core.PinYin.ToPinYin(System.String)">
+            <summary>汉字转换成全拼的拼音</summary>
+            <param name="chineseText">汉字字符串</param>
+            <returns>转换后的拼音字符串</returns>
         </member>
         <member name="T:App.Core.Convertor">
             <summary>
@@ -109,9 +192,6 @@
             ParseXXXX(string) 负责将字符串解析为对应的类型
             ToXXX()           负责将各种数据类型相互转换
             CastXXX()         负责列表元素的遍历、转换、筛选
-            </summary>
-            <summary>
-            类型转换-列表操作（遍历、转换、过滤）。类似.Select()方法，进行了转换操作
             </summary>
             <summary>
             负责各种类型转换、列表类型转换
@@ -265,30 +345,6 @@
             <summary>Parse querystring to dict（eg. id=1&amp;name=Kevin）</summary>
             <param name="text">Querystring, eg. id=1&amp;name=Kevin</param>
         </member>
-        <member name="M:App.Core.Convertor.CastInt(System.Collections.IEnumerable)">
-            <summary>转化为整型列表</summary>
-        </member>
-        <member name="M:App.Core.Convertor.CastInt64(System.Collections.IEnumerable)">
-            <summary>转化为整型列表</summary>
-        </member>
-        <member name="M:App.Core.Convertor.CastString(System.Collections.IEnumerable)">
-            <summary>转化为整型列表</summary>
-        </member>
-        <member name="M:App.Core.Convertor.CastEnum``1(System.Collections.IEnumerable)">
-            <summary>转化为枚举列表</summary>
-        </member>
-        <member name="M:App.Core.Convertor.Cast``1(System.Collections.IEnumerable,System.Func{System.Object,``0})">
-            <summary>遍历并转换</summary>
-        </member>
-        <member name="M:App.Core.Convertor.Cast``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Object})">
-            <summary>遍历并转换</summary>
-        </member>
-        <member name="M:App.Core.Convertor.Cast``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
-            <summary>遍历并转换</summary>
-        </member>
-        <member name="M:App.Core.Convertor.Search``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
-            <summary>遍历过滤（同Where，但名字会冲突; 可考虑用 Query; Search; Filter）</summary>
-        </member>
         <member name="M:App.Core.Convertor.ToList``1(``0[])">
             <summary>数组转化为列表</summary>
         </member>
@@ -316,6 +372,57 @@
         <member name="M:App.Core.Convertor.ToBasicObject(System.Object,System.Type)">
             <summary>转化为基础数据类型（数字、枚举、日期）</summary>
         </member>
+        <member name="T:App.Core.ListHelper">
+            <summary>
+            列表操作（遍历、转换、过滤）
+            </summary>
+        </member>
+        <member name="M:App.Core.ListHelper.GetItem``1(System.Collections.Generic.Dictionary{System.String,``0},System.String,System.Boolean)">
+            <summary>查找匹配的字典值（关键字可忽略大小写）</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.ToDict``1(System.Collections.Generic.List{``0})">
+            <summary>将枚举列表转化为字典</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.IndexOf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>找到第一个匹配的位置</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.Merge``1(System.Collections.Generic.List{``0},System.Collections.Generic.List{``0})">
+            <summary>合并两个集合（会排除重复项）</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.Search``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>遍历过滤（同Where，但名字会冲突; 可考虑用 Query; Search; Filter）</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.Each``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>遍历并处理（替代ForEach，有返回值）</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.Each2``1(System.Collections.Generic.List{``0},System.Action{``0,``0})">
+            <summary>遍历并处理（替代ForEach，有返回值）</summary>
+            <param name="action">参数1为当前元素；参数2为前一个元素（可能为空）</param>
+        </member>
+        <member name="M:App.Core.ListHelper.Cast``1(System.Collections.IEnumerable)">
+            <summary>遍历并转换</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.Cast``1(System.Collections.IEnumerable,System.Func{System.Object,``0})">
+            <summary>遍历并转换</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.Cast``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Object})">
+            <summary>遍历并转换</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.Cast``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>遍历并转换</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.CastInt(System.Collections.IEnumerable)">
+            <summary>转化为整型列表</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.CastLong(System.Collections.IEnumerable)">
+            <summary>转化为整型列表</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.CastString(System.Collections.IEnumerable)">
+            <summary>转化为整型列表</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.CastEnum``1(System.Collections.IEnumerable)">
+            <summary>转化为枚举列表</summary>
+        </member>
         <member name="T:App.Core.GZiper">
             <summary>
             GZip压缩解压辅助类
@@ -338,10 +445,11 @@
             历史版本信息
             </summary>
         </member>
-        <member name="T:App.Core.ExportType">
-            <summary>
-            导出时机
-            </summary>
+        <member name="T:App.Core.ExportMode">
+            <summary>导出模式</summary>
+        </member>
+        <member name="T:App.Core.PageMode">
+            <summary>页面访问模式</summary>
         </member>
         <member name="T:App.Core.IParam">
             <summary>
@@ -375,7 +483,7 @@
         <member name="P:App.Core.IParam.Default">
             <summary>默认值</summary>
         </member>
-        <member name="P:App.Core.IParam.AllowValues">
+        <member name="P:App.Core.IParam.Values">
             <summary>允许的值</summary>
         </member>
         <member name="T:App.Core.ParamAttribute">
@@ -387,7 +495,7 @@
             <summary>名称</summary>
         </member>
         <member name="P:App.Core.ParamAttribute.Type">
-            <summary>数据类型</summary>
+            <summary>参数类型</summary>
         </member>
         <member name="P:App.Core.ParamAttribute.Format">
             <summary>格式化字符串</summary>
@@ -407,23 +515,41 @@
         <member name="P:App.Core.ParamAttribute.Regex">
             <summary>正则表达式</summary>
         </member>
-        <member name="P:App.Core.ParamAttribute.Visible">
-            <summary>该参数是否在界面显示</summary>
+        <member name="P:App.Core.ParamAttribute.Mode">
+            <summary>在何种页面模式下显示该控件</summary>
         </member>
         <member name="P:App.Core.ParamAttribute.Default">
             <summary>默认值</summary>
         </member>
-        <member name="P:App.Core.ParamAttribute.AllowValues">
+        <member name="P:App.Core.ParamAttribute.TextField">
+            <summary>对应的文本字段</summary>
+        </member>
+        <member name="P:App.Core.ParamAttribute.ValueField">
+            <summary>对应的值字段</summary>
+        </member>
+        <member name="P:App.Core.ParamAttribute.Tree">
+            <summary>表现为树</summary>
+        </member>
+        <member name="P:App.Core.ParamAttribute.Values">
             <summary>允许的值</summary>
         </member>
+        <member name="P:App.Core.ParamAttribute.ValueType">
+            <summary>值类型（如long ProductID 的值类型等于 Product）</summary>
+        </member>
+        <member name="P:App.Core.ParamAttribute.ValueUIID">
+            <summary>值类型对应的 UI 设置ID </summary>
+        </member>
+        <member name="P:App.Core.ParamAttribute.ValueInfo">
+            <summary>可选值说明</summary>
+        </member>
+        <member name="P:App.Core.ParamAttribute.Tag">
+            <summary>附属参数</summary>
+        </member>
         <member name="P:App.Core.ParamAttribute.Export">
-            <summary>导出时机</summary>
+            <summary>数据导出时机</summary>
         </member>
         <member name="P:App.Core.ParamAttribute.TypeName">
             <summary>参数类型名</summary>
-        </member>
-        <member name="P:App.Core.ParamAttribute.Values">
-            <summary>可选值列表</summary>
         </member>
         <member name="M:App.Core.ParamAttribute.ToString">
             <summary>格式化为文本</summary>
@@ -436,7 +562,10 @@
         <member name="P:App.Core.Net.IPs">
             <summary>获取本机IP地址列表（IPV4 及 IPV6）</summary>
         </member>
-        <member name="T:App.Core.ReflectionHelper">
+        <member name="M:App.Core.Net.Ping(System.String)">
+            <summary>Ping</summary>
+        </member>
+        <member name="T:App.Core.Reflector">
             <summary>
             反射相关静态方法和属性
             </summary>
@@ -447,124 +576,154 @@
             反射相关静态方法和属性
             </summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetPropertyValue(System.Object,System.String)">
+        <member name="M:App.Core.Reflector.GetValue(System.Object,System.String)">
             <summary>获取对象的属性值。也可考虑用dynamic实现。</summary>
             <param name="propertyName">属性名。可考虑用nameof()表达式来实现强类型。</param>
         </member>
-        <member name="M:App.Core.ReflectionHelper.SetPropertyValue(System.Object,System.String,System.Object)">
+        <member name="M:App.Core.Reflector.SetValue(System.Object,System.String,System.Object)">
             <summary>设置对象的属性值。</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.SetPropertyValue(System.Object,System.String,System.String)">
+        <member name="M:App.Core.Reflector.SetValue(System.Object,System.String,System.String)">
             <summary>设置对象的属性值（用文本，转化为相应的数据类型），需要测试，给非空类型赋予可空数据会出错的</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetPropertyValue``2(``0,System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+        <member name="M:App.Core.Reflector.GetValue``2(``0,System.Linq.Expressions.Expression{System.Func{``0,``1}})">
             <summary>获取对象的属性值（强类型版本）。var name = user.GetPropertyValue(t=> t.Name);</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.SetPropertyValue``2(``0,System.Linq.Expressions.Expression{System.Func{``0,``1}},``1)">
+        <member name="M:App.Core.Reflector.SetValue``2(``0,System.Linq.Expressions.Expression{System.Func{``0,``1}},``1)">
             <summary>设置对象的属性值（强类型版本）。user.SetPropertyValue(t=> t.Name, "Cherry");</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetMemberInfo``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})">
-            <summary>获取类的成员信息。GetMemberInfo&lt;User&gt;(t =&gt; t.Name);</summary>
+        <member name="M:App.Core.Reflector.GetName``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>获取表达式名。GetName&lt;User&gt;(t =&gt; t.Dept.Name);</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetPropertyInfo``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
-            <summary>获取表达式属性信息</summary>
+        <member name="M:App.Core.Reflector.GetName(System.Linq.Expressions.Expression)">
+            <summary>获取表达式名。GetName&lt;User&gt;(t =&gt; t.Dept.Name);</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetPropertyInfo(System.Linq.Expressions.Expression)">
-            <summary>获取表达式属性信息</summary>
+        <member name="M:App.Core.Reflector.GetProperty(System.Type,System.String)">
+            <summary>获取对象的属性信息</summary>
+            <param name="propertyName">属性名。可考虑用nameof()表达式来实现强类型。</param>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetExpressionName``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
-            <summary>获取表达式属性名。var name = GetPropertyName&lt;User&gt;(t =&gt; t.Dept.Name);</summary>
+        <member name="M:App.Core.Reflector.GetProperty``1(System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>获取对象的属性信息。GetProperty&lt;Person&gt;(t =&gt; t.Name)</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetExpressionName(System.Linq.Expressions.Expression)">
-            <summary>获取表达式属性名。var name = GetPropertyName&lt;User&gt;(t =&gt; t.Dept.Name);</summary>
+        <member name="M:App.Core.Reflector.GetProperty(System.Linq.Expressions.Expression)">
+            <summary>获取表达式属性信息(t.Dept.Name => Name)</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetPropertyName``2(System.Linq.Expressions.Expression{System.Func{``0,``1}})">
-            <summary>获取类的属性名。var name = GetPropertyName&lt;User, string&gt;(t =&gt; t.Name);</summary>
+        <member name="M:App.Core.Reflector.GetItemType``1(System.Collections.Generic.IList{``0})">
+            <summary>获取列表元素的数据类型（尝试返回第一个元素的数据类型）</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetPropertyName``1(System.Linq.Expressions.Expression{System.Func{``0}})">
-            <summary>获取对象的属性名。可用于获取一些匿名对象的属性名。GetPropertyName(() =&gt; user.Name)</summary>
-        </member>
-        <member name="M:App.Core.ReflectionHelper.TryGetType(System.String,System.String,System.Boolean)">
+        <member name="M:App.Core.Reflector.TryGetType(System.String,System.String,System.Boolean)">
             <summary>尝试遍历获取类型（根据类型名、数据集名称）</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.TryCreateObject(System.String,System.String)">
+        <member name="M:App.Core.Reflector.TryCreateObject(System.String,System.String)">
             <summary>尝试创建对象（根据类型名、数据集名称）</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetRealType(System.Type)">
+        <member name="M:App.Core.Reflector.GetRealType(System.Type)">
             <summary>获取（可空类型的）真实类型</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetEntityType(System.Type)">
+        <member name="M:App.Core.Reflector.GetEntityType(System.Type)">
             <summary>获取实体的真实类型（而不是临时的代理类型）</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetTypeString(System.Type,System.Boolean)">
-            <summary>获取类型字符串（可处理可空类型）</summary>
+        <!-- Badly formed XML comment ignored for member "M:App.Core.Reflector.GetShortName(System.Type)" -->
+        <member name="M:App.Core.Reflector.GetTypeString(System.Type,System.Boolean)">
+            <summary>获取类型字符串（如 Int32? List&lt;T&gt;）</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetMethodString(System.Reflection.MethodInfo)">
+        <member name="M:App.Core.Reflector.GetMethodString(System.Reflection.MethodInfo)">
             <summary>获取方法描述字符串</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetTypeValues(System.Type)">
-            <summary>获取类型的数据信息（可解析枚举类型）</summary>
+        <member name="M:App.Core.Reflector.GetEnumString(System.Type)">
+            <summary>获取枚举类型的数据信息</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.IsType(System.Type,System.Type)">
+        <member name="M:App.Core.Reflector.IsType(System.Type,System.Type)">
             <summary>是否是某个类型（或子类型）</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.IsInterface(System.Type,System.Type)">
+        <member name="M:App.Core.Reflector.IsInterface(System.Type,System.Type)">
             <summary>是否实现接口</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.IsType(System.Type,System.String)">
+        <member name="M:App.Core.Reflector.IsType(System.Type,System.String)">
             <summary>是否属于某个类型</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.IsList(System.Type)">
+        <member name="M:App.Core.Reflector.IsList(System.Type)">
             <summary>是否是列表</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.IsDict(System.Type)">
+        <member name="M:App.Core.Reflector.IsDict(System.Type)">
             <summary>是否是字典</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.IsGenericList(System.Type)">
+        <member name="M:App.Core.Reflector.IsCollection(System.Type)">
+            <summary>是否是集合（包括列表和字典）</summary>
+        </member>
+        <member name="M:App.Core.Reflector.IsGenericList(System.Type)">
             <summary>是否是泛型列表</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.IsGenericDict(System.Type)">
+        <member name="M:App.Core.Reflector.IsGenericDict(System.Type)">
             <summary>是否是泛型字典</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.IsAnonymous(System.Type)">
+        <member name="M:App.Core.Reflector.IsAnonymous(System.Type)">
             <summary>是否是匿名类</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.IsGeneric(System.Type)">
+        <member name="M:App.Core.Reflector.IsGeneric(System.Type)">
             <summary>是否是泛型类型</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.IsSimpleType(System.Type)">
+        <member name="M:App.Core.Reflector.IsSimpleType(System.Type)">
             <summary>是否是简单值类型: String + DateTime + 枚举 + 基元类型(Boolean， Byte， SByte， Int16， UInt16， Int32， UInt32， Int64， UInt64， IntPtr， UIntPtr， Char，Double，和Single)</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.IsNumber(System.Type)">
+        <member name="M:App.Core.Reflector.IsNumber(System.Type)">
             <summary>是否是简单值类型: String + DateTime + 枚举 + 基元类型(Boolean， Byte， SByte， Int16， UInt16， Int32， UInt32， Int64， UInt64， IntPtr， UIntPtr， Char，Double，和Single)</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.IsNullable(System.Type)">
+        <member name="M:App.Core.Reflector.IsNullable(System.Type)">
             <summary>是否是可空类型</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetNullableDataType(System.Type)">
+        <member name="M:App.Core.Reflector.GetNullableDataType(System.Type)">
             <summary>获取可空类型中的值类型</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetGenericDataType(System.Type)">
+        <member name="M:App.Core.Reflector.GetGenericDataType(System.Type)">
             <summary>获取泛型中的数据类型</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetMethods(System.Type,System.String,System.Boolean)">
-            <summary>获取类的方法（包括祖先的）。注意 Type.GetMethods()只能获取当前类下的方法。</summary>
+        <member name="M:App.Core.Reflector.GetMethods(System.Type,System.String,System.Boolean)">
+            <summary>获取类的所有公共方法（包括祖先的）。注意 Type.GetMethods()只能获取当前类下的方法。</summary>
             <param name="searchAncestors">是否检索祖先的同名方法</param>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetAttributes``1(System.Reflection.MemberInfo)">
+        <member name="M:App.Core.Reflector.GetMethod(System.Type,System.String,System.Boolean)">
+            <summary>获取类的公共方法（包括祖先的），若有重名取第一个。</summary>
+        </member>
+        <member name="M:App.Core.Reflector.GetAttributes``1(System.Reflection.MemberInfo)">
             <summary>获取指定特性列表（支持Type、Property、Method等）</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetAttribute``1(System.Reflection.MemberInfo)">
+        <member name="M:App.Core.Reflector.GetAttribute``1(System.Reflection.MemberInfo)">
             <summary>获取指定特性（不抛出异常）</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetEventSubscribers(System.Object,System.String)">
+        <member name="M:App.Core.Reflector.SetDisplayName(System.Object,System.String,System.String)">
+            <summary>动态设置对象属性的标题（可用于 PropertyGrid 展示）</summary>
+        </member>
+        <member name="M:App.Core.Reflector.GetDisplayName(System.Object,System.String)">
+            <summary>获取对象属性的展示名</summary>
+        </member>
+        <member name="M:App.Core.Reflector.GetEventSubscribers(System.Object,System.String)">
             <summary>获取事件调用者列表</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.GetCurrentMethod">
+        <member name="M:App.Core.Reflector.GetCurrentMethod">
             <summary>获取当前方法信息</summary>
         </member>
-        <member name="M:App.Core.ReflectionHelper.CombineObject(System.Object[])">
+        <member name="M:App.Core.Reflector.CombineObject(System.Object[])">
             <summary>组合各个对象的属性，输出为字典</summary>
+        </member>
+        <member name="T:App.Core.ResHelp">
+            <summary>
+            资源
+            </summary>
+        </member>
+        <member name="M:App.Core.ResHelp.GetResText(System.String)">
+            <summary>获取资源文本</summary>
+            <remarks>请配置 AppCoreConfig.UseGlobal 和 ResType 属性</remarks>
+        </member>
+        <member name="M:App.Core.ResHelp.GetResText(System.String,System.Type)">
+            <summary>获取资源文本</summary>
+            <param name="resType">资源类。如 App.Properties.Resouce</param>
+        </member>
+        <member name="M:App.Core.ResHelp.GetResImage(System.String,System.Type)">
+            <summary>获取资源图片</summary>
+        </member>
+        <member name="M:App.Core.ResHelp.GetResFile(System.String,System.Type)">
+            <summary>获取资源文件</summary>
         </member>
         <member name="T:App.Core.JsonHelper">
             <summary>
@@ -574,11 +733,13 @@
         <member name="M:App.Core.JsonHelper.ToJson(System.Object,Newtonsoft.Json.JsonSerializerSettings)">
             <summary>OBJECT -> JSON</summary>
         </member>
-        <member name="M:App.Core.JsonHelper.ParseJson(System.String,System.Type,Newtonsoft.Json.JsonSerializerSettings)">
+        <member name="M:App.Core.JsonHelper.ParseJson(System.String,System.Type,System.Boolean,Newtonsoft.Json.JsonSerializerSettings)">
             <summary>JSON -> OBJECT (注意该方法无法解析简单数据类型)</summary>
+            <param name="ignoreException">是否忽略异常。如果为true，解析失败时会返回null</param>
         </member>
-        <member name="M:App.Core.JsonHelper.ParseJson``1(System.String,Newtonsoft.Json.JsonSerializerSettings)">
+        <member name="M:App.Core.JsonHelper.ParseJson``1(System.String,System.Boolean,Newtonsoft.Json.JsonSerializerSettings)">
             <summary>JSON -> OBJECT</summary>
+            <param name="ignoreException">是否忽略异常。如果为true，解析失败时会返回null</param>
         </member>
         <member name="M:App.Core.JsonHelper.ParseJObject(System.String)">
             <summary>Json 字符串转换为 JObject 对象。获取节点值可用： var name = o["Name1"]["Name2"].ToString(); var age = (int)o["age"];</summary>
@@ -876,6 +1037,16 @@
             IO 辅助方法（文件、路径、程序集）
             </summary>
         </member>
+        <member name="M:App.Core.IO.CombinePath(System.String,System.String)">
+            <summary>合并两个路径（善不支持..操作符）</summary>
+        </member>
+        <member name="M:App.Core.IO.CombineWebPath(System.String,System.String)">
+            <summary>合并两个网页路径（善不支持..操作符）</summary>
+        </member>
+        <member name="M:App.Core.IO.ToRelativePath(System.String,System.String)">
+            <summary>计算相对路径</summary>
+            <returns>相对路径，格式如: \subfolder\filename.doc </returns>
+        </member>
         <member name="M:App.Core.IO.PrepareDirectory(System.String)">
             <summary>准备文件路径（不存在则创建）</summary>
             <param name="filePath">文件的物理路径</param>
@@ -974,7 +1145,15 @@
             <summary>设置缓存对象</summary>
         </member>
         <member name="M:App.Core.IO.GetCache``1(System.String,System.Func{``0},System.Nullable{System.DateTime})">
-            <summary>获取缓存对象（缓存有有效期，一旦失效会自动获取）</summary>
+            <summary>获取缓存对象（缓存到期后会清空，再次请求时会自动获取）</summary>
+            <param name="creator">创建方法。若该方法返回值为null，不会加入缓存。</param>
+        </member>
+        <member name="M:App.Core.IO.ContainsKey(System.Web.Caching.Cache,System.Object)">
+            <summary>判断缓存是否具有某个键值（遍历方式，性能会差一些）</summary>
+            <remarks>Cache 类并未提供 ContainsKey 方法</remarks>
+        </member>
+        <member name="M:App.Core.IO.GetDict``1(System.String,System.Func{``0})">
+            <summary>获取缓存字典对象（数据在运行期间不会被清理，且可以容纳空值）</summary>
         </member>
         <member name="T:App.Core.HexEncoding">
             <summary>
@@ -1161,13 +1340,6 @@
         <member name="M:App.Core.Utils.GetText(System.String,System.Object[])">
             <summary>获取文本</summary>
         </member>
-        <member name="M:App.Core.Utils.GetResText(System.String)">
-            <summary>获取资源文本</summary>
-            <remarks>请配置AppCoreConfig.UseGlobal 和 ResType 属性</remarks>
-        </member>
-        <member name="M:App.Core.Utils.GetResText(System.String,System.Type)">
-            <summary>获取资源文本</summary>
-        </member>
         <member name="M:App.Core.Utils.IsNotEmpty(System.Object)">
             <summary>判断对象是否不为空、空字符串、空列表</summary>
         </member>
@@ -1177,14 +1349,14 @@
         <member name="M:App.Core.Utils.Count(System.Collections.IEnumerable)">
             <summary>获取列表的长度</summary>
         </member>
+        <member name="M:App.Core.Utils.AsList``1(``0)">
+            <summary>将对象转化为数组，以简化列表初始化代码</summary>
+        </member>
         <member name="M:App.Core.Utils.Assert(System.Boolean,System.String)">
             <summary>断言（如果逻辑表达式不成立，则抛出异常）</summary>
         </member>
         <member name="M:App.Core.Utils.IIF``2(``0,System.Func{``0,System.Boolean},``1,``1)">
             <summary>模拟VBA的 IIF 函数。逻辑如 var result = o.IIF(t=>t>0, "Positive", "Nagetive");</summary>
-        </member>
-        <member name="M:App.Core.Utils.IndexOf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
-            <summary>找到第一个匹配的位置</summary>
         </member>
         <member name="T:App.Core.Properties.Resources">
             <summary>
@@ -1457,6 +1629,12 @@
             ASP.NET 网页相关辅助方法
             </summary>
         </member>
+        <member name="M:App.Core.Asp.ToVirtualPath(System.String)">
+            <summary>将物理路径转化为虚拟路径</summary>
+        </member>
+        <member name="M:App.Core.Asp.ToWebPath(System.String)">
+            <summary>将 Window 路径转化为 Web 路径（替换反斜杠)</summary>
+        </member>
         <member name="M:App.Core.Asp.DeleteWebFile(System.String,System.String)">
             <summary>安全删除文件（不报异常，且忽略静态资源目录文件）</summary>
         </member>
@@ -1478,11 +1656,14 @@
         <member name="M:App.Core.Asp.WriteXml(System.String,System.Text.Encoding)">
             <summary>输出xml</summary>
         </member>
+        <member name="M:App.Core.Asp.WriteAttach(System.String,System.String)">
+            <summary>输出附件</summary>
+        </member>
         <member name="M:App.Core.Asp.WriteFile(System.String,System.String,System.String)">
             <summary>输出文件（小于2G）</summary>
             <param name="filePath">文件物理路径</param>
-            <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
             <param name="attachName">附件名。若不为空，则启动附件下载方式。</param>
+            <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
         </member>
         <member name="M:App.Core.Asp.WriteImage(System.Drawing.Image,System.String,System.String)">
             <summary>输出图像文件</summary>
@@ -1496,8 +1677,8 @@
         <member name="M:App.Core.Asp.WriteBigFile(System.String,System.String,System.String)">
             <summary>输出超大文件（未测试）</summary>
             <param name="filePath">文件物理路径</param>
-            <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
             <param name="attachName">附件名。若不为空，则启动附件下载方式。</param>
+            <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
         </member>
         <member name="M:App.Core.Asp.WriteStream(System.IO.Stream,System.String,System.String)">
             <summary>输出流（未测试）</summary>
@@ -1516,16 +1697,16 @@
         <member name="M:App.Core.Asp.BuildExceptionInfo(System.Exception)">
             <summary>打印异常信息</summary>
         </member>
-        <member name="M:App.Core.Asp.BuildRequestInfo">
+        <member name="M:App.Core.Asp.BuildRequestInfo(System.String)">
             <summary>打印请求基础信息</summary>
         </member>
-        <member name="M:App.Core.Asp.BuildRequestParamsInfo">
+        <member name="M:App.Core.Asp.BuildRequestParamsInfo(System.String)">
             <summary>打印请求参数</summary>
         </member>
-        <member name="M:App.Core.Asp.BuildClientInfo">
+        <member name="M:App.Core.Asp.BuildClientInfo(System.String)">
             <summary>打印客户端信息</summary>
         </member>
-        <member name="M:App.Core.Asp.BuildServerInfo">
+        <member name="M:App.Core.Asp.BuildServerInfo(System.String)">
             <summary>打印服务器端信息</summary>
         </member>
         <member name="M:App.Core.Asp.SetSession(System.String,System.Object,System.Nullable{System.Int32})">
@@ -1565,14 +1746,14 @@
             <summary>获取 Application 数据（网站开启一直有效）</summary>
         </member>
         <!-- Badly formed XML comment ignored for member "M:App.Core.Asp.SetCachePolicy(System.Web.HttpResponse,System.Int32,System.String,System.Web.HttpCacheability)" -->
-        <member name="P:App.Core.Asp.Root">
-            <summary>获取主机根路径</summary>
-        </member>
         <member name="P:App.Core.Asp.IsWeb">
             <summary>是否是网站运行环境</summary>
         </member>
-        <member name="P:App.Core.Asp.IsRequestValid">
+        <member name="P:App.Core.Asp.IsRequestOk">
             <summary>请求是否有效（避免触发“HttpRequest在上下文中不可用”的异常）</summary>
+        </member>
+        <member name="P:App.Core.Asp.Root">
+            <summary>主机根路径（如http://www.abc.com/）</summary>
         </member>
         <member name="P:App.Core.Asp.ClientIP">
             <summary>获取客户端真实IP</summary>
@@ -1617,10 +1798,16 @@
             （2）~/default.aspx      转化为 ../default.aspx
             </summary>
         </member>
-        <member name="M:App.Core.Asp.GetQueryString(System.String)">
-            <summary>获取查询字符串</summary>
+        <member name="M:App.Core.Asp.GetParam``1(System.String)">
+            <summary>获取请求参数</summary>
+        </member>
+        <member name="M:App.Core.Asp.GetParam(System.String)">
+            <summary>获取请求参数</summary>
         </member>
         <member name="M:App.Core.Asp.GetQuery``1(System.String)">
+            <summary>获取查询字符串</summary>
+        </member>
+        <member name="M:App.Core.Asp.GetQueryString(System.String,System.Boolean)">
             <summary>获取查询字符串</summary>
         </member>
         <member name="M:App.Core.Asp.GetQueryInt(System.String)">
@@ -1634,6 +1821,9 @@
         </member>
         <member name="M:App.Core.Asp.GetHandler(System.String,System.Web.HttpContext)">
             <summary>获取 URL 对应的处理器类</summary>
+        </member>
+        <member name="M:App.Core.Asp.EnableCros">
+            <summary>允许跨域（未测试）</summary>
         </member>
         <member name="T:App.Core.UserRolePrincipal">
             <summary>存储用户名及角色列表的Principal</summary>
@@ -1719,6 +1909,9 @@
             <summary>
             日期时间辅助方法
             </summary>
+        </member>
+        <member name="M:App.Core.DateTimeHelper.ToFriendlyText(System.DateTime)">
+            <summary>转化为格式友好的时间文本（如3分钟前）</summary>
         </member>
         <member name="M:App.Core.DateTimeHelper.TrimDay(System.DateTime)">
             <summary>截取年月日信息</summary>
@@ -1824,52 +2017,69 @@
         <member name="M:App.Core.Drawer.ToBase64(System.Drawing.Image)">
             <summary>将图片转化为 Base64 字符串</summary>
         </member>
+        <member name="M:App.Core.Drawer.IsBase64Image(System.String)">
+            <summary>判断字符串是否是base64编码的图片</summary>
+        </member>
         <member name="M:App.Core.Drawer.ToImage(System.String)">
             <summary>从 Base64 字符串中创建图像</summary>
         </member>
-        <member name="T:App.Core.EFExtension">
+        <member name="T:App.Core.EFHelper">
             <summary>
             EntityFramework 相关方法。
             Linq调试可使用Expression Tree Visualizer工具：https://github.com/Feddas/ExpressionTreeVisualizer/
             Linq及表达式参考：http://www.360doc.com/content/15/0718/11/14416931_485658704.shtml
             </summary>
         </member>
-        <member name="M:App.Core.EFExtension.SortAndPage``1(System.Linq.IQueryable{``0},System.String,System.String,System.Int32,System.Int32)">
+        <member name="M:App.Core.EFHelper.SortAndPage``1(System.Linq.IQueryable{``0},System.String,System.String,System.Int32,System.Int32)">
             <summary>排序后分页（字段名是用字符串的，慎用）</summary>
             <example>q.SortAndPage("Name", "ASC", 2, 100);</example>
         </member>
-        <member name="M:App.Core.EFExtension.SortAndPage``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.Boolean,System.Int32,System.Int32)">
+        <member name="M:App.Core.EFHelper.SortAndPage``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.Boolean,System.Int32,System.Int32)">
             <summary>排序后分页</summary>
             <example>q.SortAndPage(t => t.Name, true, 2, 100);</example>
         </member>
-        <member name="M:App.Core.EFExtension.Sort``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.Boolean)">
+        <member name="M:App.Core.EFHelper.Sort``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.Boolean)">
             <summary>排序（可指定升降序）</summary>
             <example>q.SortBy(t => t.Name, true);</example>
         </member>
-        <member name="M:App.Core.EFExtension.Sort``1(System.Linq.IQueryable{``0},System.String,System.String)">
+        <member name="M:App.Core.EFHelper.Sort``1(System.Linq.IQueryable{``0},System.String,System.String)">
             <summary>排序</summary>
             <example>q.SortBy("Name", "ASC");</example>
         </member>
-        <member name="M:App.Core.EFExtension.Page``1(System.Linq.IQueryable{``0},System.Int32,System.Int32)">
+        <member name="M:App.Core.EFHelper.Page``1(System.Linq.IQueryable{``0},System.Int32,System.Int32)">
             <summary>分页</summary>
             <example>q.Page(2, 100);</example>
             <param name="pageIndex">第几页（base-0）</param>
             <param name="pageSize">页面大小</param>
         </member>
-        <member name="M:App.Core.EFExtension.ExecuteSelectSql(System.Data.Entity.DbContext,System.String)">
+        <member name="M:App.Core.EFHelper.And``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>And 组合两个Bool表达式</summary>
+        </member>
+        <member name="M:App.Core.EFHelper.Or``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+            <summary>Or 组合两个Bool表达式</summary>
+        </member>
+        <member name="M:App.Core.EFHelper.Compose``1(System.Linq.Expressions.Expression{``0},System.Linq.Expressions.Expression{``0},System.Func{System.Linq.Expressions.Expression,System.Linq.Expressions.Expression,System.Linq.Expressions.Expression})">
+            <summary>组合两个表达式</summary>
+        </member>
+        <member name="T:App.Core.EFHelper.ExpressionRebinder">
+            <summary>
+            看不懂，能用
+            </summary>
+        </member>
+        <member name="M:App.Core.EFHelper.ExecuteSelectSql(System.Data.Entity.DbContext,System.String)">
             <summary>运行sql语句，返回datatable</summary>
         </member>
-        <member name="M:App.Core.EFExtension.Between``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},``1,``1)">
+        <member name="M:App.Core.EFHelper.Between``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},``1,``1)">
             <summary>
             扩展Between 操作符（仅适合数字类型）
             使用 var query = db.People.Between(person => person.Age, 18, 21);
             string 类型比较会出错，以后再想办法。觉得麻烦就直接写where吧。
             </summary>
         </member>
-        <member name="M:App.Core.EFExtension.GreaterEqual``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},``1)">
+        <member name="M:App.Core.EFHelper.GreaterEqual``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},``1)">
             <summary>大等于</summary>
         </member>
-        <member name="M:App.Core.EFExtension.LessEqual``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},``1)">
+        <member name="M:App.Core.EFHelper.LessEqual``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},``1)">
             <summary>小等于</summary>
         </member>
         <member name="T:App.Core.EnumInfo">
@@ -1880,7 +2090,7 @@
         <member name="P:App.Core.EnumInfo.ID">
             <summary>数字值</summary>
         </member>
-        <member name="P:App.Core.EnumInfo.Name">
+        <member name="P:App.Core.EnumInfo.Title">
             <summary>枚举名</summary>
         </member>
         <member name="P:App.Core.EnumInfo.Value">
@@ -2037,6 +2247,11 @@
             DateTime序列化为时间戳  
             </summary>  
         </member>
+        <member name="T:App.Core.TypeNameConverter">
+            <summary>
+            Type 名称 Json 转化器，只保留类名和数据集名，不记录数据集版本号
+            </summary>
+        </member>
         <member name="T:App.Core.UnicodeConverter">
             <summary>  
             String Unicode 序列化, 输出为Unicode编码字符）
@@ -2069,7 +2284,7 @@
             过滤特殊字符
             </summary>
         </member>
-        <member name="T:App.Core.LinqExtension">
+        <member name="T:App.Core.LinqHelper">
             <summary>
             Linq 的一些扩展方法
             供参考、未测试
@@ -2172,6 +2387,9 @@
         </member>
         <member name="M:App.Core.MathHelper.Min(System.Int32[])">
             <summary>找到数组中最小的数</summary>
+        </member>
+        <member name="M:App.Core.MathHelper.ToChinaNumber(System.Decimal)">
+            <summary>转换为中文大写数字</summary>
         </member>
         <member name="T:App.Core.PasswordHelper">
             <summary>
@@ -2280,6 +2498,12 @@
                 RegistScript("SampleProject.MyScript.js");
             </summary>
         </member>
+        <member name="M:App.Core.ResourceHelper.WriteResourceFile(System.Reflection.Assembly,System.String,System.String)">
+            <summary>将嵌入资源输出为物理文件</summary>
+            <param name="assembly">程序集</param>
+            <param name="resourceName">嵌入资源的完整名称</param>
+            <param name="filePath">输出的文件路径（若存在则覆盖）</param>
+        </member>
         <member name="M:App.Core.ResourceHelper.GetResource(System.Reflection.Assembly,System.String,System.Boolean)">
             <summary>获取数据集中的资源流</summary>
             <param name="assembly">数据集</param>
@@ -2351,11 +2575,17 @@
             字符串操作辅助类
             </summary>
         </member>
-        <member name="M:App.Core.StringHelper.AddQueryString(System.String,System.String)">
-            <summary>为 Url 增加并合并 QueryString</summary>
+        <!-- Badly formed XML comment ignored for member "M:App.Core.StringHelper.AddQueryString(System.String,System.String)" -->
+        <member name="M:App.Core.StringHelper.SetQueryString(System.String,System.String,System.String)">
+            <summary>设置 url 参数（存在则更改，不存在则增加）</summary>
         </member>
-        <member name="M:App.Core.StringHelper.TrimEndFrom(System.String,System.String)">
+        <member name="M:App.Core.StringHelper.TrimEndFrom(System.String,System.String,System.Boolean)">
             <summary>将最后出现的字符串及后面的部分删除掉。如"a.asp".TrimEndFrom(".") => "a"</summary>
+            <param name="keepKey">是否保留键。如"/Pages/test.aspx".TiemEndFrom("/",true) => "/Pages/"</param>
+        </member>
+        <member name="M:App.Core.StringHelper.TrimStartTo(System.String,System.String,System.Boolean)">
+            <summary>删除前面的字符串。如"a.asp".TrimStartTo(".") => "asp"</summary>
+            <param name="keepKey">是否保留键。如"/Pages/test.aspx".TiemStartTo("/",true) => ".asp"</param>
         </member>
         <member name="M:App.Core.StringHelper.Contains(System.String,System.String,System.Boolean)">
             <summary>是否包含</summary>
@@ -2456,10 +2686,10 @@
             <summary>列模式下的展示方式</summary>
         </member>
         <member name="P:App.Core.UIAttribute.ColumnWidth">
-            <summary>列宽</summary>
+            <summary>列模式下的列宽</summary>
         </member>
-        <member name="P:App.Core.UIAttribute.Tag">
-            <summary>附加数据</summary>
+        <member name="P:App.Core.UIAttribute.Sort">
+            <summary>排序方向（true 正序 | false 逆序）</summary>
         </member>
         <member name="P:App.Core.UIAttribute.Field">
             <summary>对应的字段信息</summary>
@@ -2469,12 +2699,6 @@
         </member>
         <member name="M:App.Core.UIAttribute.ToString">
             <summary>格式化为文本</summary>
-        </member>
-        <member name="T:App.Core.WebHandlerParser">
-            <summary>
-            页面请求处理器解析器。可获取页面请求对应的处理类。
-            （抄的 Asp.net 源码）
-            </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "T:App.Core.Url" -->
         <member name="P:App.Core.Url.Dict">
@@ -2501,13 +2725,22 @@
         <member name="P:App.Core.Url.FileExtesion">
             <summary>文件扩展名（小写）。如 .aspx</summary>
         </member>
+        <member name="P:App.Core.Url.FileFolder">
+            <summary>文件路径。如 /Pages/</summary>
+        </member>
         <member name="P:App.Core.Url.QueryString">
             <summary>查询字符串</summary>
         </member>
         <member name="P:App.Core.Url.Item(System.String)">
             <summary>获取或设置查询字符串成员</summary>
         </member>
+        <member name="M:App.Core.Url.Set(System.String,System.String)">
+            <summary>设置查询字符串键值</summary>
+        </member>
         <member name="M:App.Core.Url.Remove(System.String)">
+            <summary>删除查询字符串成员</summary>
+        </member>
+        <member name="M:App.Core.Url.Remove(System.String[])">
             <summary>删除查询字符串成员</summary>
         </member>
         <member name="M:App.Core.Url.Has(System.String)">
@@ -2518,6 +2751,30 @@
         </member>
         <member name="M:App.Core.Url.#ctor(System.String)">
             <summary>创建URL对象</summary>
+        </member>
+        <member name="T:App.Core.VisitCounter">
+            <summary>
+            访问计数器
+            </summary>
+        </member>
+        <member name="T:App.Core.VisitCounter.Visit">
+            <summary>访问记录</summary>
+        </member>
+        <member name="M:App.Core.VisitCounter.IsHeavy(System.String,System.String,System.Int32,System.Int32)">
+            <summary>访问是否过于密集</summary>
+            <param name="seconds">检测周期（秒）</param>
+            <param name="max">最大值</param>
+            <example>
+            protected void Application_BeginRequest(object sender, EventArgs e)
+            {
+                var ip = ....;
+                var url = ...;
+                if (VisitCounter.IsOverFreqency(ip, url, 10, 100))
+                {
+                    HttpContext.Current.Request.Abort();
+                }
+            }
+            </example>
         </member>
         <member name="T:App.Interop.EvaluatorItem">
             <summary>

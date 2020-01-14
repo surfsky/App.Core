@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -112,7 +113,8 @@ namespace App.Core
             }
         }
 
-        /// <summary>获取缓存对象（缓存有有效期，一旦失效会自动获取）</summary>
+        /// <summary>获取缓存对象（缓存到期后会清空，再次请求时会自动获取）</summary>
+        /// <param name="creator">创建方法。若该方法返回值为null，不会加入缓存。</param>
         public static T GetCache<T>(string key, Func<T> creator=null, DateTime? expiredTime=null) where T : class
         {
             expiredTime = expiredTime ?? Cache.NoAbsoluteExpiration;
@@ -121,6 +123,7 @@ namespace App.Core
                 return cache[key] as T;
             else
             {
+                //if (!cache.ContainsKey(key))
                 if (cache[key] == null)
                 {
                     T o = creator();
@@ -130,6 +133,34 @@ namespace App.Core
             }
         }
 
+        /// <summary>判断缓存是否具有某个键值（遍历方式，性能会差一些）</summary>
+        /// <remarks>Cache 类并未提供 ContainsKey 方法</remarks>
+        public static bool ContainsKey(this Cache cache, object key)
+        {
+            foreach (DictionaryEntry item in cache)
+            {
+                if (item.Key == key)
+                    return true;
+            }
+            return false;
+        }
+
+        static FreeDictionary<string, object> _dict = new FreeDictionary<string, object>();
+        /// <summary>获取缓存字典对象（数据在运行期间不会被清理，且可以容纳空值）</summary>
+        public static T GetDict<T>(string key, Func<T> creator = null) where T : class
+        {
+            if (creator == null)
+                return _dict[key] as T;
+            else
+            {
+                if (!_dict.ContainsKey(key))
+                {
+                    T o = creator();
+                    _dict[key] = o;
+                }
+                return _dict[key] as T;
+            }
+        }
 
     }
 }

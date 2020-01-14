@@ -15,7 +15,7 @@ namespace App.Core
     /// Linq调试可使用Expression Tree Visualizer工具：https://github.com/Feddas/ExpressionTreeVisualizer/
     /// Linq及表达式参考：http://www.360doc.com/content/15/0718/11/14416931_485658704.shtml
     /// </summary>
-    public static class EFExtension
+    public static class EFHelper
     {
 
         //---------------------------------------------------
@@ -90,8 +90,11 @@ namespace App.Core
         //---------------------------------------------------
         // Boolean
         //---------------------------------------------------
-        public static Expression<Func<T, bool>> True<T>() { return f => true; }
+        public static Expression<Func<T, bool>> True<T>()  { return f => true; }
         public static Expression<Func<T, bool>> False<T>() { return f => false; }
+
+        /*
+        // 这三个方法 EntityFramework 不支持
         public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> expression1, Expression<Func<T, bool>> expression2)
         {
             var invokedExpression = Expression.Invoke(expression2, expression1.Parameters.Cast<Expression>());
@@ -107,7 +110,56 @@ namespace App.Core
             var negated = Expression.Not(expression.Body);
             return Expression.Lambda<Func<T, bool>>(negated, expression.Parameters);
         }
+        */
 
+        /// <summary>And 组合两个Bool表达式</summary>
+        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second)
+        {
+            return first.Compose(second, Expression.And);
+        }
+
+        /// <summary>Or 组合两个Bool表达式</summary>
+        public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second)
+        {
+            return first.Compose(second, Expression.Or);
+        }
+
+        /// <summary>组合两个表达式</summary>
+        public static Expression<T> Compose<T>(this Expression<T> first, Expression<T> second, Func<Expression, Expression, Expression> merge)
+        {
+            // build parameter map (from parameters of second to parameters of first) 
+            // replace parameters in the second lambda expression with parameters from the first 
+            // apply composition of lambda expression bodies to parameters from the first expression  
+            var map = first.Parameters.Select((f, i) => new { f, s = second.Parameters[i] }).ToDictionary(p => p.s, p => p.f);
+            var secondBody = ExpressionRebinder.ReplaceParameters(map, second.Body);
+            return Expression.Lambda<T>(merge(first.Body, secondBody), first.Parameters);
+        }
+
+        /// <summary>
+        /// 看不懂，能用
+        /// </summary>
+        internal class ExpressionRebinder : ExpressionVisitor
+        {
+            private readonly Dictionary<ParameterExpression, ParameterExpression> map;
+
+            public ExpressionRebinder(Dictionary<ParameterExpression, ParameterExpression> map)
+            {
+                this.map = map ?? new Dictionary<ParameterExpression, ParameterExpression>();
+            }
+
+            public static Expression ReplaceParameters(Dictionary<ParameterExpression, ParameterExpression> map, Expression exp)
+            {
+                return new ExpressionRebinder(map).Visit(exp);
+            }
+
+            protected override Expression VisitParameter(ParameterExpression p)
+            {
+                ParameterExpression replacement;
+                if (map.TryGetValue(p, out replacement))
+                    p = replacement;
+                return base.VisitParameter(p);
+            }
+        }
 
         //---------------------------------------------------
         // SQL相关

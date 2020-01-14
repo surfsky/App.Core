@@ -6,18 +6,32 @@ using System.Threading.Tasks;
 
 namespace App.Core
 {
-    /// <summary>
-    /// 导出时机
-    /// </summary>
+    /// <summary>导出模式</summary>
     [Flags]
-    public enum ExportType : int
+    public enum ExportMode : int
     {
-        [UI("不导出")] No = 0,
+        [UI("不导出")] None = 0,
         [UI("简单")] Simple = 1,
         [UI("普通")] Normal = 2,
         [UI("详细")] Detail = 4,
-        [UI("全部")] All = Simple | Normal | Detail
+        [UI("全部")] All = Simple | Normal | Detail,
+        //[UI("模型")] Schema
     }
+
+    /// <summary>页面访问模式</summary>
+    [Flags]
+    public enum PageMode : int
+    {
+        [UI("查看")] View = 1,
+        [UI("新建")] New = 2,
+        [UI("编辑")] Edit = 3,
+        [UI("选择")] Select = 4,
+
+        [UI("无")]   None = 0,
+        [UI("全部")] All = View | New | Edit | Select,
+    }
+
+
 
     /// <summary>
     /// 数据模型描述
@@ -52,7 +66,7 @@ namespace App.Core
         object Default { get; set; }
 
         /// <summary>允许的值</summary>
-        List<object> AllowValues { get; set; }
+        Dictionary<string, object> Values { get; set; }
     }
 
 
@@ -69,11 +83,11 @@ namespace App.Core
         /// <summary>名称</summary>
         public string Name { get; set; }
 
-        /// <summary>数据类型</summary>
+        /// <summary>参数类型</summary>
         public Type Type { get; set; }
 
         /// <summary>格式化字符串</summary>
-        public string Format { get; set; } = "{0}";
+        public string Format { get; set; }
 
         /// <summary>是否只读</summary>
         public bool ReadOnly { get; set; } = false;
@@ -90,26 +104,65 @@ namespace App.Core
         /// <summary>正则表达式</summary>
         public string Regex { get; set; }
 
-        /// <summary>该参数是否在界面显示</summary>
-        public bool Visible { get; set; } = true;
+        /// <summary>在何种页面模式下显示该控件</summary>
+        public PageMode Mode { get; set; } = PageMode.All;
 
         /// <summary>默认值</summary>
         public object Default { get; set; }
 
-        /// <summary>允许的值</summary>
-        public List<object> AllowValues { get; set; }
 
-        /// <summary>导出时机</summary>
-        public ExportType Export { get; set; } = ExportType.All;
+        //
+        // 扩展信息
+        //
+        /// <summary>对应的文本字段</summary>
+        public string TextField { get; set; }
+
+        /// <summary>对应的值字段</summary>
+        public string ValueField { get; set; } = "ID";
+
+        /// <summary>表现为树</summary>
+        public bool Tree { get; set; } = false;
+
+        //
+        // 参数值控制
+        // 方式一：直接设置值字典   Values
+        // 方式二：设置值对应的类型 ValueType，如有需要还要设置对应的 TextField 等
+        //
+        /// <summary>允许的值</summary>
+        public Dictionary<string, object> Values { get; set; }
+
+        /// <summary>值类型（如long ProductID 的值类型等于 Product）</summary>
+        public Type ValueType { get; set; }
+
+        /// <summary>值类型对应的 UI 设置ID </summary>
+        public long? ValueUIID { get; set; }
+
+        /// <summary>可选值说明</summary>
+        public string ValueInfo 
+        {
+            get
+            {
+                if (Values != null)
+                    return Values.ToJson();
+                return this.Type?.GetEnumString();
+            }
+        }
+
+        /// <summary>附属参数</summary>
+        public string Tag { get; set; }
+
+
+        //
+        //
+        //
+        /// <summary>数据导出时机</summary>
+        public ExportMode Export { get; set; } = ExportMode.All;
 
         //
         // 只读属性
         //
         /// <summary>参数类型名</summary>
         public string TypeName => this.Type?.GetTypeString();
-
-        /// <summary>可选值列表</summary>
-        public string Values => this.Type?.GetTypeValues();
 
 
         //

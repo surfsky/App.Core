@@ -256,6 +256,14 @@ namespace App.Core
             return "data:image/png;base64," + Convert.ToBase64String(bytes);
         }
 
+        /// <summary>判断字符串是否是base64编码的图片</summary>
+        public static bool IsBase64Image(this string text)
+        {
+            if (text.IsNotEmpty() && text.Contains("base64"))
+                return true;
+            return false;
+        }
+
         /// <summary>从 Base64 字符串中创建图像</summary>
         public static Image ToImage(this string base64Image)
         {

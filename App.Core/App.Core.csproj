@@ -68,19 +68,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppCoreConfig.cs" />
+    <Compile Include="Attributes\ScopeAttribute.cs" />
     <Compile Include="Attributes\SearcherAttribute.cs" />
     <Compile Include="Attributes\TAttribute.cs" />
     <Compile Include="Attributes\UIExtension.cs" />
     <Compile Include="Attributes\UISetting.cs" />
+    <Compile Include="Base\PinYin.cs" />
     <Compile Include="Convertor.Encoder.cs" />
     <Compile Include="Convertor.Parse.cs" />
-    <Compile Include="Convertor.List.cs" />
+    <Compile Include="Database\AccessHelper.cs" />
+    <Compile Include="ListHelper.cs" />
     <Compile Include="Maths\GZiper.cs" />
     <Compile Include="Attributes\HistoryAttribute.cs" />
     <Compile Include="Attributes\ParamAttribute.cs" />
     <Compile Include="Net\Net.cs" />
-    <Compile Include="Reflections\ReflectionHelper.Property.cs" />
-    <Compile Include="Reflections\ReflectionHelper.Type.cs" />
+    <Compile Include="Reflections\Reflector.Property.cs" />
+    <Compile Include="Reflections\Reflector.Type.cs" />
+    <Compile Include="ResHelp.cs" />
     <Compile Include="Serialization\JsonHelper.cs" />
     <Compile Include="Serialization\XmlHelper.cs" />
     <Compile Include="Database\DbHelper.cs" />
@@ -88,7 +92,7 @@
     <Compile Include="Base\ByteHelper.cs" />
     <Compile Include="Database\IDGenerator.cs" />
     <Compile Include="Maths\EncryptHelper.cs" />
-    <Compile Include="FreeDictionary.cs" />
+    <Compile Include="Base\FreeDictionary.cs" />
     <Compile Include="Serialization\DynamicXml.cs" />
     <Compile Include="IO.File.cs" />
     <Compile Include="Maths\HexEncoding.cs" />
@@ -109,10 +113,10 @@
     <Compile Include="Reflections\MethodInvoker.cs" />
     <Compile Include="Attributes\RegexValidationAttribute.cs" />
     <Compile Include="Reflections\TypeBuilder.cs" />
-    <Compile Include="ThreadHelper.cs" />
+    <Compile Include="Threads\ThreadHelper.cs" />
     <Compile Include="Net\SocketClient.cs" />
     <Compile Include="Net\SocketData.cs" />
-    <Compile Include="ThreadPond.cs" />
+    <Compile Include="Threads\ThreadPond.cs" />
     <Compile Include="Web\Asp.IO.cs" />
     <Compile Include="Web\Asp.Data.cs" />
     <Compile Include="Web\AuthHelper.cs" />
@@ -120,7 +124,7 @@
     <Compile Include="Base\DateTimeHelper.cs" />
     <Compile Include="Maths\DESEncrypt.cs" />
     <Compile Include="Draw\Drawer.cs" />
-    <Compile Include="Linq\EFExtension.cs" />
+    <Compile Include="Linq\EFHelper.cs" />
     <Compile Include="Base\EnumHelper.cs" />
     <Compile Include="Base\ExcelHelper.cs" />
     <Compile Include="Convertor.cs" />
@@ -128,12 +132,12 @@
     <Compile Include="Interfaces.cs" />
     <Compile Include="Serialization\JsonConverters.cs" />
     <Compile Include="Serialization\Jsonlizer.cs" />
-    <Compile Include="Linq\LinqExtension.cs" />
+    <Compile Include="Linq\LinqHelper.cs" />
     <Compile Include="Linq\LinqToSql.cs" />
     <Compile Include="Maths\MathHelper.cs" />
     <Compile Include="Maths\PasswordHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reflections\ReflectionHelper.cs" />
+    <Compile Include="Reflections\Reflector.cs" />
     <Compile Include="Base\RegexHelper.cs" />
     <Compile Include="Web\ResourceHelper.cs" />
     <Compile Include="Web\ScriptHelper.cs" />
@@ -141,6 +145,7 @@
     <Compile Include="Attributes\UIAttribute.cs" />
     <Compile Include="Web\Asp.cs" />
     <Compile Include="Web\Url.cs" />
+    <Compile Include="Web\VisitCounter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Core.config" />

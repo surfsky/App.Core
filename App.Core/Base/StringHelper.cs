@@ -17,9 +17,12 @@ namespace App.Core
     /// </summary>
     public static class StringHelper
     {
-        /// <summary>为 Url 增加并合并 QueryString</summary>
+        /// <summary>为 Url 增加合并查询字符串</summary>
+        /// <param name="queryString">要添加的查询字符串，如a=x&b=x</param>
         public static string AddQueryString(this string url, string queryString)
         {
+            if (queryString.IsEmpty())
+                return url;
             var u = new Url(url);
             var dict = queryString.ParseDict();
             foreach (var key in dict.Keys)
@@ -27,14 +30,46 @@ namespace App.Core
             return u.ToString();
         }
 
+        /// <summary>设置 url 参数（存在则更改，不存在则增加）</summary>
+        public static string SetQueryString(this string url, string key, string value)
+        {
+            var u = new Url(url);
+            u[key] = value;
+            return u.ToString();
+        }
+
+
         /// <summary>将最后出现的字符串及后面的部分删除掉。如"a.asp".TrimEndFrom(".") => "a"</summary>
-        public static string TrimEndFrom(this string name, string key)
+        /// <param name="keepKey">是否保留键。如"/Pages/test.aspx".TiemEndFrom("/",true) => "/Pages/"</param>
+        public static string TrimEndFrom(this string name, string key, bool keepKey=false)
         {
             if (name.IsEmpty())
                 return "";
             var n = name.LastIndexOf(key);
             if (n != -1)
-                return name.Substring(0, n);
+            {
+                if (keepKey)
+                    return name.Substring(0, n + key.Length);
+                else
+                    return name.Substring(0, n);
+            }
+            return name;
+        }
+
+        /// <summary>删除前面的字符串。如"a.asp".TrimStartTo(".") => "asp"</summary>
+        /// <param name="keepKey">是否保留键。如"/Pages/test.aspx".TiemStartTo("/",true) => ".asp"</param>
+        public static string TrimStartTo(this string name, string key, bool keepKey = false)
+        {
+            if (name.IsEmpty())
+                return "";
+            var n = name.IndexOf(key);
+            if (n != -1)
+            {
+                if (keepKey)
+                    return name.SubText(n);
+                else
+                    return name.SubText(n + key.Length);
+            }
             return name;
         }
 
@@ -257,7 +292,7 @@ namespace App.Core
         
         /// <summary>安全裁剪字符串（可替代SubString()方法）</summary>
         /// <param name="startIndex">开始字符位置。base-0</param>
-        public static string SubText(this string text, int startIndex, int length)
+        public static string SubText(this string text, int startIndex, int length=-1)
         {
             if (text.IsEmpty()) return "";
             var n = text.Length;

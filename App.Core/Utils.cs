@@ -25,26 +25,6 @@ namespace App.Core
         }
 
 
-        /// <summary>获取资源文本</summary>
-        /// <remarks>请配置AppCoreConfig.UseGlobal 和 ResType 属性</remarks>
-        public static string GetResText(this string resName)
-        {
-            bool useGlobal = AppCoreConfig.Instance.UseGlobal;
-            if (useGlobal)
-                return GetResText(resName, AppCoreConfig.Instance.ResType);
-            return resName;
-        }
-
-        /// <summary>获取资源文本</summary>
-        public static string GetResText(this string resName, Type resType)
-        {
-            if (resType != null)
-            {
-                ResourceManager resManager = new ResourceManager(resType);
-                return resManager.GetString(resName);
-            }
-            return resName;
-        }
 
         //--------------------------------------------------
         // 为空
@@ -67,6 +47,9 @@ namespace App.Core
             return false;
         }
 
+        //--------------------------------------------------
+        // List
+        //--------------------------------------------------
         /// <summary>获取列表的长度</summary>
         public static int Count(this IEnumerable data)
         {
@@ -77,6 +60,15 @@ namespace App.Core
                 n++;
             }
             return n;
+        }
+
+        /// <summary>将对象转化为数组，以简化列表初始化代码</summary>
+        public static List<T> AsList<T>(this T o)
+        {
+            var arr = new List<T>();
+            if (o != null)
+                arr.Add(o);
+            return arr;
         }
 
 
@@ -100,21 +92,7 @@ namespace App.Core
                 return falseValue;
         }
 
-        //--------------------------------------------------
-        // 列表
-        //--------------------------------------------------
-        /// <summary>找到第一个匹配的位置</summary>
-        public static int IndexOf<T>(this IEnumerable<T> data, Func<T, bool> condition)
-        {
-            int n = -1;
-            foreach (var o in data)
-            {
-                n++;
-                if (condition(o))
-                    return n;
-            }
-            return n;
-        }
+
 
     }
 }

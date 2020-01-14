@@ -10,7 +10,7 @@ namespace App.Core
     /// Linq 的一些扩展方法
     /// 供参考、未测试
     /// </summary>
-    public static class LinqExtension
+    public static class LinqHelper
     {
         public static Expression Parser(Expression expression, ParameterExpression parameter)
         {

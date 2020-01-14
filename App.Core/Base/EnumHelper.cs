@@ -16,7 +16,7 @@ namespace App.Core
         public int ID { get; set; }
 
         /// <summary>枚举名</summary>
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         /// <summary>枚举值（枚举对象本身）</summary>
         public object Value { get; set; }
@@ -31,8 +31,8 @@ namespace App.Core
         public override string ToString()
         {
             return this.Group.IsEmpty()
-                    ? string.Format("{0}({1})", this.Value, this.Name)
-                    : string.Format("{0}({1}/{2})", this.Value, this.Group, this.Name)
+                    ? string.Format("{0}({1})", this.Value, this.Title)
+                    : string.Format("{0}({1}/{2})", this.Value, this.Group, this.Title)
                     ;
         }
     }
@@ -92,9 +92,9 @@ namespace App.Core
         /// <summary>获取枚举值信息（ID,Name,Value,Group)</summary>
         public static EnumInfo GetEnumInfo(this object enumValue)
         {
-            var name = enumValue.GetDescription();
+            var title = enumValue.GetTitle();
             var group = enumValue.GetUIGroup();
-            return new EnumInfo() { Name = name, Value = enumValue, ID = (int)enumValue, Group = group };
+            return new EnumInfo() { Title = title, Value = enumValue, ID = (int)enumValue, Group = group };
         }
 
         /// <summary>将枚举类型转化为列表{Name=xxx, Value=xxx, ID=x, Group=x}</summary>

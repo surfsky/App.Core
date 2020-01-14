@@ -22,16 +22,20 @@ namespace App.Core
         {
             var attrs = new List<UIAttribute>();
             foreach (var prop in type.GetProperties())
-            {
-                UIAttribute attr = ReflectionHelper.GetAttribute<UIAttribute>(prop);
-                if (attr == null)
-                    attr = new UIAttribute("", prop.Name);
-                attr.Name = prop.Name;
-                attr.Field = prop;
-                attr.Type = attr.Type ?? prop.PropertyType;  // 编辑器的数据来源类型
-                attrs.Add(attr);
-            }
+                attrs.Add(GetPropertyUI(prop));
             return attrs;
+        }
+
+        /// <summary>获取属性的 UI 配置信息</summary>
+        public static UIAttribute GetPropertyUI(this PropertyInfo prop)
+        {
+            UIAttribute attr = Reflector.GetAttribute<UIAttribute>(prop);
+            if (attr == null)
+                attr = new UIAttribute("", prop.Name);
+            attr.Name = prop.Name;
+            attr.Field = prop;
+            attr.Type = attr.Type ?? prop.PropertyType;
+            return attr;
         }
 
         /// <summary>获取类型说明</summary>
@@ -69,26 +73,9 @@ namespace App.Core
         //--------------------------------------------
         // Get UIAttribute property
         //--------------------------------------------
-        /*
-         * Type : MemberInfo
-        /// <summary>获取类型说明（来自 UIAttribute 或 DescriptionAttribute）</summary>
-        public static string GetDescription(this Type type)
-        {
-            if (type != null)
-            {
-                var attr1 = type.GetCustomAttribute<UIAttribute>();
-                var attr2 = type.GetCustomAttribute<DescriptionAttribute>();
-                if (attr1 != null) return attr1.Title;
-                if (attr2 != null) return attr2.Description;
-                return type.Name;
-            }
-            return "";
-        }
-        */
-
-        /// <summary>获取说明（来自TAttribute, UIAttribute, DescriptionAttribute）</summary>
+        /// <summary>获取标题（来自TAttribute, UIAttribute, DescriptionAttribute, DisplayNameAttribute）</summary>
         /// <param name="info">类型或成员</param>
-        public static string GetDescription(this MemberInfo info)
+        public static string GetTitle(this MemberInfo info)
         {
             if (info != null)
             {
@@ -101,36 +88,62 @@ namespace App.Core
                 var attr3 = info.GetCustomAttribute<DescriptionAttribute>();
                 if (attr3 != null) return attr3.Description.GetResText();
 
+                var attr4 = info.GetCustomAttribute<DisplayNameAttribute>();
+                if (attr4 != null) return attr4.DisplayName.GetResText();
+
                 return info.Name.GetResText();
             }
             return "";
         }
 
-
-        /// <summary>获取枚举值的文本说明。RoleType.Admin.GetDescription()</summary>
-        public static string GetDescription(this object enumValue)
+        /// <summary>获取枚举值标题。RoleType.Admin.GetTitle()</summary>
+        public static string GetTitle(this object enumValue)
         {
             if (enumValue == null || !enumValue.IsEnum())
                 return "";
             MemberInfo info = GetEnumField(enumValue);
-            return GetDescription(info);
+            return GetTitle(info);
         }
 
-        /// <summary>获取属性的文本说明。UIExtension.GetDescription<Product>(t =&lt; t.Name)</summary>
-        public static string GetDescription<T>(this Expression<Func<T, object>> expression)
+        /// <summary>获取属性标题。product.GetTitle(t =&lt; t.Name)</summary>
+        public static string GetTitle<T>(this T t, Expression<Func<T, object>> expression)
         {
-            Type type = typeof(T);
-            string propertyName = expression.GetExpressionName();
-            return type.GetProperty(propertyName)?.GetDescription();
+            return expression.GetTitle();  //t.GetProperty(expression.GetName())?.GetTitle();
         }
 
-        /// <summary>获取属性的文本说明。product.GetDescription(t =&lt; t.Name)</summary>
-        public static string GetDescription<T>(this T t, Expression<Func<T, object>> expression)
+        /// <summary>获取表达式标题。t.Dept.Name => 部门名称</summary>
+        public static string GetTitle<T>(this Expression<Func<T, object>> field)
         {
-            Type type = typeof(T);
-            string propertyName = expression.GetExpressionName();
-            return type.GetProperty(propertyName)?.GetDescription();
+            return field == null ? "" : GetTitle(field.Body);
         }
+
+        /// <summary>获取表达式标题。t.Dept.Name => 部门名称</summary>
+        public static string GetTitle(this Expression expr)
+        {
+            if (expr == null)
+                return "";
+            // Lambda 表达式
+            if (expr is LambdaExpression le)
+                return GetTitle(le.Body);
+            // 一元操作符: array.Length, Convert(t.CreatDt)
+            if (expr is UnaryExpression ue)
+                return GetTitle((MemberExpression)ue.Operand);
+            // 成员操作符： t.Dept.Name => body=t.Dept, member=Name
+            if (expr is MemberExpression me)
+            {
+                var name = me.Member.GetTitle();
+                if (me.Expression is MemberExpression)
+                    return GetTitle(me.Expression) + name;
+                else
+                    return name;
+            }
+            // 参数本身：t 返回类型名
+            if (expr is ParameterExpression pe)
+                return pe.Type.Name;
+            return "";
+        }
+
+
 
         //--------------------------------------------
         // 辅助方法

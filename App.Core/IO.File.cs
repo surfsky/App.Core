@@ -14,6 +14,41 @@ namespace App.Core
     /// </summary>
     public static partial class IO
     {
+        /// <summary>合并两个路径（善不支持..操作符）</summary>
+        public static string CombinePath(this string path1, string path2)
+        {
+            path1 = path1 ?? "";
+            path2 = path2 ?? "";
+            path1 = path1.Replace(@"/", @"\").TrimEnd('\\');
+            path2 = path2.Replace(@"/", @"\").TrimStart('\\');
+            return path1.IsEmpty() ? path2 : $"{path1}\\{path2}";
+        }
+
+        /// <summary>合并两个网页路径（善不支持..操作符）</summary>
+        public static string CombineWebPath(this string path1, string path2)
+        {
+            path1 = path1 ?? "";
+            path2 = path2 ?? "";
+            path1 = path1.Replace(@"\", @"/").TrimEnd('/');
+            path2 = path2.Replace(@"\", @"/").TrimStart('/');
+            return path1.IsEmpty() ? path2 : $"{path1}/{path2}";
+        }
+
+        /// <summary>计算相对路径</summary>
+        /// <returns>相对路径，格式如: \subfolder\filename.doc </returns>
+        public static string ToRelativePath(this string physicalPath, string root)
+        {
+            if (physicalPath.IsEmpty() || root.IsEmpty())
+                return "";
+            root = root.ToLower();
+            if (physicalPath.ToLower().SubText(0, root.Length) == root)
+            {
+                var p = "\\" + physicalPath.Substring(root.Length);
+                return p;
+            }
+            return "";
+        }
+
         //------------------------------------------------
         // 路径
         //------------------------------------------------
@@ -64,15 +99,17 @@ namespace App.Core
         /// <returns>十六进制字符串</returns>
         public static string GetFileMD5(string filePath)
         {
-            var file = new FileStream(filePath, FileMode.Open);
-            MD5 md5 = new MD5CryptoServiceProvider();
-            byte[] bytes = md5.ComputeHash(file);
-            file.Close();
+            using (var file = new FileStream(filePath, FileMode.Open))
+            {
+                MD5 md5 = new MD5CryptoServiceProvider();
+                byte[] bytes = md5.ComputeHash(file);
+                file.Close();
 
-            var sb = new StringBuilder();
-            for (int i = 0; i < bytes.Length; i++)
-                sb.AppendFormat("{0:x2}", bytes[i]);
-            return sb.ToString();
+                var sb = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                    sb.AppendFormat("{0:x2}", bytes[i]);
+                return sb.ToString();
+            }
         }
 
         /// <summary>写文件（附加）</summary>
@@ -266,9 +303,9 @@ namespace App.Core
         {
             var ext = GetFileExtension(fileName);
             if (ext.IsEmpty())
-                return "";
+                return "application/octet-stream";
             var mimeType = Mimes[ext];
-            return mimeType ?? "";
+            return mimeType ?? "application/octet-stream";
         }
 
         /// <summary>
@@ -282,6 +319,7 @@ namespace App.Core
             Mimes[".jpg"]  = "image/jpeg";
             Mimes[".jpeg"] = "image/jpeg";
             Mimes[".png"]  = "image/png";
+            Mimes[".bmp"]  = "image/bmp";
             Mimes[".gif"]  = "image/gif";
             Mimes[".html"] = "text/html";
             Mimes[".json"] = "text/json";
@@ -299,7 +337,10 @@ namespace App.Core
             Mimes[".pdf"]  = "application/pdf";
             Mimes[".js"]   = "application/x-javascript";
             Mimes[".mp3"]  = "audio/mp3";
-            Mimes[".mp4"]  = "vidio/mp4";
+            Mimes[".mp4"]  = "vedio/mp4";
+
+            //
+            Mimes[".cdr"]  = "application/x-cdr";
         }
     }
 }

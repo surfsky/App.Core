@@ -13,14 +13,14 @@ namespace App.Core
     /// <summary>
     /// 反射相关静态方法和属性
     /// </summary>
-    public  static partial class ReflectionHelper
+    public  static partial class Reflector
     {
         //------------------------------------------------
         // 方法
         //------------------------------------------------
-        /// <summary>获取类的方法（包括祖先的）。注意 Type.GetMethods()只能获取当前类下的方法。</summary>
+        /// <summary>获取类的所有公共方法（包括祖先的）。注意 Type.GetMethods()只能获取当前类下的方法。</summary>
         /// <param name="searchAncestors">是否检索祖先的同名方法</param>
-        public static List<MethodInfo> GetMethods(this Type type, string methodName, bool searchAncestors=true)
+        public static List<MethodInfo> GetMethods(this Type type, string name, bool searchAncestors=true)
         {
             var methods = new List<MethodInfo>();
 
@@ -29,7 +29,7 @@ namespace App.Core
             var ms = new List<MethodInfo>();
             while (t != null)
             {
-                ms = t.GetMethods().Where(m => m.Name == methodName).ToList();
+                ms = t.GetMethods().Where(m => m.Name == name).ToList();
                 methods.AddRange(ms);
                 if (!searchAncestors)
                     break;
@@ -37,6 +37,13 @@ namespace App.Core
             }
             return methods;
         }
+
+        /// <summary>获取类的公共方法（包括祖先的），若有重名取第一个。</summary>
+        public static MethodInfo GetMethod(this Type type, string name, bool searchAncestors)
+        {
+            return GetMethods(type, name, searchAncestors).FirstOrDefault();
+        }
+
 
 
         //------------------------------------------------
@@ -60,6 +67,22 @@ namespace App.Core
         {
             return m.GetAttributes<T>().FirstOrDefault();
         }
+
+        /// <summary>动态设置对象属性的标题（可用于 PropertyGrid 展示）</summary>
+        public static void SetDisplayName(this object o, string propertyName, string title)
+        {
+            PropertyDescriptor descriptor = TypeDescriptor.GetProperties(o)[propertyName];
+            Type t = typeof(MemberDescriptor);
+            var field = t.GetField("displayName", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.CreateInstance);
+            field.SetValue(descriptor, title);
+        }
+
+        /// <summary>获取对象属性的展示名</summary>
+        public static string GetDisplayName(this object o, string propertyName)
+        {
+            return TypeDescriptor.GetProperties(o)[propertyName].DisplayName;
+        }
+
 
 
         //------------------------------------------------

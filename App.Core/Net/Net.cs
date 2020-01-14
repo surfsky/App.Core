@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,5 +25,20 @@ namespace App.Core
             }
         }
 
+        /// <summary>Ping</summary>
+        public static bool Ping(string ip)
+        {
+            var p = new Ping();
+            var options = new PingOptions();
+            options.DontFragment = true;
+            var data = "Test Data!";
+            var buffer = Encoding.ASCII.GetBytes(data);
+            int timeout = 1000;
+            var reply = p.Send(ip, timeout, buffer, options);
+            if (reply.Status == IPStatus.Success)
+                return true;
+            else
+                return false;
+        }
     }
 }
