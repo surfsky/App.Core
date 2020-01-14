@@ -154,6 +154,7 @@
     <EmbeddedResource Include="Resources\Agent Red.TTF" />
     <EmbeddedResource Include="Resources\Stencil ICG.ttf" />
     <EmbeddedResource Include="Resources\Pusab.ttf" />
+    <None Include="README.md" />
     <None Include="Resources\PLEDG_KI.TTF" />
   </ItemGroup>
   <ItemGroup>
