@@ -121,7 +121,7 @@ Nuget: install-package App.Corer
         {
             object o;
             ProductType type = ProductType.Repair;
-            o = type.GetDescription();
+            o = type.GetTitle();
             o = "Goods".ParseEnum<ProductType>();
             o = "1".ParseEnum<ProductType>();
         }
@@ -323,7 +323,7 @@ Nuget: install-package App.Corer
         {
             object o;
             ProductType type = ProductType.Repair;
-            o = type.GetDescription();
+            o = type.GetTitle();
             o = "Goods".ParseEnum<ProductType>();
             o = "1".ParseEnum<ProductType>();
         }
@@ -621,7 +621,7 @@ function do() {
 ## Reflections
     ReflectionHelper  : 各种反射相关的辅助方法
 
-## Serilization
+## Serialization
     XmlLizer          : 轻量级Xml序列化反序列化类。支持Dictionary；无需任何attribute标注。
     JsonLizer         : 轻量级json序列化类，可控制层次深度，输出属性个数等。
 
@@ -643,7 +643,7 @@ function do() {
         [UI("自动选择")]     Auto,
         [UI("标签")]         Label,
     }
-    var txt = EditorType.Auto.GetDescription(); // "自动选择"
+    var txt = EditorType.Auto.GetTitle(); // "自动选择"
     ```
 
 # 备注
@@ -662,11 +662,11 @@ function do() {
 
 
 ## Target
-- App.Core 编译 Asp.net core 版本的代码
-- HttpApi 编译 Asp.net core 版本的代码
+
+- 编译 dotnet core 版本
 
 
 
 ## History
 
-> see [History](./App.Core/Readme.md )
+> see [History](./App.Core/README.md )

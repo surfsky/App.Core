@@ -117,7 +117,7 @@ Nuget: install-package App.Corer
         {
             object o;
             ProductType type = ProductType.Repair;
-            o = type.GetDescription();
+            o = type.GetTitle();
             o = &quot;Goods&quot;.ParseEnum&lt;ProductType&gt;();
             o = &quot;1&quot;.ParseEnum&lt;ProductType&gt;();
         }
@@ -313,7 +313,7 @@ Nuget: install-package App.Corer
         {
             object o;
             ProductType type = ProductType.Repair;
-            o = type.GetDescription();
+            o = type.GetTitle();
             o = &quot;Goods&quot;.ParseEnum&lt;ProductType&gt;();
             o = &quot;1&quot;.ParseEnum&lt;ProductType&gt;();
         }
@@ -597,7 +597,7 @@ SocketClient      : Socket 客户端快速实现
 <h2 id="reflections">Reflections</h2>
 <pre><code>ReflectionHelper  : 各种反射相关的辅助方法
 </code></pre>
-<h2 id="serilization">Serilization</h2>
+<h2 id="serialization">Serialization</h2>
 <pre><code>XmlLizer          : 轻量级Xml序列化反序列化类。支持Dictionary；无需任何attribute标注。
 JsonLizer         : 轻量级json序列化类，可控制层次深度，输出属性个数等。
 </code></pre>
@@ -619,7 +619,7 @@ public enum EditorType
     [UI(&quot;自动选择&quot;)]     Auto,
     [UI(&quot;标签&quot;)]         Label,
 }
-var txt = EditorType.Auto.GetDescription(); // &quot;自动选择&quot;
+var txt = EditorType.Auto.GetTitle(); // &quot;自动选择&quot;
 ```
 </code></pre>
 <h1 id="section">备注</h1>
@@ -643,12 +643,11 @@ var txt = EditorType.Auto.GetDescription(); // &quot;自动选择&quot;
 </ul>
 <h2 id="target">Target</h2>
 <ul>
-<li>App.Core 编译 Asp.net core 版本的代码</li>
-<li>HttpApi 编译 Asp.net core 版本的代码</li>
+<li>编译 dotnet core 版本</li>
 </ul>
 <h2 id="history">History</h2>
 <blockquote>
-<p>see <a href="./App.Core/Readme.md">History</a></p>
+<p>see <a href="./App.Core/README.md">History</a></p>
 </blockquote>
 
 
