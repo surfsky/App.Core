@@ -21,16 +21,33 @@ namespace App.Core
         //---------------------------------------------------
         // 排序 & 分页
         //---------------------------------------------------
+        /// <summary>分页</summary>
+        /// <example>q.Page(2, 100);</example>
+        /// <param name="pageIndex">第几页（base-0）</param>
+        /// <param name="pageSize">页面大小</param>
+        public static IQueryable<T> Page<T>(this IQueryable<T> query, int pageIndex, int pageSize)
+        {
+            int total = query.Count();
+            int pageCount = Convert.ToInt32(Math.Ceiling((double)total / (double)pageSize));
+            if (pageCount < 1) pageCount = 1;
+
+            // 修正页码
+            //if (pageIndex > pageCount - 1) pageIndex = pageCount - 1;  // 超出页数则显示最后一页（删除此行，否则会导致客户端无法获取无数据状态）
+            if (pageIndex < 0) pageIndex = 0;
+            return query.Skip(pageIndex * pageSize).Take(pageSize);
+        }
+
+
         /// <summary>排序后分页（字段名是用字符串的，慎用）</summary>
         /// <example>q.SortAndPage("Name", "ASC", 2, 100);</example>
-        public static IQueryable<T> SortAndPage<T>(this IQueryable<T> query, string sortField, string sortDirection, int pageIndex, int pageSize)
+        public static IQueryable<T> SortPage<T>(this IQueryable<T> query, string sortField, string sortDirection, int pageIndex, int pageSize)
         {
             return query.Sort(sortField, sortDirection).Page(pageIndex, pageSize);
         }
 
         /// <summary>排序后分页</summary>
         /// <example>q.SortAndPage(t => t.Name, true, 2, 100);</example>
-        public static IQueryable<T> SortAndPage<T, TKey>(this IQueryable<T> query, Expression<Func<T, TKey>> keySelector, bool ascend, int pageIndex, int pageSize)
+        public static IQueryable<T> SortPage<T, TKey>(this IQueryable<T> query, Expression<Func<T, TKey>> keySelector, bool ascend, int pageIndex, int pageSize)
         {
             return query.Sort(keySelector, ascend).Page(pageIndex, pageSize);
         }
@@ -42,8 +59,9 @@ namespace App.Core
             return ascend ? query.OrderBy(keySelector) : query.OrderByDescending(keySelector);
         }
 
-        /// <summary>排序</summary>
+        /// <summary>排序（排序字段是非泛型的）</summary>
         /// <example>q.SortBy("Name", "ASC");</example>
+        /// <remarks>就是构造 query.OrderBy() 或 query.OrderByDescending() </remarks>
         public static IQueryable<T> Sort<T>(this IQueryable<T> query, string sortField, string sortDirection = "ASC")
         {
             if (String.IsNullOrEmpty(sortField))
@@ -51,10 +69,12 @@ namespace App.Core
             if (string.IsNullOrEmpty(sortDirection))
                 sortDirection = "ASC";
 
-            // 构造表达式
-            ParameterExpression parameter = Expression.Parameter(query.ElementType, String.Empty);
-            MemberExpression property = Expression.Property(parameter, sortField);
-            LambdaExpression lambda = Expression.Lambda(property, parameter);
+            // 构造LambdaParameterExpression表达式：t => t.SortField
+            var parameter = Expression.Parameter(query.ElementType, "t");  // t
+            var property = Expression.Property(parameter, sortField);      // t.sortField
+            var lambda = Expression.Lambda(property, parameter);           // t => t.sortField
+
+            // 构造调用方法表达式：query.Orderby(t => t.SortField)
             string methodName = (sortDirection == "ASC") ? "OrderBy" : "OrderByDescending";
             Expression methodCallExpression = Expression.Call(
                 typeof(Queryable),
@@ -68,23 +88,69 @@ namespace App.Core
             return query.Provider.CreateQuery<T>(methodCallExpression);
         }
 
-
-        /// <summary>分页</summary>
-        /// <example>q.Page(2, 100);</example>
-        /// <param name="pageIndex">第几页（base-0）</param>
-        /// <param name="pageSize">页面大小</param>
-        public static IQueryable<T> Page<T>(this IQueryable<T> query, int pageIndex, int pageSize)
+        //---------------------------------------------------
+        // Where 表达式
+        //---------------------------------------------------
+        /// <summary>过滤（字段是非泛型的）</summary>
+        /// <example>q.Where("InUsed", true)</example>
+        /// <remarks>q.Where(t=> t.InUsed==true)</remarks>
+        public static IQueryable<T> WhereEqual<T>(this IQueryable<T> query, string field, object o, bool nullable)
         {
-            int total = query.Count();
-            int pageCount = Convert.ToInt32(Math.Ceiling((double)total / (double)pageSize));
-            if (pageCount < 1) pageCount = 1;
+            if (field.IsEmpty())
+                return query;
+            var t = Expression.Parameter(query.ElementType, "t");        // t
+            var property = Expression.Property(t, field);                // t.field
+            var val = Expression.Constant(o);                            // o
+            var condition = Equal(property, val, nullable);              // t.field == o
+            var lambda = Expression.Lambda<Func<T, bool>>(condition, t); // t => t.field == o
 
-            // 修正页码
-            //if (pageIndex > pageCount - 1) pageIndex = pageCount - 1;  // 超出页数则显示最后一页
-            if (pageIndex < 0) pageIndex = 0;
-
-            return query.Skip(pageIndex * pageSize).Take(pageSize);
+            //
+            return query.Where(lambda);
         }
+
+        /// <summary>过滤（字段是非泛型的）</summary>
+        /// <example>q.WhereNot("InUsed", true)</example>
+        /// <remarks>q.Where(t=> t.InUsed!=true)</remarks>
+        public static IQueryable<T> WhereNotEqual<T>(this IQueryable<T> query, string field, object o, bool nullable)
+        {
+            if (field.IsEmpty())
+                return query;
+            var t = Expression.Parameter(query.ElementType, "t");       // t
+            var property = Expression.Property(t, field);               // t.field
+            var val = Expression.Constant(o);                           // o
+            var condition = NotEqual(property, val, nullable);          // t.field != o
+            var lambda = Expression.Lambda<Func<T,bool>>(condition, t); // t => t.field != o
+
+            //
+            return query.Where(lambda);
+        }
+
+        /// <summary>可空类型相等判断</summary>
+        public static Expression Equal(Expression exp1, Expression exp2, bool nullable)
+        {
+            if (nullable)
+            {
+                var val = Expression.Property(exp1, "Value"); // exp1.Value
+                var eq = Expression.Equal(val, exp2);         // exp1.Value==exp2
+                return eq;
+            }
+            else
+                return Expression.Equal(exp1, exp2);          // exp1==exp2
+        }
+
+        /// <summary>可空类型不相等判断</summary>
+        public static Expression NotEqual(Expression exp1, Expression exp2, bool nullable)
+        {
+            if (nullable)
+            {
+                var val = Expression.Property(exp1, "Value"); // exp1.Value
+                var eq = Expression.NotEqual(val, exp2);      // exp2.Value!=exp2
+                return eq;
+            }
+            else
+                return Expression.NotEqual(exp1, exp2);       // exp1==exp2
+        }
+
 
 
         //---------------------------------------------------
@@ -164,7 +230,7 @@ namespace App.Core
         //---------------------------------------------------
         // SQL相关
         //---------------------------------------------------
-        /// <summary>运行sql语句，返回datatable</summary>
+        /// <summary>运行sql语句，返回datatable（暂时只能用于sqlserver）</summary>
         public static DataTable ExecuteSelectSql(this DbContext ctx, string sql)
         {
             // command 
@@ -196,7 +262,7 @@ namespace App.Core
         public static IQueryable<TSource> Between<TSource, TKey>(this IQueryable<TSource> source, Expression<Func<TSource, TKey>> keySelector, TKey low, TKey high)
             where TKey : IComparable<TKey>
         {
-            Expression key = Expression.Invoke(keySelector, keySelector.Parameters.ToArray());
+            var key = Expression.Invoke(keySelector, keySelector.Parameters.ToArray());                // t
             Expression lowExpression, highExpression;
             if (low is string)
             {
@@ -213,11 +279,11 @@ namespace App.Core
             }
             else
             {
-                lowExpression = Expression.GreaterThanOrEqual(key, Expression.Constant(low));
-                highExpression = Expression.LessThanOrEqual(key, Expression.Constant(high));
+                lowExpression = Expression.GreaterThanOrEqual(key, Expression.Constant(low));            // t >= low
+                highExpression = Expression.LessThanOrEqual(key, Expression.Constant(high));             // t <= high
             }
-            Expression andExpression = Expression.AndAlso(lowExpression, highExpression);
-            Expression<Func<TSource, bool>> lambda = Expression.Lambda<Func<TSource, bool>>(andExpression, keySelector.Parameters);
+            var andExpression = Expression.AndAlso(lowExpression, highExpression);                       // (t>=low) && (t<=high)
+            var lambda = Expression.Lambda<Func<TSource, bool>>(andExpression, keySelector.Parameters);  // t => (t>=low) && (t<=high)
             return source.Where(lambda);
         }
 
@@ -226,9 +292,9 @@ namespace App.Core
         public static IQueryable<TSource> GreaterEqual<TSource, TKey>(this IQueryable<TSource> source, Expression<Func<TSource, TKey>> keySelector, TKey value)
             where TKey : IComparable<TKey>
         {
-            Expression key = Expression.Invoke(keySelector, keySelector.Parameters.ToArray());
-            Expression operation = Expression.GreaterThanOrEqual(key, Expression.Constant(value));
-            Expression<Func<TSource, bool>> lambda = Expression.Lambda<Func<TSource, bool>>(operation, keySelector.Parameters);
+            var key = Expression.Invoke(keySelector, keySelector.Parameters.ToArray());              // t
+            var operation = Expression.GreaterThanOrEqual(key, Expression.Constant(value));          // t >= value
+            var lambda = Expression.Lambda<Func<TSource, bool>>(operation, keySelector.Parameters);  // t => t >= value
             return source.Where(lambda);
         }
 
@@ -236,9 +302,9 @@ namespace App.Core
         public static IQueryable<TSource> LessEqual<TSource, TKey>(this IQueryable<TSource> source, Expression<Func<TSource, TKey>> keySelector, TKey value)
             where TKey : IComparable<TKey>
         {
-            Expression key = Expression.Invoke(keySelector, keySelector.Parameters.ToArray());
-            Expression operation = Expression.LessThanOrEqual(key, Expression.Constant(value));
-            Expression<Func<TSource, bool>> lambda = Expression.Lambda<Func<TSource, bool>>(operation, keySelector.Parameters);
+            var key = Expression.Invoke(keySelector, keySelector.Parameters.ToArray());              // t
+            var operation = Expression.LessThanOrEqual(key, Expression.Constant(value));             // t <= value
+            var lambda = Expression.Lambda<Func<TSource, bool>>(operation, keySelector.Parameters);  // t => t <= value
             return source.Where(lambda);
         }
 

@@ -63,11 +63,21 @@ namespace App.Core
         }
 
         /// <summary>解析为指定类型对象（数字、枚举、布尔、日期、类对象）</summary>
-        public static object Parse(this string text, Type type)
+        public static object Parse(this string text, Type type, bool ignoreException=false)
         {
-            if (type.IsBasicType())
-                return text.ParseBasicType(type);
-            return text.ParseJson(type);
+            try
+            {
+                if (type.IsBasicType())
+                    return text.ParseBasicType(type);
+                return text.ParseJson(type);
+            }
+            catch( Exception ex)
+            {
+                IO.Trace(ex.Message);
+                if (ignoreException)
+                    return null;
+                else throw ex;
+            }
         }
 
 

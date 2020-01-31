@@ -17,7 +17,7 @@ namespace App.Core
     /// </summary>
     public static class StringHelper
     {
-        /// <summary>为 Url 增加合并查询字符串</summary>
+        /// <summary>为 Url 增加合并查询字符串（若存在则覆盖）</summary>
         /// <param name="queryString">要添加的查询字符串，如a=x&b=x</param>
         public static string AddQueryString(this string url, string queryString)
         {

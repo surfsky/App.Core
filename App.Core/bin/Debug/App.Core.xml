@@ -134,44 +134,85 @@
         <member name="M:App.Core.UISetting`1.Remove(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
             <summary>删除成员</summary>
         </member>
-        <member name="M:App.Core.UISetting`1.SetColumn(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Nullable{System.Int32},App.Core.ColumnType,System.Nullable{System.Boolean},System.Object)">
+        <member name="M:App.Core.UISetting`1.SetMode(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},App.Core.PageMode)">
+            <summary>设置显示模式（何种页面模式下才显示）</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetColumn(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Nullable{System.Int32},App.Core.ColumnType,System.String,System.Nullable{System.Boolean},System.Object)">
             <summary>设置列成员</summary>
         </member>
-        <member name="M:App.Core.UISetting`1.SetTreeColumn(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Nullable{System.Int32})">
+        <member name="M:App.Core.UISetting`1.SetColumnWin(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String,System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String,System.Nullable{System.Int32},System.String,System.Nullable{System.Boolean},System.Nullable{System.Drawing.Size})">
+            <summary>添加弹出网格成员</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetColumnWinForm(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String,System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.Nullable{System.Int32},System.String,System.Nullable{System.Boolean},System.Nullable{System.Drawing.Size})">
+            <summary>添加弹出表单成员（AuthForm)</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetColumnWinGrid(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String,System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.Nullable{System.Int32},System.String,System.Nullable{System.Boolean},System.Nullable{System.Drawing.Size})">
+            <summary>添加弹出网格成员（AutoGrid）</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetColumnTree(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Nullable{System.Int32},System.String)">
             <summary>设置树列成员</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetColumnIcon(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String)">
+            <summary>添加图标成员（只读图像）</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetColumnImage(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String)">
+            <summary>添加图像成员</summary>
         </member>
         <member name="M:App.Core.UISetting`1.SetEditor(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},App.Core.EditorType,System.Object)">
             <summary>设置表单成员</summary>
         </member>
-        <member name="M:App.Core.UISetting`1.SetMode(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},App.Core.PageMode)">
-            <summary>设置显示模式（何种页面模式下才显示）</summary>
-        </member>
-        <member name="M:App.Core.UISetting`1.SetIcon(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Nullable{System.Drawing.Size})">
-            <summary>添加图标成员（只读图像）</summary>
-        </member>
-        <member name="M:App.Core.UISetting`1.SetImage(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Nullable{System.Drawing.Size})">
+        <member name="M:App.Core.UISetting`1.SetEditorImage(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Nullable{System.Drawing.Size})">
             <summary>添加图像成员</summary>
         </member>
-        <member name="M:App.Core.UISetting`1.SetGrid(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.String,System.String)">
+        <member name="M:App.Core.UISetting`1.SetEditorGrid(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.String,System.String)">
             <summary>添加网格成员</summary>
-            <param name="query">查询参数（如resKey={0})</param>
+            <param name="field">关联属性。如 UniID</param>
+            <param name="valueType">值类型。如 typeof(Res)</param>
+            <param name="query">查询参数。如 key={0}</param>
             <remarks>创建控件方法见：FormRender.CreateGrid</remarks>
         </member>
-        <member name="M:App.Core.UISetting`1.SetPopupGrid(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.String)">
+        <member name="M:App.Core.UISetting`1.SetEditorPanel(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String,System.String)">
+            <summary>添加面板成员</summary>
+            <param name="field">关联属性。如 UniID</param>
+            <param name="urlTemplate">URL模板</param>
+            <remarks>创建控件方法见：FormRender.CreatePanel</remarks>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetEditorImages(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String,System.String,System.Nullable{System.Int32})">
+            <summary>添加图片列表</summary>
+            <param name="field">关联属性。如UniID</param>
+            <param name="cate">图片保存路径。如Articles</param>
+            <param name="imageWidth">图片保存最大宽度</param>
+            <remarks>创建控件方法见：FormRender.CreateImages</remarks>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetEditorFiles(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String,System.String)">
+            <summary>添加文件列表</summary>
+            <param name="field">关联属性。如UniID</param>
+            <param name="cate">保存路径。如Articles</param>
+            <remarks>创建控件方法见：FormRender.CreateFiles</remarks>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetEditorWin(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.String,System.String,System.String)">
+            <summary>添加弹窗选择器成员</summary>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetEditorWinGrid(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.String,System.String)">
             <summary>添加弹出网格成员</summary>
-            <param name="query">查询参数（如resKey={0})</param>
+            <param name="valueType">值类型。如 DAL.Res</param>
+            <param name="textField">值类型中的文本域名称。如 Name</param>
+            <param name="query">查询参数.如resKey={0}</param>
         </member>
-        <member name="M:App.Core.UISetting`1.SetPopupList(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.String)">
+        <member name="M:App.Core.UISetting`1.SetEditorGPS(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.String,System.String)">
+            <summary>添加弹出GPS成员</summary>
+            <param name="valueType">值类型。如 DAL.Res</param>
+            <param name="textField">值类型中的文本域名称。如 Name</param>
+            <param name="query">查询参数.如resKey={0}</param>
+        </member>
+        <member name="M:App.Core.UISetting`1.SetEditorWinList(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.String)">
             <summary>添加列表成员</summary>
         </member>
-        <member name="M:App.Core.UISetting`1.SetPopupList(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Collections.Generic.Dictionary{System.String,System.Object})">
+        <member name="M:App.Core.UISetting`1.SetEditorWinList(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Collections.Generic.Dictionary{System.String,System.Object})">
             <summary>添加列表成员</summary>
         </member>
-        <member name="M:App.Core.UISetting`1.SetPopupTree(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.String,System.String)">
+        <member name="M:App.Core.UISetting`1.SetEditorWinTree(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.String,System.String)">
             <summary>添加弹出树成员</summary>
-        </member>
-        <member name="M:App.Core.UISetting`1.SetPopupForm(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Nullable{System.Int32},System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.Type,System.Nullable{System.Boolean})">
-            <summary>添加弹出表单成员</summary>
         </member>
         <member name="T:App.Core.PinYin">
             <summary>
@@ -288,7 +329,7 @@
         <member name="M:App.Core.Convertor.Parse``1(System.String)">
             <summary>解析为指定类型对象（数字、枚举、布尔、日期、类对象）</summary>
         </member>
-        <member name="M:App.Core.Convertor.Parse(System.String,System.Type)">
+        <member name="M:App.Core.Convertor.Parse(System.String,System.Type,System.Boolean)">
             <summary>解析为指定类型对象（数字、枚举、布尔、日期、类对象）</summary>
         </member>
         <member name="M:App.Core.Convertor.ParseBasicType(System.String,System.Type)">
@@ -521,6 +562,18 @@
         <member name="P:App.Core.ParamAttribute.Default">
             <summary>默认值</summary>
         </member>
+        <member name="P:App.Core.ParamAttribute.Width">
+            <summary>宽度</summary>
+        </member>
+        <member name="P:App.Core.ParamAttribute.Height">
+            <summary>高度</summary>
+        </member>
+        <member name="P:App.Core.ParamAttribute.QueryString">
+            <summary>查询参数模板</summary>
+        </member>
+        <member name="P:App.Core.ParamAttribute.Text">
+            <summary>文本</summary>
+        </member>
         <member name="P:App.Core.ParamAttribute.TextField">
             <summary>对应的文本字段</summary>
         </member>
@@ -530,23 +583,32 @@
         <member name="P:App.Core.ParamAttribute.Tree">
             <summary>表现为树</summary>
         </member>
-        <member name="P:App.Core.ParamAttribute.Values">
-            <summary>允许的值</summary>
+        <member name="P:App.Core.ParamAttribute.Export">
+            <summary>数据导出时机</summary>
         </member>
-        <member name="P:App.Core.ParamAttribute.ValueType">
-            <summary>值类型（如long ProductID 的值类型等于 Product）</summary>
+        <member name="P:App.Core.ParamAttribute.UrlTemplate">
+            <summary>URL模板（弹窗或调整页面时有用）</summary>
         </member>
-        <member name="P:App.Core.ParamAttribute.ValueUIID">
-            <summary>值类型对应的 UI 设置ID </summary>
-        </member>
-        <member name="P:App.Core.ParamAttribute.ValueInfo">
-            <summary>可选值说明</summary>
+        <member name="P:App.Core.ParamAttribute.UrlMode">
+            <summary>URL地址模式</summary>
         </member>
         <member name="P:App.Core.ParamAttribute.Tag">
             <summary>附属参数</summary>
         </member>
-        <member name="P:App.Core.ParamAttribute.Export">
-            <summary>数据导出时机</summary>
+        <member name="P:App.Core.ParamAttribute.WinSize">
+            <summary>弹窗大小</summary>
+        </member>
+        <member name="P:App.Core.ParamAttribute.ValueType">
+            <summary>值类型（如long ProductID 的值类型等于 Product； 还需设置TextField=Name）</summary>
+        </member>
+        <member name="P:App.Core.ParamAttribute.ValueUIID">
+            <summary>值类型对应的 UI 设置ID </summary>
+        </member>
+        <member name="P:App.Core.ParamAttribute.Values">
+            <summary>允许的值</summary>
+        </member>
+        <member name="P:App.Core.ParamAttribute.ValueInfo">
+            <summary>可选值说明</summary>
         </member>
         <member name="P:App.Core.ParamAttribute.TypeName">
             <summary>参数类型名</summary>
@@ -1407,6 +1469,7 @@
         </member>
         <member name="M:App.Core.MethodInvoker.InvokeMethod(System.Object,System.Reflection.MethodInfo,System.Collections.Generic.Dictionary{System.String,System.Object})">
             <summary>调用成员方法</summary>
+            <param name="obj">对象。如果为空，会尝试根据方法信息自动创建一个对象。</param>
         </member>
         <member name="T:App.Core.RegexValidationAttribute">
             <summary>
@@ -1771,7 +1834,7 @@
             <summary>创建POST表单并跳转页面</summary>
         </member>
         <member name="M:App.Core.Asp.IsSiteFile(System.String)">
-            <summary>是否是本网站文件</summary>
+            <summary>是否是本网站文件（如果以.~/开头或host相同是本站图片）</summary>
         </member>
         <member name="M:App.Core.Asp.MapPath(System.String)">
             <summary>将虚拟路径转化为物理路径。等同于Server.MapPath()</summary>
@@ -1819,8 +1882,9 @@
         <member name="M:App.Core.Asp.GetQueryBool(System.String)">
             <summary>获取查询字符串中的boolean参数值</summary>
         </member>
-        <member name="M:App.Core.Asp.GetHandler(System.String,System.Web.HttpContext)">
+        <member name="M:App.Core.Asp.GetHandler(System.String)">
             <summary>获取 URL 对应的处理器类</summary>
+            
         </member>
         <member name="M:App.Core.Asp.EnableCros">
             <summary>允许跨域（未测试）</summary>
@@ -1970,11 +2034,6 @@
             绘图相关辅助方法
             </summary>
         </member>
-        <member name="M:App.Core.Drawer.CreateQrCodeImage(System.String,System.String)">
-            <summary>创建二维码图片</summary>
-            <param name="text">文本</param>
-            <param name="iconUrl">图标地址</param>
-        </member>
         <member name="M:App.Core.Drawer.DrawIcon(System.Drawing.Image,System.String)">
             <summary>叠加绘制图标</summary>
         </member>
@@ -2030,11 +2089,17 @@
             Linq及表达式参考：http://www.360doc.com/content/15/0718/11/14416931_485658704.shtml
             </summary>
         </member>
-        <member name="M:App.Core.EFHelper.SortAndPage``1(System.Linq.IQueryable{``0},System.String,System.String,System.Int32,System.Int32)">
+        <member name="M:App.Core.EFHelper.Page``1(System.Linq.IQueryable{``0},System.Int32,System.Int32)">
+            <summary>分页</summary>
+            <example>q.Page(2, 100);</example>
+            <param name="pageIndex">第几页（base-0）</param>
+            <param name="pageSize">页面大小</param>
+        </member>
+        <member name="M:App.Core.EFHelper.SortPage``1(System.Linq.IQueryable{``0},System.String,System.String,System.Int32,System.Int32)">
             <summary>排序后分页（字段名是用字符串的，慎用）</summary>
             <example>q.SortAndPage("Name", "ASC", 2, 100);</example>
         </member>
-        <member name="M:App.Core.EFHelper.SortAndPage``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.Boolean,System.Int32,System.Int32)">
+        <member name="M:App.Core.EFHelper.SortPage``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.Boolean,System.Int32,System.Int32)">
             <summary>排序后分页</summary>
             <example>q.SortAndPage(t => t.Name, true, 2, 100);</example>
         </member>
@@ -2043,14 +2108,25 @@
             <example>q.SortBy(t => t.Name, true);</example>
         </member>
         <member name="M:App.Core.EFHelper.Sort``1(System.Linq.IQueryable{``0},System.String,System.String)">
-            <summary>排序</summary>
+            <summary>排序（排序字段是非泛型的）</summary>
             <example>q.SortBy("Name", "ASC");</example>
+            <remarks>就是构造 query.OrderBy() 或 query.OrderByDescending() </remarks>
         </member>
-        <member name="M:App.Core.EFHelper.Page``1(System.Linq.IQueryable{``0},System.Int32,System.Int32)">
-            <summary>分页</summary>
-            <example>q.Page(2, 100);</example>
-            <param name="pageIndex">第几页（base-0）</param>
-            <param name="pageSize">页面大小</param>
+        <member name="M:App.Core.EFHelper.WhereEqual``1(System.Linq.IQueryable{``0},System.String,System.Object,System.Boolean)">
+            <summary>过滤（字段是非泛型的）</summary>
+            <example>q.Where("InUsed", true)</example>
+            <remarks>q.Where(t=> t.InUsed==true)</remarks>
+        </member>
+        <member name="M:App.Core.EFHelper.WhereNotEqual``1(System.Linq.IQueryable{``0},System.String,System.Object,System.Boolean)">
+            <summary>过滤（字段是非泛型的）</summary>
+            <example>q.WhereNot("InUsed", true)</example>
+            <remarks>q.Where(t=> t.InUsed!=true)</remarks>
+        </member>
+        <member name="M:App.Core.EFHelper.Equal(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression,System.Boolean)">
+            <summary>可空类型相等判断</summary>
+        </member>
+        <member name="M:App.Core.EFHelper.NotEqual(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression,System.Boolean)">
+            <summary>可空类型不相等判断</summary>
         </member>
         <member name="M:App.Core.EFHelper.And``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
             <summary>And 组合两个Bool表达式</summary>
@@ -2067,7 +2143,7 @@
             </summary>
         </member>
         <member name="M:App.Core.EFHelper.ExecuteSelectSql(System.Data.Entity.DbContext,System.String)">
-            <summary>运行sql语句，返回datatable</summary>
+            <summary>运行sql语句，返回datatable（暂时只能用于sqlserver）</summary>
         </member>
         <member name="M:App.Core.EFHelper.Between``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},``1,``1)">
             <summary>
@@ -2717,7 +2793,7 @@
             <summary>相对于根目录的绝对路径。如 /Pages/Default.aspx?p=1</summary>
         </member>
         <member name="P:App.Core.Url.PurePath">
-            <summary>去除查询字符串外的纯路径。如 /Pages/Default.aspx</summary>
+            <summary>去除查询字符串外的纯路径。如 http://..../Pages/Default.aspx</summary>
         </member>
         <member name="P:App.Core.Url.FileName">
             <summary>文件名称。如 Default.aspx</summary>

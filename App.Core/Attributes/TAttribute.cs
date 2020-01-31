@@ -20,7 +20,6 @@ namespace App.Core
         /// <summary>备注</summary>
         public string Remark { get; set; }
 
-
         //
         public TAttribute() { }
         public TAttribute(string title) : this("", title) { }

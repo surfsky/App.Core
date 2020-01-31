@@ -6,7 +6,6 @@ using System.Linq;
 using System.Web;
 using System.IO;
 using System.Drawing.Drawing2D;
-using ThoughtWorks.QRCode.Codec;
 using System.Text;
 
 namespace App.Core
@@ -16,20 +15,6 @@ namespace App.Core
     /// </summary>
     public static class Drawer
     {
-        /// <summary>创建二维码图片</summary>
-        /// <param name="text">文本</param>
-        /// <param name="iconUrl">图标地址</param>
-        public static Image CreateQrCodeImage(string text, string iconUrl="")
-        {
-            // 二维码图片
-            QRCodeEncoder encoder = new QRCodeEncoder();
-            encoder.QRCodeEncodeMode = QRCodeEncoder.ENCODE_MODE.BYTE; //编码方法
-            encoder.QRCodeScale = 24;  // 大小
-            encoder.QRCodeVersion = 0; // 版本
-            encoder.QRCodeErrorCorrect = QRCodeEncoder.ERROR_CORRECTION.M;
-            Image bmp = encoder.Encode(text, Encoding.UTF8);
-            return DrawIcon(bmp, iconUrl);
-        }
 
         /// <summary>叠加绘制图标</summary>
         public static Image DrawIcon(Image img, string iconUrl)

@@ -279,3 +279,7 @@
 + ReflectionHelper.IsCollection()
 * ReflectionHelper.GetName(), GetProperty(), GetTitle(), GetValue(), SetValue()
 
+2.0.1
++ Asp.QueryString
+* App.PageMode
+* Fix MethodInvoker.InvokeMethod

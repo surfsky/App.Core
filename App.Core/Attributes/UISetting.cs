@@ -72,8 +72,6 @@ namespace App.Core
                 return;
             if (m.ReturnType.Name != "IQueryable`1")
                 throw new Exception("方法返回类型必须是 IQueryable<T>");
-            if (!m.IsStatic)
-                throw new Exception("该方法必须是 Static 的");
 
             this.Method = m;
             this.EntityType = m.ReturnType.GenericTypeArguments[0];
@@ -108,12 +106,16 @@ namespace App.Core
                         ui.Type = attr.Type;
                     ui.ValueType = attr.ValueType;
                     ui.ValueField = attr.ValueField;
+                    ui.Text = attr.Text;
                     ui.TextField = attr.TextField;
                     ui.Tag = attr.Tag;
                     ui.Title = attr.Title;
                     ui.Remark = attr.Remark;
                     ui.Regex = attr.Regex;
                     ui.Precision = attr.Precision;
+                    ui.Width = attr.Width;
+                    ui.Height = attr.Height;
+                    ui.QueryString = attr.QueryString;
                 }
                 this.Items.Add(ui);
             }
@@ -151,12 +153,10 @@ namespace App.Core
                 attr = p.GetPropertyUI();
                 var name = field.GetName();
                 if (attr.Name != name)
-                {
                     attr.Name = name;               // t.Dept.Name => "Dept.Name"
-                    attr.Title = field.GetTitle();  // 部门名称
-                }
                 this.Items.Add(attr);
             }
+            attr.Title = field.GetTitle();  // 部门名称
 
             return attr;
         }
@@ -170,28 +170,6 @@ namespace App.Core
                 this.Items.Remove(item);
         }
 
-        /// <summary>设置列成员</summary>
-        public UIAttribute SetColumn(Expression<Func<T, object>> field, int? width=null, ColumnType column = ColumnType.Auto, bool? sort = null, object tag = null)
-        {
-            return GetOrCreate(field).SetColumn(column, width, sort, tag);
-        }
-
-        /// <summary>设置树列成员</summary>
-        public UIAttribute SetTreeColumn(Expression<Func<T, object>> field, Expression<Func<T, object>> idField, int? width = null)
-        {
-            var ui = GetOrCreate(field).SetColumn(ColumnType.Auto, width);
-            ui.Tree = true;
-            ui.ValueField = idField.GetName();
-            return ui;
-        }
-
-
-        /// <summary>设置表单成员</summary>
-        public UIAttribute SetEditor(Expression<Func<T, object>> field, EditorType editor = EditorType.Auto, object tag = null)
-        {
-            return GetOrCreate(field).SetEditor(editor, tag);
-        }
-
         /// <summary>设置显示模式（何种页面模式下才显示）</summary>
         public UIAttribute SetMode(Expression<Func<T, object>> field, PageMode mode)
         {
@@ -199,76 +177,209 @@ namespace App.Core
         }
 
 
-        /// <summary>添加图标成员（只读图像）</summary>
-        public UIAttribute SetIcon(Expression<Func<T, object>> field, Size? size = null)
+        //---------------------------------------------------
+        // 网格列设置
+        //---------------------------------------------------
+        /// <summary>设置列成员</summary>
+        public UIAttribute SetColumn(Expression<Func<T, object>> field, int? width = null, ColumnType column = ColumnType.Auto, string title = "", bool? sort = null, object tag = null)
         {
-            return GetOrCreate(field).SetColumn(ColumnType.Icon).SetEditor(EditorType.Image, size);
+            return GetOrCreate(field).SetColumn(column, width, title, sort, tag);
+        }
+
+
+        /// <summary>添加弹出网格成员</summary>
+        public UIAttribute SetColumnWin(Expression<Func<T, object>> field, string text, Expression<Func<T, object>> textField, string urlTemplate, int? width, string title, bool? sort = null, Size? winSize = null)
+        {
+            var attr = SetColumn(field, width, ColumnType.Win, title, sort, null);
+            attr.Text = text;
+            attr.TextField = textField.GetName();
+            attr.UrlTemplate = urlTemplate;
+            attr.WinSize = winSize ?? new Size(1000, 800);
+            return attr;
+        }
+
+        /// <summary>添加弹出表单成员（AuthForm)</summary>
+        public UIAttribute SetColumnWinForm(Expression<Func<T, object>> field, string text, Expression<Func<T, object>> textField, Type valueType, int? width, string title, bool? sort = null, Size? winSize = null)
+        {
+            var attr = SetColumn(field, width, ColumnType.WinForm, title, sort, null);
+            attr.Text = text;
+            attr.TextField = textField.GetName();
+            attr.ValueType = valueType;
+            attr.WinSize = winSize ?? new Size(1000, 800);
+            return attr;
+        }
+
+        /// <summary>添加弹出网格成员（AutoGrid）</summary>
+        public UIAttribute SetColumnWinGrid(Expression<Func<T, object>> field, string text, Expression<Func<T, object>> textField, Type valueType, int? width, string title, bool? sort = null, Size? winSize = null)
+        {
+            var attr = SetColumn(field, width, ColumnType.WinGrid, title, sort, null);
+            attr.Text = text;
+            attr.TextField = textField.GetName();
+            attr.ValueType = valueType;
+            attr.Title = title;
+            attr.WinSize = winSize ?? new Size(1000, 800);
+            return attr;
+        }
+
+
+        /// <summary>设置树列成员</summary>
+        public UIAttribute SetColumnTree(Expression<Func<T, object>> field, Expression<Func<T, object>> idField, int? width = null, string title="")
+        {
+            var ui = GetOrCreate(field).SetColumn(ColumnType.Auto, width, title: title);
+            ui.Tree = true;
+            ui.ValueField = idField.GetName();
+            return ui;
+        }
+
+
+        /// <summary>添加图标成员（只读图像）</summary>
+        public UIAttribute SetColumnIcon(Expression<Func<T, object>> field, string title="")
+        {
+            return GetOrCreate(field).SetColumn(ColumnType.Icon, title: title);
         }
 
 
         /// <summary>添加图像成员</summary>
-        public UIAttribute SetImage(Expression<Func<T, object>> field, Size? size=null)
+        public UIAttribute SetColumnImage(Expression<Func<T, object>> field, string title="")
         {
-            return GetOrCreate(field).SetColumn(ColumnType.Image).SetEditor(EditorType.Image, size);
+            return GetOrCreate(field).SetColumn(ColumnType.Image, title: title);
+        }
+
+
+        //---------------------------------------------------
+        // 设置编辑器
+        //---------------------------------------------------
+        /// <summary>设置表单成员</summary>
+        public UIAttribute SetEditor(Expression<Func<T, object>> field, EditorType editor = EditorType.Auto, object tag = null)
+        {
+            return GetOrCreate(field).SetEditor(editor, tag);
+        }
+
+
+        /// <summary>添加图像成员</summary>
+        public UIAttribute SetEditorImage(Expression<Func<T, object>> field, Size? size=null)
+        {
+            return GetOrCreate(field).SetEditor(EditorType.Image, size);
         }
 
         /// <summary>添加网格成员</summary>
-        /// <param name="query">查询参数（如resKey={0})</param>
+        /// <param name="field">关联属性。如 UniID</param>
+        /// <param name="valueType">值类型。如 typeof(Res)</param>
+        /// <param name="query">查询参数。如 key={0}</param>
         /// <remarks>创建控件方法见：FormRender.CreateGrid</remarks>
-        public UIAttribute SetGrid(Expression<Func<T, object>> field, Type valueType, string title, string query)
+        public UIAttribute SetEditorGrid(Expression<Func<T, object>> field, Type valueType, string title, string query)
         {
             var attr = SetEditor(field, EditorType.Grid);
             attr.ValueField = field.GetName();
             attr.ValueType = valueType;
-            attr.Tag = query;
+            attr.QueryString = query;
             attr.Title = title;
             return attr;
         }
 
-        /// <summary>添加弹出网格成员</summary>
-        /// <param name="query">查询参数（如resKey={0})</param>
-        public UIAttribute SetPopupGrid(Expression<Func<T, object>> field, Type valueType, string query)
+        /// <summary>添加面板成员</summary>
+        /// <param name="field">关联属性。如 UniID</param>
+        /// <param name="urlTemplate">URL模板</param>
+        /// <remarks>创建控件方法见：FormRender.CreatePanel</remarks>
+        public UIAttribute SetEditorPanel(Expression<Func<T, object>> field, string urlTemplate, string title)
         {
-            var attr = SetEditor(field, EditorType.PopupGrid);
+            var attr = SetEditor(field, EditorType.Panel);
+            attr.UrlTemplate = urlTemplate;
+            attr.Title = title;
+            return attr;
+        }
+
+        /// <summary>添加图片列表</summary>
+        /// <param name="field">关联属性。如UniID</param>
+        /// <param name="cate">图片保存路径。如Articles</param>
+        /// <param name="imageWidth">图片保存最大宽度</param>
+        /// <remarks>创建控件方法见：FormRender.CreateImages</remarks>
+        public UIAttribute SetEditorImages(Expression<Func<T, object>> field, string cate, string title="", int? imageWidth=null)
+        {
+            var attr = SetEditor(field, EditorType.Images);
+            attr.Tag = new { cate, imageWidth }.ToJson();
+            if (title.IsNotEmpty())
+                attr.Title = title;
+            return attr;
+        }
+
+
+        /// <summary>添加文件列表</summary>
+        /// <param name="field">关联属性。如UniID</param>
+        /// <param name="cate">保存路径。如Articles</param>
+        /// <remarks>创建控件方法见：FormRender.CreateFiles</remarks>
+        public UIAttribute SetEditorFiles(Expression<Func<T, object>> field, string cate, string title="")
+        {
+            var attr = SetEditor(field, EditorType.Files);
+            attr.Tag = new { cate}.ToJson();
+            if (title.IsNotEmpty())
+                attr.Title = title;
+            return attr;
+        }
+
+
+        /// <summary>添加弹窗选择器成员</summary>
+        public UIAttribute SetEditorWin(Expression<Func<T, object>> field, Type valueType, string textField, string urlTemplate, string title="")
+        {
+            var attr = SetEditor(field, EditorType.Win);
             attr.ValueType = valueType;
-            attr.Tag = query;
+            attr.TextField = textField;
+            attr.UrlTemplate = urlTemplate;
+            if (title.IsNotEmpty())
+                attr.Title = title;
+            return attr;
+        }
+
+        /// <summary>添加弹出网格成员</summary>
+        /// <param name="valueType">值类型。如 DAL.Res</param>
+        /// <param name="textField">值类型中的文本域名称。如 Name</param>
+        /// <param name="query">查询参数.如resKey={0}</param>
+        public UIAttribute SetEditorWinGrid(Expression<Func<T, object>> field, Type valueType, string textField, string query="")
+        {
+            var attr = SetEditor(field, EditorType.WinGrid);
+            attr.ValueType = valueType;
+            attr.TextField = textField;
+            attr.QueryString = query;
+            return attr;
+        }
+
+        /// <summary>添加弹出GPS成员</summary>
+        /// <param name="valueType">值类型。如 DAL.Res</param>
+        /// <param name="textField">值类型中的文本域名称。如 Name</param>
+        /// <param name="query">查询参数.如resKey={0}</param>
+        public UIAttribute SetEditorGPS(Expression<Func<T, object>> field, Type valueType, string textField, string query="")
+        {
+            var attr = SetEditor(field, EditorType.GPS);
+            attr.ValueType = valueType;
+            attr.TextField = textField;
+            attr.QueryString = query;
             return attr;
         }
 
 
         /// <summary>添加列表成员</summary>
-        public UIAttribute SetPopupList(Expression<Func<T, object>> field, Type valueType, string textField)
+        public UIAttribute SetEditorWinList(Expression<Func<T, object>> field, Type valueType, string textField)
         {
-            var attr = SetEditor(field, EditorType.PopupList);
+            var attr = SetEditor(field, EditorType.WinList);
             attr.ValueType = valueType;
             attr.TextField = textField;
             return attr;
         }
         /// <summary>添加列表成员</summary>
-        public UIAttribute SetPopupList(Expression<Func<T, object>> field, Dictionary<string, object> dict)
+        public UIAttribute SetEditorWinList(Expression<Func<T, object>> field, Dictionary<string, object> dict)
         {
-            var attr = SetEditor(field, EditorType.PopupList);
+            var attr = SetEditor(field, EditorType.WinList);
             attr.Values = dict;
             return attr;
         }
 
         /// <summary>添加弹出树成员</summary>
-        public UIAttribute SetPopupTree(Expression<Func<T, object>> field, Type valueType, string valueField, string textField)
+        public UIAttribute SetEditorWinTree(Expression<Func<T, object>> field, Type valueType, string valueField, string textField)
         {
-            var attr = SetEditor(field, EditorType.PopupTree);
+            var attr = SetEditor(field, EditorType.WinTree);
             attr.ValueType = valueType;
             attr.ValueField = valueField;
             attr.TextField = textField;
-            return attr;
-        }
-
-
-        /// <summary>添加弹出表单成员</summary>
-        public UIAttribute SetPopupForm(Expression<Func<T, object>> field, int? width,  Expression<Func<T, object>> textField, Type valueType, bool? sort=null)
-        {
-            var attr = SetColumn(field, width, ColumnType.PopupForm, sort);
-            attr.TextField = textField.GetName();
-            attr.ValueType = valueType;
             return attr;
         }
     }

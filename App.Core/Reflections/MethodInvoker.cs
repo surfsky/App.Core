@@ -28,14 +28,18 @@ namespace App.Core
         }
 
         /// <summary>调用成员方法</summary>
+        /// <param name="obj">对象。如果为空，会尝试根据方法信息自动创建一个对象。</param>
         public static object InvokeMethod(object obj, MethodInfo info, Dictionary<string, object> args)
         {
+            if (obj == null && !info.IsStatic)
+                obj = Activator.CreateInstance(info.DeclaringType);
             object[] parameters = BuildMethodParameters(info, args);
             return info.Invoke(obj, parameters);
         }
 
         static object[] BuildMethodParameters(MethodInfo info, Dictionary<string, object> args)
         {
+            args = args ?? new Dictionary<string, object>();
             List<object> array = new List<object>();
             if (info == null)
                 return array.ToArray();

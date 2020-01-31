@@ -38,7 +38,7 @@ namespace App.Core
         /// <summary>相对于根目录的绝对路径。如 /Pages/Default.aspx?p=1</summary>
         public string AbsolutePath { get; set; }
 
-        /// <summary>去除查询字符串外的纯路径。如 /Pages/Default.aspx</summary>
+        /// <summary>去除查询字符串外的纯路径。如 http://..../Pages/Default.aspx</summary>
         public string PurePath { get; set; } = "";
 
         /// <summary>文件名称。如 Default.aspx</summary>

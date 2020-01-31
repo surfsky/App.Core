@@ -21,10 +21,14 @@ namespace App.Core
         [UI("布尔")]       Bool,
         [UI("链接 ")]      Link,
         [UI("图片")]       Image,
+        [UI("日期")]       Date,
+        [UI("时间日期")]   DateTime,
+        [UI("时间")]       Time,
         [UI("图标")]       Icon,
         [UI("文件")]       File,
-        [UI("弹出网格")]   PopupGrid,
-        [UI("弹出表单")]   PopupForm,
+        [UI("弹窗")]       Win,
+        [UI("弹窗网格")]   WinGrid,
+        [UI("弹窗表单")]   WinForm,
     }
 
     /// <summary>
@@ -42,6 +46,7 @@ namespace App.Core
         [UI("HTML编辑框")]   Html,
         [UI("MD编辑框")]     Markdown,
         [UI("数字框")]       Number,
+        [UI("GPS位置")]      GPS,
 
         //
         [UI("日期选择")]     Date,
@@ -51,6 +56,8 @@ namespace App.Core
         //
         [UI("图片选择")]     Image,
         [UI("文件选择")]     File,
+        [UI("图片列表")]     Images,
+        [UI("文件列表")]     Files,
 
         //
         [UI("枚举下拉框")]   Enum,
@@ -60,11 +67,15 @@ namespace App.Core
         [UI("布尔下拉框")]   Bool,
         [UI("布尔选择器")]   BoolGroup,
 
-        //
+        // 
+        [UI("内嵌面板")]     Panel,
         [UI("内嵌表格")]     Grid,
-        [UI("弹出网格")]     PopupGrid,
-        [UI("弹出列表")]     PopupList,
-        [UI("弹出树")]       PopupTree,
+
+        // 弹窗类（具体是DropDownList、ActionSheet、弹窗、切屏，由客户端自己去决定，此处统一命名为 WinXXX）
+        [UI("弹窗选择")]     Win,       //  指定url
+        [UI("弹出网格")]     WinGrid,   //  自动网格
+        [UI("弹出列表")]     WinList,
+        [UI("弹出树")]       WinTree,
     }
 
 
@@ -132,6 +143,7 @@ namespace App.Core
             this.ValueType = valueType;
         }
 
+
         //
         // 方法
         //
@@ -148,10 +160,12 @@ namespace App.Core
             this.Tag = tag.ToJson();
             return this;
         }
-        public UIAttribute SetColumn(ColumnType column, int? width=null, bool? sort=null, object tag=null)
+        public UIAttribute SetColumn(ColumnType column, int? width = null, string title = "", bool? sort = null, object tag = null)
         {
             if (width != null)
                 this.ColumnWidth = width.Value;
+            if (title.IsNotEmpty())
+                this.Title = title;
             this.Column = column;
             this.Sort = sort;
             this.Tag = tag.ToJson();

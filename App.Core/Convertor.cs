@@ -48,7 +48,9 @@ namespace App.Core
                 return "";
 
             // 其它的格式自行处理
-            if (format != null && !format.Contains("{"))
+            if (format.IsEmpty())
+                format = "{0}";
+            else if(!format.Contains("{"))
                 format = "{0:" + format + "}";
             return string.Format(format, o);
         }

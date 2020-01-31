@@ -30,6 +30,7 @@ namespace App.Core
         public static IPrincipal User                   => HttpContext.Current.User;
         public static string Url                        => HttpContext.Current.Request.Url.ToString(); 
         public static string RawUrl                     => HttpContext.Current.Request.RawUrl;
+        public static string QueryString                => Url.GetQueryString();
         public static HttpRequest Request
         {
             get
@@ -141,9 +142,13 @@ namespace App.Core
         //-------------------------------------------
         // Url & Path
         //-------------------------------------------
-        /// <summary>是否是本网站文件</summary>
+        /// <summary>是否是本网站文件（如果以.~/开头或host相同是本站图片）</summary>
         public static bool IsSiteFile(this string url)
         {
+            if (url.IsEmpty())
+                return false;
+            if (url.StartsWith("/") || url.StartsWith("~/") || url.StartsWith("."))
+                return true;
             url = Asp.ResolveUrl(url);
             Uri uri = new Uri(url);
             return uri.Host.ToLower() == Asp.Request.Url.Host.ToLower();
@@ -247,10 +252,13 @@ namespace App.Core
 
 
         /// <summary>获取 URL 对应的处理器类</summary>
-        public static Type GetHandler(string url, HttpContext context=null)
+        /// 
+        public static Type GetHandler(string url)
         {
-            var u = new Url(url);
-            var key = u.PurePath.ToLower().MD5();
+            if (url.IsEmpty()) 
+                return null;
+            url = new Url(url).AbsolutePath.TrimQuery().ToLower();  // 只保留绝对路径，且去除查询字符串
+            var key = url.MD5();
             return IO.GetDict<Type>(key, () =>
             {
                 Type type = null;

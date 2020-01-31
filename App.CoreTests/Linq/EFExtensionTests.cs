@@ -15,11 +15,11 @@ namespace App.Core.Tests
         public void SortTest()
         {
             var persons = Person.GetPersons();
-            var page0 = persons.AsQueryable().SortAndPage(t => t.Age, true, 0, 3).ToList();
-            var page1 = persons.AsQueryable().SortAndPage(t => t.Age, true, 1, 3).ToList();
-            var page2 = persons.AsQueryable().SortAndPage(t => t.Age, true, 2, 3).ToList();
-            var page3 = persons.AsQueryable().SortAndPage(t => t.Age, true, 3, 3).ToList();
-            var page4 = persons.AsQueryable().SortAndPage(t => t.Age, true, 4, 3).ToList();
+            var page0 = persons.AsQueryable().SortPage(t => t.Age, true, 0, 3).ToList();
+            var page1 = persons.AsQueryable().SortPage(t => t.Age, true, 1, 3).ToList();
+            var page2 = persons.AsQueryable().SortPage(t => t.Age, true, 2, 3).ToList();
+            var page3 = persons.AsQueryable().SortPage(t => t.Age, true, 3, 3).ToList();
+            var page4 = persons.AsQueryable().SortPage(t => t.Age, true, 4, 3).ToList();
             Assert.AreEqual(page0.Count, 3);
             Assert.AreEqual(page1.Count, 3);
             Assert.AreEqual(page2.Count, 3);
