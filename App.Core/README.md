@@ -283,3 +283,9 @@
 + Asp.QueryString
 * App.PageMode
 * Fix MethodInvoker.InvokeMethod
+
+
+2.1.0
++ StringHelper.GetEnd(), GetStart()
+* StringHelper.TrimEndFrom() -> TrimEnd(), TrimStartTo() -> TrimStart()
+* 

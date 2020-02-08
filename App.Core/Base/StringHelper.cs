@@ -38,10 +38,9 @@ namespace App.Core
             return u.ToString();
         }
 
-
-        /// <summary>将最后出现的字符串及后面的部分删除掉。如"a.asp".TrimEndFrom(".") => "a"</summary>
+        /// <summary>裁掉尾部的匹配字符串（及后面的字符串）。如"a.asp".TrimEndFrom(".") => "a"</summary>
         /// <param name="keepKey">是否保留键。如"/Pages/test.aspx".TiemEndFrom("/",true) => "/Pages/"</param>
-        public static string TrimEndFrom(this string name, string key, bool keepKey=false)
+        public static string TrimEnd(this string name, string key, bool keepKey=false)
         {
             if (name.IsEmpty())
                 return "";
@@ -56,9 +55,11 @@ namespace App.Core
             return name;
         }
 
-        /// <summary>删除前面的字符串。如"a.asp".TrimStartTo(".") => "asp"</summary>
+
+
+        /// <summary>删除前面的匹配字符串字（及前面的字符串）。如"a.asp".TrimStartTo(".") => "asp"</summary>
         /// <param name="keepKey">是否保留键。如"/Pages/test.aspx".TiemStartTo("/",true) => ".asp"</param>
-        public static string TrimStartTo(this string name, string key, bool keepKey = false)
+        public static string TrimStart(this string name, string key, bool keepKey = false)
         {
             if (name.IsEmpty())
                 return "";
@@ -72,6 +73,42 @@ namespace App.Core
             }
             return name;
         }
+
+        /// <summary>获取最后出现的字符串及后面的部分。如"a.asp".SubstringFrom(".") => "asp"</summary>
+        /// <param name="keepKey">是否保留键。如"/Pages/test.aspx".TiemEndFrom("/",true) => "/test.aspx"</param>
+        public static string GetEnd(this string name, string key, bool keepKey = false)
+        {
+            if (name.IsEmpty())
+                return "";
+            var n = name.LastIndexOf(key);
+            if (n != -1)
+            {
+                if (keepKey)
+                    return name.SubText(n);
+                else
+                    return name.SubText(n + key.Length);
+            }
+            return name;
+        }
+
+
+        /// <summary>获取前面出现的字符串（直到指定的键值）。如"a.asp".GetStart(".") => "a"</summary>
+        /// <param name="keepKey">是否保留键。如"/Pages/test.aspx".GetStart("/",true) => "/"</param>
+        public static string GetStart(this string name, string key, bool keepKey = false)
+        {
+            if (name.IsEmpty())
+                return "";
+            var n = name.IndexOf(key);
+            if (n != -1)
+            {
+                if (keepKey)
+                    return name.SubText(0, n + key.Length);
+                else
+                    return name.SubText(0, n);
+            }
+            return name;
+        }
+
 
         /// <summary>是否包含</summary>
         public static bool Contains(this string source, string value, bool ignoreCase)
@@ -305,16 +342,6 @@ namespace App.Core
             return text.Substring(startIndex, length);
         }
 
-        /// <summary>裁掉尾部的匹配字符串</summary>
-        public static string TrimEnd(this string text, string match)
-        {
-            if (text.IsEmpty()) 
-                return "";
-            int n = text.LastIndexOf(match);
-            if (n == -1)
-                return text;
-            return text.Substring(0, n);
-        }
 
         /// <summary>获取遮罩文本（XXXXXXXXXX****XXXX）</summary>
         /// <param name="n">文本最终长度</param>

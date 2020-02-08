@@ -168,7 +168,7 @@ namespace App.Core
         /// </summary>
         public static string ResolveFullUrl(this string relativeUrl)
         {
-            relativeUrl = relativeUrl.TrimStartTo("~");
+            relativeUrl = relativeUrl.TrimStart("~");
             if (relativeUrl.IsEmpty())
                 return "";
             if (relativeUrl.ToLower().StartsWith("http"))
@@ -184,7 +184,7 @@ namespace App.Core
         /// </summary>
         public static string ResolveUrl(this string relativeUrl)
         {
-            relativeUrl = relativeUrl.TrimStartTo("~");
+            relativeUrl = relativeUrl.TrimStart("~");
             return relativeUrl.IsEmpty() ? "" : new Control().ResolveUrl(relativeUrl);
         }
 
@@ -196,7 +196,7 @@ namespace App.Core
         /// </summary>
         public static string ResolveClientUrl(this string relativeUrl)
         {
-            relativeUrl = relativeUrl.TrimStartTo("~");
+            relativeUrl = relativeUrl.TrimStart("~");
             return relativeUrl.IsEmpty() ? "" : new Control().ResolveClientUrl(relativeUrl);
         }
 

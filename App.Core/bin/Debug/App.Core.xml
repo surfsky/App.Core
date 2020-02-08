@@ -2655,13 +2655,21 @@
         <member name="M:App.Core.StringHelper.SetQueryString(System.String,System.String,System.String)">
             <summary>设置 url 参数（存在则更改，不存在则增加）</summary>
         </member>
-        <member name="M:App.Core.StringHelper.TrimEndFrom(System.String,System.String,System.Boolean)">
-            <summary>将最后出现的字符串及后面的部分删除掉。如"a.asp".TrimEndFrom(".") => "a"</summary>
+        <member name="M:App.Core.StringHelper.TrimEnd(System.String,System.String,System.Boolean)">
+            <summary>裁掉尾部的匹配字符串（及后面的字符串）。如"a.asp".TrimEndFrom(".") => "a"</summary>
             <param name="keepKey">是否保留键。如"/Pages/test.aspx".TiemEndFrom("/",true) => "/Pages/"</param>
         </member>
-        <member name="M:App.Core.StringHelper.TrimStartTo(System.String,System.String,System.Boolean)">
-            <summary>删除前面的字符串。如"a.asp".TrimStartTo(".") => "asp"</summary>
+        <member name="M:App.Core.StringHelper.TrimStart(System.String,System.String,System.Boolean)">
+            <summary>删除前面的匹配字符串字（及前面的字符串）。如"a.asp".TrimStartTo(".") => "asp"</summary>
             <param name="keepKey">是否保留键。如"/Pages/test.aspx".TiemStartTo("/",true) => ".asp"</param>
+        </member>
+        <member name="M:App.Core.StringHelper.GetEnd(System.String,System.String,System.Boolean)">
+            <summary>获取最后出现的字符串及后面的部分。如"a.asp".SubstringFrom(".") => "asp"</summary>
+            <param name="keepKey">是否保留键。如"/Pages/test.aspx".TiemEndFrom("/",true) => "/test.aspx"</param>
+        </member>
+        <member name="M:App.Core.StringHelper.GetStart(System.String,System.String,System.Boolean)">
+            <summary>获取前面出现的字符串（直到指定的键值）。如"a.asp".GetStart(".") => "a"</summary>
+            <param name="keepKey">是否保留键。如"/Pages/test.aspx".GetStart("/",true) => "/"</param>
         </member>
         <member name="M:App.Core.StringHelper.Contains(System.String,System.String,System.Boolean)">
             <summary>是否包含</summary>
@@ -2698,9 +2706,6 @@
         <member name="M:App.Core.StringHelper.SubText(System.String,System.Int32,System.Int32)">
             <summary>安全裁剪字符串（可替代SubString()方法）</summary>
             <param name="startIndex">开始字符位置。base-0</param>
-        </member>
-        <member name="M:App.Core.StringHelper.TrimEnd(System.String,System.String)">
-            <summary>裁掉尾部的匹配字符串</summary>
         </member>
         <member name="M:App.Core.StringHelper.Mask(System.String,System.Int32,System.String)">
             <summary>获取遮罩文本（XXXXXXXXXX****XXXX）</summary>

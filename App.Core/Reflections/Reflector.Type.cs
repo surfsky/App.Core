@@ -126,7 +126,7 @@ namespace App.Core
                 var gType = type.GetGenericTypeDefinition();
                 var types = type.GetGenericArguments();
                 var name = shortName ? gType.Name : gType.FullName;
-                name = name.TrimEndFrom("`");
+                name = name.TrimEnd("`");
                 return string.Format("{0}<{1}>", name, types.Select(t => t.GetTypeString()).ToSeparatedString(", "));
             }
             if (type.IsValueType)

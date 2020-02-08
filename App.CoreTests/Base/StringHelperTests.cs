@@ -135,20 +135,42 @@ function do() {
         }
 
         [TestMethod()]
-        public void TrimStartToTest()
-        {
-            Assert.AreEqual("a.asp".TrimStartTo("."), "asp");
-            Assert.AreEqual("a.asp".TrimStartTo(".", true), ".asp");
-            Assert.AreEqual("a.".TrimStartTo("."), "");
-            Assert.AreEqual("asp".TrimStartTo("."), "asp");
-        }
-
-        [TestMethod()]
         public void SetQueryStringTest()
         {
             Assert.AreEqual("a.aspx?a=1".SetQueryString("a", "2"), "a.aspx?a=2");
             Assert.AreEqual("a.aspx?a=1".SetQueryString("b", "2"), "a.aspx?a=1&b=2");
             Assert.AreEqual("a=1".SetQueryString("b", "2"), "a=1&b=2");
+        }
+
+
+        [TestMethod()]
+        public void TrimStartToTest()
+        {
+            Assert.AreEqual("a.asp".TrimStart(".", false), "asp");
+            Assert.AreEqual("a.asp".TrimStart(".", true), ".asp");
+            Assert.AreEqual("a.".TrimStart("."), "");
+            Assert.AreEqual("asp".TrimStart("."), "asp");
+        }
+
+        [TestMethod()]
+        public void TrimEndToTest()
+        {
+            Assert.AreEqual("a.asp".TrimEnd(".").TrimEnd(".", false), "a");
+            Assert.AreEqual("a.asp".TrimEnd(".", true), "a.");
+        }
+
+        [TestMethod()]
+        public void GetStartTest()
+        {
+            Assert.AreEqual("a.aspx?a=1".GetStart(".", false), "a");
+            Assert.AreEqual("a.aspx?a=1".GetStart(".", true), "a.");
+        }
+
+        [TestMethod()]
+        public void GetEndTest()
+        {
+            Assert.AreEqual("a.aspx?a=1".GetEnd(".", false), "aspx?a=1");
+            Assert.AreEqual("a.aspx?a=1".GetEnd(".", true), ".aspx?a=1");
         }
     }
 }

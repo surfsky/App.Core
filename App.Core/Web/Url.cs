@@ -48,7 +48,7 @@ namespace App.Core
         public string FileExtesion { get; set; }
 
         /// <summary>文件路径。如 /Pages/</summary>
-        public string FileFolder => PurePath.TrimEndFrom("/", true);
+        public string FileFolder => PurePath.TrimEnd("/", true);
 
         //---------------------------------------
         // 查询字符串操作
