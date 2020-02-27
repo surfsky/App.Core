@@ -288,4 +288,7 @@
 2.1.0
 + StringHelper.GetEnd(), GetStart()
 * StringHelper.TrimEndFrom() -> TrimEnd(), TrimStartTo() -> TrimStart()
-* 
+
+
+2.1.1
++ StringHelper.TrimLines()

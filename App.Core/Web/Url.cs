@@ -42,10 +42,10 @@ namespace App.Core
         public string PurePath { get; set; } = "";
 
         /// <summary>文件名称。如 Default.aspx</summary>
-        public string FileName { get; set; }
+        public string FileName { get; set; } = "";
 
         /// <summary>文件扩展名（小写）。如 .aspx</summary>
-        public string FileExtesion { get; set; }
+        public string FileExtesion { get; set; } = "";
 
         /// <summary>文件路径。如 /Pages/</summary>
         public string FileFolder => PurePath.TrimEnd("/", true);
@@ -137,7 +137,12 @@ namespace App.Core
                 // 分析前面的路径部分
                 int k = PurePath.LastIndexOf('.');
                 if (k != -1)
-                    this.FileExtesion = PurePath.Substring(k).ToLower();
+                {
+                    var ext = PurePath.Substring(k).ToLower();
+                    this.FileExtesion = "";
+                    if (!ext.Contains(@"/") && !ext.Contains(@"\"))
+                        this.FileExtesion = ext;
+                }
                 k = PurePath.LastIndexOf("/");
                 if (k != -1)
                     this.FileName = PurePath.Substring(k+1);

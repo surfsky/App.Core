@@ -1155,7 +1155,7 @@
             <summary>获取文件目录（返回目录值不带斜杠）</summary>
         </member>
         <member name="M:App.Core.IO.GetFileExtension(System.String)">
-            <summary>获取文件扩展名（经过小写化处理）</summary>
+            <summary>获取文件扩展名（扩展名经过小写处理;）</summary>
         </member>
         <member name="M:App.Core.IO.GetNextName(System.String,System.String)">
             <summary>构建后继文件名（附加递增数字），如：rawname_2.eml, rawname_3.eml</summary>
@@ -2654,6 +2654,9 @@
         <!-- Badly formed XML comment ignored for member "M:App.Core.StringHelper.AddQueryString(System.String,System.String)" -->
         <member name="M:App.Core.StringHelper.SetQueryString(System.String,System.String,System.String)">
             <summary>设置 url 参数（存在则更改，不存在则增加）</summary>
+        </member>
+        <member name="M:App.Core.StringHelper.TrimLines(System.String)">
+            <summary>清理每行的前后空白字符</summary>
         </member>
         <member name="M:App.Core.StringHelper.TrimEnd(System.String,System.String,System.Boolean)">
             <summary>裁掉尾部的匹配字符串（及后面的字符串）。如"a.asp".TrimEndFrom(".") => "a"</summary>

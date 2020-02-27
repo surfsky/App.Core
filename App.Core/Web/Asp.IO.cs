@@ -100,19 +100,19 @@ namespace App.Core
         /// <summary>输出文本</summary>
         public static void WriteHtml(string text, Encoding encoding = null)
         {
-            WriteText(text, "text/html", null);
+            WriteText(text, "text/html", encoding:encoding);
         }
 
         /// <summary>输出Json</summary>
         public static void WriteJson(string text, Encoding encoding = null)
         {
-            WriteText(text, "text/json", null);
+            WriteText(text, "text/json", encoding:encoding);
         }
 
         /// <summary>输出xml</summary>
         public static void WriteXml(string text, Encoding encoding = null)
         {
-            WriteText(text, "text/xml", null);
+            WriteText(text, "text/xml", encoding:encoding);
         }
 
 
@@ -141,8 +141,11 @@ namespace App.Core
         /// <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
         public static void WriteFile(string filePath, string attachName = "", string mimeType = "")
         {
+            var ext = filePath.GetFileExtension();
+            if (ext.IsEmpty())
+                ext = attachName.GetFileExtension();
             if (mimeType.IsEmpty())
-                mimeType = filePath.GetMimeType();
+                mimeType = ext.GetMimeType();
             WriteBinary(File.ReadAllBytes(filePath), attachName, mimeType);
             /*
             // 以下代码本机ok。部署到服务器后，输出异常，无法显示图片

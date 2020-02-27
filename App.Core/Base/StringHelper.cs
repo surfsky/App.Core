@@ -38,6 +38,19 @@ namespace App.Core
             return u.ToString();
         }
 
+        /// <summary>清理每行的前后空白字符</summary>
+        public static string TrimLines(this string txt)
+        {
+            if (txt.IsEmpty()) return "";
+            var lines = txt.Split(new string[] {"\r\n", "\n", "\r"}, StringSplitOptions.RemoveEmptyEntries);
+            var sb = new StringBuilder();
+            foreach (var line in lines)
+            {
+                sb.AppendLine(line.Trim());
+            }
+            return sb.ToString();
+        }
+
         /// <summary>裁掉尾部的匹配字符串（及后面的字符串）。如"a.asp".TrimEndFrom(".") => "a"</summary>
         /// <param name="keepKey">是否保留键。如"/Pages/test.aspx".TiemEndFrom("/",true) => "/Pages/"</param>
         public static string TrimEnd(this string name, string key, bool keepKey=false)

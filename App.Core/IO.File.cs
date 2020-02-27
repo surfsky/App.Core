@@ -231,7 +231,7 @@ namespace App.Core
             return "";
         }
 
-        /// <summary>获取文件扩展名（经过小写化处理）</summary>
+        /// <summary>获取文件扩展名（扩展名经过小写处理;）</summary>
         public static string GetFileExtension(this string fileName)
         {
             if (fileName.IsEmpty())
@@ -239,7 +239,11 @@ namespace App.Core
             fileName = fileName.TrimQuery();
             int n = fileName.LastIndexOf('.');
             if (n != -1)
-                return fileName.Substring(n).ToLower();
+            {
+                var ext = fileName.Substring(n).ToLower();
+                if (!ext.Contains(@"/") && !ext.Contains(@"\"))  // 不包含路径斜杠
+                    return ext;
+            }
             return "";
         }
 

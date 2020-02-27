@@ -172,5 +172,20 @@ function do() {
             Assert.AreEqual("a.aspx?a=1".GetEnd(".", false), "aspx?a=1");
             Assert.AreEqual("a.aspx?a=1".GetEnd(".", true), ".aspx?a=1");
         }
+
+        [TestMethod()]
+        public void TrimLinesTest()
+        {
+            var t = @"
+                <head>
+                <meta charset=""utf-8"">
+                <meta name=""viewport"" content=""width=device-width, initial-scale=1"">
+                <script src=""{JqueryJs}""></script>
+                <script src=""{PopperJs}""></script>
+                <script src=""{BootStrapJs}""></script>
+                <head>
+                ";
+            t = t.TrimLines();
+        }
     }
 }
