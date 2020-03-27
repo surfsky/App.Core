@@ -145,6 +145,9 @@ namespace App.Core
             return false;
         }
 
+        //------------------------------------------------------------
+        // 缓存
+        //------------------------------------------------------------
         static FreeDictionary<string, object> _dict = new FreeDictionary<string, object>();
         /// <summary>获取缓存字典对象（数据在运行期间不会被清理，且可以容纳空值）</summary>
         public static T GetDict<T>(string key, Func<T> creator = null) where T : class

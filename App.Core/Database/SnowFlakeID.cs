@@ -156,5 +156,17 @@ namespace App.Core
         {
             return DateTime.Now.Ticks / 10000;
         }
+
+        /// <summary>SnowflakeID 生成器单例</summary>
+        public static SnowflakeID Instance
+        {
+            get
+            {
+                return IO.GetCache<SnowflakeID>("__SnowFlaker", () => {
+                    var machineId = CoreConfig.Instance.MachineId;
+                    return new SnowflakeID(machineId, 2010, 41, 10, 12);
+                });
+            }
+        }
     }
 }

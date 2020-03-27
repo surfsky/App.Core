@@ -13,19 +13,18 @@ namespace App.Core
     /// <summary>
     /// 绘图相关辅助方法
     /// </summary>
-    public static class Drawer
+    public static class Painter
     {
-
         /// <summary>叠加绘制图标</summary>
-        public static Image DrawIcon(Image img, string iconUrl)
+        public static Image DrawIcon(this Image img, string iconUrl)
         {
             if (iconUrl.IsNotEmpty())
             {
                 var icon = HttpHelper.GetServerOrNetworkImage(iconUrl);
                 int s = img.Width / 5;
-                icon = Drawer.CreateThumbnail(icon, s, s);
+                icon = Painter.Thumbnail(icon, s, s);
                 var point = new Point((img.Width - s) / 2, (img.Height - s) / 2);
-                img = Drawer.MergeImage(img, (Bitmap)icon, 0.95f, point);
+                img = Painter.Merge(img, (Bitmap)icon, 0.95f, point);
                 icon.Dispose();
             }
             return img;
@@ -34,34 +33,40 @@ namespace App.Core
         /// <summary>加载图片。如果用Image.FromFile()方法的话会锁定图片，无法编辑、移动、删除。</summary>
         public static Image LoadImage(string path)
         {
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
                 return Image.FromStream(stream);
+
+            //var img = Image.FromFile(filepath);
+            //var bmp = new Bitmap(img);
+            //img.Dispose();
+            //return bmp;
         }
 
         /// <summary>绘制缩略图</summary>
-        public static void CreateThumbnail(string sourceImagePath, string targetImagePath, int width, int? height=null)
+        public static void Thumbnail(string sourceImagePath, string targetImagePath, int width, int? height=null)
         {
-            string savePath = targetImagePath.IsEmpty() ? sourceImagePath : targetImagePath;
-            Image img = Image.FromFile(sourceImagePath);   // 用LoadImage()反而会导致后面的 bmp.Save() 报错，先这样
-            Image bmp = CreateThumbnail(img, width, height);
-            img.Dispose();
-            bmp.Save(savePath);
-            bmp.Dispose();
+            //string savePath = targetImagePath.IsEmpty() ? sourceImagePath : targetImagePath;
+            //Image img = LoadImage(sourceImagePath); // Image.FromFile(sourceImagePath);   // 用LoadImage()反而会导致后面的 bmp.Save() 报错，先这样
+            //Image bmp = Thumbnail(img, width, height);
+            //img.Dispose();
+            //bmp.Save(savePath);
+            //bmp.Dispose();
+            Thumbnail(sourceImagePath, width, height).Save(targetImagePath);
         }
 
 
         /// <summary>创建缩略图</summary>
-        public static Image CreateThumbnail(string filePath, int w, int? h)
+        public static Image Thumbnail(string filePath, int w, int? h)
         {
-            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 var img = Image.FromStream(stream);
-                return CreateThumbnail(img, w, h);
+                return Thumbnail(img, w, h);
             }
         }
 
         /// <summary>创建缩略图</summary>
-        public static Image CreateThumbnail(Image img, int width, int? height=null)
+        public static Image Thumbnail(this Image img, int width, int? height=null)
         {
             if (img == null) return null;
             // 计算图片的尺寸
@@ -82,7 +87,7 @@ namespace App.Core
         /// 合并两张图片。第二张图片可指定不透明度以及粘贴位置。
         /// 注意 img 和 img2 在本函数中都没有释放，请自行Dispose。
         /// </summary>
-        public static Image MergeImage(Image img, Image img2, float opacity, params Point[] points)
+        public static Image Merge(this Image img, Image img2, float opacity, params Point[] points)
         {
             if (img == null || img2 == null)
                 return null;
@@ -125,7 +130,7 @@ namespace App.Core
 
 
         /// <summary>图片颜色反相叠加（未完成）</summary>
-        public static Bitmap ReverseImage(Bitmap img, Bitmap img2, params Point[] points)
+        public static Bitmap Reverse(this Bitmap img, Bitmap img2, params Point[] points)
         {
             if (img == null || img2 == null)
                 return null;
@@ -168,7 +173,7 @@ namespace App.Core
 
         /// <summary>旋转图片</summary>
         /// <param name="angle">角度（-360 到 360）</param>
-        public static Bitmap RotateImage(Bitmap bmp, float angle)
+        public static Bitmap Rotate(this Bitmap bmp, float angle)
         {
             Bitmap returnBitmap = new Bitmap((int)(bmp.Width*1.5), (int)(bmp.Height*1.5));
             Graphics g = Graphics.FromImage(returnBitmap);
@@ -181,7 +186,7 @@ namespace App.Core
         }
 
         /// <summary>TODO:三维贴图扭曲图片（未完成）</summary>
-        public static Bitmap TwistImage3D(Bitmap img, string model3DRes)
+        public static Bitmap Twist3D(this Bitmap img, string model3DRes)
         {
             throw new NotImplementedException();
         }
@@ -192,7 +197,7 @@ namespace App.Core
         /// <param name="phase">波形的起始相位，取值区间[0-2*PI)</param>  
         /// <param name="direction">扭曲方向</param>  
         /// <remarks>现在只能实现0度和90度扭曲，难的验证码是三维曲面扭曲，字体完全变形粘连才难破解（容后）</remarks>
-        public static Bitmap TwistImage(Bitmap img, double range = 3, double phase = 0, bool direction = false)
+        public static Bitmap Twist(this Bitmap img, double range = 3, double phase = 0, bool direction = false)
         {
             double PI2 = 6.283185307179586476925286766559;
             Bitmap destBmp = new Bitmap(img.Width, img.Height);
@@ -250,7 +255,7 @@ namespace App.Core
         }
 
         /// <summary>从 Base64 字符串中创建图像</summary>
-        public static Image ToImage(this string base64Image)
+        public static Image ParseImage(this string base64Image)
         {
             try
             {

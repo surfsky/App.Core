@@ -64,11 +64,11 @@ namespace App.Core
             return n;
         }
 
-        /// <summary>合并两个集合（会排除重复项）</summary>
-        public static List<T> Merge<T>(this List<T> sourceList, List<T> newList)
+        /// <summary>合并两个集合（会排除重复项）。功能同Union，返回值不一样</summary>
+        public static List<T> Union<T>(this List<T> list1, List<T> list2)
         {
-            List<T> data = new List<T>(sourceList);
-            foreach (var item in newList)
+            List<T> data = new List<T>(list1);
+            foreach (var item in list2)
             {
                 if (!data.Contains(item))
                     data.Add(item);

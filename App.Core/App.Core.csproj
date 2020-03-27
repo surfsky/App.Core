@@ -63,13 +63,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppCoreConfig.cs" />
+    <Compile Include="CoreConfig.cs" />
     <Compile Include="Attributes\ScopeAttribute.cs" />
     <Compile Include="Attributes\SearcherAttribute.cs" />
     <Compile Include="Attributes\TAttribute.cs" />
     <Compile Include="Attributes\UIExtension.cs" />
     <Compile Include="Attributes\UISetting.cs" />
     <Compile Include="Base\PinYin.cs" />
+    <Compile Include="ComponentModel\SizeConverter.cs" />
     <Compile Include="Convertor.Encoder.cs" />
     <Compile Include="Convertor.Parse.cs" />
     <Compile Include="Database\AccessHelper.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Attributes\HistoryAttribute.cs" />
     <Compile Include="Attributes\ParamAttribute.cs" />
     <Compile Include="Net\Net.cs" />
+    <Compile Include="Reflections\Reflector.Method.cs" />
     <Compile Include="Reflections\Reflector.Property.cs" />
     <Compile Include="Reflections\Reflector.Type.cs" />
     <Compile Include="ResHelp.cs" />
@@ -94,8 +96,8 @@
     <Compile Include="Maths\HexEncoding.cs" />
     <Compile Include="Serialization\SerializationNode.cs" />
     <Compile Include="Serialization\Xmlizer.cs" />
-    <Compile Include="Draw\FontHelper.cs" />
-    <Compile Include="Draw\VerifyImageDrawer.cs" />
+    <Compile Include="Drawing\FontHelper.cs" />
+    <Compile Include="Drawing\VerifyPainter.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Interop\CsEvaluator.cs" />
     <Compile Include="Interop\Evaluator.cs" />
@@ -119,7 +121,7 @@
     <Compile Include="Web\CookieHelper.cs" />
     <Compile Include="Base\DateTimeHelper.cs" />
     <Compile Include="Maths\DESEncrypt.cs" />
-    <Compile Include="Draw\Drawer.cs" />
+    <Compile Include="Drawing\Painter.cs" />
     <Compile Include="Linq\EFHelper.cs" />
     <Compile Include="Base\EnumHelper.cs" />
     <Compile Include="Base\ExcelHelper.cs" />

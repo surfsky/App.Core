@@ -15,6 +15,18 @@ namespace App.Core
     /// </summary>
     public  static partial class Reflector
     {
+        /// <summary>转化为泛型类型。如 typeof(EntityBase).GetGenericType(typeof(Role)) </summary>
+        public static Type AsGeneric(this Type type, params Type[] parameterTypes)
+        {
+            return type.MakeGenericType(parameterTypes);
+        }
+
+        /// <summary>转化为泛型方法。如 Get<T>(long id) </summary>
+        public static MethodInfo AsGeneric(this MethodInfo mi, params Type[] parameterTypes)
+        {
+            return mi.MakeGenericMethod(parameterTypes);
+        }
+
         /// <summary>获取列表元素的数据类型（尝试返回第一个元素的数据类型）</summary>
         public static Type GetItemType<T>(this IList<T> list)
         {

@@ -186,5 +186,10 @@ namespace App.Core
             this.Mode = mode;
             return this;
         }
+        public UIAttribute SetTitle(string title)
+        {
+            this.Title = title;
+            return this;
+        }
     }
 }

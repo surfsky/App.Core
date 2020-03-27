@@ -17,9 +17,9 @@ namespace App.Core
         /// <remarks>请配置 AppCoreConfig.UseGlobal 和 ResType 属性</remarks>
         public static string GetResText(this string resName)
         {
-            bool useGlobal = AppCoreConfig.Instance.UseGlobal;
+            bool useGlobal = CoreConfig.Instance.UseGlobal;
             if (useGlobal)
-                return GetResText(resName, AppCoreConfig.Instance.ResType);
+                return GetResText(resName, CoreConfig.Instance.ResType);
             return resName;
         }
 

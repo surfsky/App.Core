@@ -131,15 +131,18 @@ namespace App.Core
         // Url、Html、QueryString
         //--------------------------------------------------
         /// <summary> url编码</summary> 
-        public static string UrlEncode(this string text)
+        /// <param name="enc">编码。默认为 UTF-8</param>
+        public static string UrlEncode(this string text, Encoding enc=null)
         {
-            return HttpUtility.UrlEncode(text);
+            enc = enc ?? Encoding.UTF8;
+            return HttpUtility.UrlEncode(text, enc);
         }
 
         /// <summary> url解码</summary> 
-        public static string UrlDecode(this string text)
+        public static string UrlDecode(this string text, Encoding enc = null)
         {
-            return HttpUtility.UrlDecode(text);
+            enc = enc ?? Encoding.UTF8;
+            return HttpUtility.UrlDecode(text, enc);
         }
 
         /// <summary>进行Html编码。格式如：&amp;quot;Name&amp;quot;</summary>

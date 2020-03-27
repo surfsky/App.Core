@@ -53,7 +53,7 @@ namespace App.Core
     {
         public override bool CanConvert(Type objectType)
         {
-            IO.Trace("[TypeConvert] {0}", objectType.FullName);
+            //IO.Trace("[TypeConvert] {0}", objectType.FullName);
             return objectType.FullName == "System.RuntimeType" || objectType.FullName == "System.Type";
         }
 

@@ -23,10 +23,18 @@ namespace App.Core.Tests
         }
 
         [TestMethod()]
-        public void GetCurrentMethodNameTest()
+        public void GetCurrentMethodTest()
         {
             var method = Reflector.GetCurrentMethod();
             Assert.AreEqual(method.Name, "GetCurrentMethodNameTest");
+        }
+
+
+        [TestMethod()]
+        public void GetCurrentTypeTest()
+        {
+            var type = Reflector.GetCurrentType();
+            Assert.AreEqual(type, this.GetType());
         }
 
         [TestMethod()]

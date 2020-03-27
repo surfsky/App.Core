@@ -140,11 +140,11 @@ namespace App.Core
                 return "";
             string txt = "";
             foreach (var item in source)
-                txt += item.ToString() + seperator;
+                txt += item.ToText() + seperator;
             return txt.TrimEnd(seperator);
         }
 
-        /// <summary>拆分字符串并转化为对象列表</summary>
+        /// <summary>拆分字符串并转化为对象列表（可处理 , ; tab space）</summary>
         public static List<T> Split<T>(this string text)
         {
             List<T> items = new List<T>();
@@ -154,6 +154,17 @@ namespace App.Core
                 items = parts.Cast(t => t.Parse<T>());
             }
             return items;
+        }
+
+        /// <summary>拆分字符串并转化为字符串列表（可处理 , ; tab space）</summary>
+        public static List<string> SplitString(this string text)
+        {
+            return Split<string>(text);
+        }
+        /// <summary>拆分字符串并转化为长整型列表（可处理 , ; tab space）</summary>
+        public static List<long> SplitLong(this string text)
+        {
+            return Split<long>(text);
         }
 
 

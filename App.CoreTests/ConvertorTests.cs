@@ -296,7 +296,7 @@ namespace App.Core.Tests
 
             var list1 = new List<Person>() { p1, p2, p3 };
             var list2 = new List<Person>() { p1, p4, p5 };
-            var list3 = list1.Merge(list2);
+            var list3 = list1.Union(list2);
             Assert.AreEqual(list3.Count, 5);
         }
     }

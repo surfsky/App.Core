@@ -129,7 +129,7 @@ namespace App.Core.Tests
         {
             Assert.AreEqual(@"".CombinePath(@"index.aspx"), @"index.aspx");
             Assert.AreEqual(@"\Admins\".CombinePath(@"index.aspx"), @"\Admins\index.aspx");
-            Assert.AreEqual(@"\Admins".CombinePath(@"index.aspx"),  @"\Admins\index.aspx");
+            Assert.AreEqual(@"\Admins".CombinePath(@"index.aspx"), @"\Admins\index.aspx");
             Assert.AreEqual(@"/Admins\".CombinePath(@"index.aspx"), @"\Admins\index.aspx");
             Assert.AreEqual(@"\Admins\".CombinePath(@"\Test\index.aspx"), @"\Admins\Test\index.aspx");
         }
@@ -139,9 +139,20 @@ namespace App.Core.Tests
         {
             Assert.AreEqual(@"".CombineWebPath(@"index.aspx"), @"index.aspx");
             Assert.AreEqual(@"\Admins\".CombineWebPath(@"index.aspx"), @"/Admins/index.aspx");
-            Assert.AreEqual(@"\Admins".CombineWebPath(@"index.aspx"),  @"/Admins/index.aspx");
+            Assert.AreEqual(@"\Admins".CombineWebPath(@"index.aspx"), @"/Admins/index.aspx");
             Assert.AreEqual(@"/Admins\".CombineWebPath(@"index.aspx"), @"/Admins/index.aspx");
             Assert.AreEqual(@"\Admins\".CombineWebPath(@"\Test\index.aspx"), @"/Admins/Test/index.aspx");
+        }
+
+        [TestMethod()]
+        public void PrepareDirectoryTest()
+        {
+            IO.PrepareDirectory(@"c:\test1\test.doc");
+            IO.PrepareDirectory(@"c:\test2\");
+            IO.PrepareDirectory(@"c:\test3");
+            Assert.AreEqual(System.IO.Directory.Exists(@"c:\test1\"), true);
+            Assert.AreEqual(System.IO.Directory.Exists(@"c:\test2\"), true);
+            Assert.AreEqual(System.IO.Directory.Exists(@"c:\test3\"), true);
         }
     }
 }

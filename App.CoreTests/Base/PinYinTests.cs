@@ -15,8 +15,8 @@ namespace App.Core.Tests
         public void ToPinYinTest()
         {
             var txt = "你好,中国";
-            var pinyin = txt.ToPinYin();
-            Assert.AreEqual(pinyin, "NiHao,ZhongGuo");
+            Assert.AreEqual(txt.ToPinYin(),    "NiHao,ZhongGuo");
+            Assert.AreEqual(txt.ToPinYinCap(), "NHZG");
         }
     }
 }

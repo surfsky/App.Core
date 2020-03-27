@@ -20,6 +20,18 @@ namespace App.Core
     /// </summary>
     public static partial class Asp
     {
+        /// <summary>重启网站</summary>
+        public static void RebootSite()
+        {
+            var path = Asp.MapPath("~/web.config");
+            using (var writer = new StreamWriter(path, true))
+            {
+                writer.WriteLine();
+                writer.Close();
+            }
+        }
+
+
         /// <summary>将物理路径转化为虚拟路径</summary>
         public static string ToVirtualPath(this string physicalPath)
         {
@@ -31,7 +43,6 @@ namespace App.Core
         {
             return winPath.Replace("\\", "/");
         }
-
 
 
         //------------------------------------------------------------
@@ -80,8 +91,8 @@ namespace App.Core
         /// <summary>输出一段文本</summary>
         public static void Write(string format, params object[] args)
         {
-            var response = HttpContext.Current.Response;
-            response.Write(Utils.GetText(format, args));
+            var text = Utils.GetText(format, args);
+            Asp.Response.Write(text);
         }
 
         /// <summary>输出文本</summary>
@@ -142,11 +153,12 @@ namespace App.Core
         public static void WriteFile(string filePath, string attachName = "", string mimeType = "")
         {
             var ext = filePath.GetFileExtension();
-            if (ext.IsEmpty())
+            if (ext.IsEmpty() && attachName.IsNotEmpty())
                 ext = attachName.GetFileExtension();
             if (mimeType.IsEmpty())
                 mimeType = ext.GetMimeType();
-            WriteBinary(File.ReadAllBytes(filePath), attachName, mimeType);
+            var bytes = File.ReadAllBytes(filePath);
+            WriteBinary(bytes, attachName, mimeType);
             /*
             // 以下代码本机ok。部署到服务器后，输出异常，无法显示图片
             var response = HttpContext.Current.Response;
@@ -178,10 +190,13 @@ namespace App.Core
         public static void WriteBinary(byte[] bytes, string attachName, string mimeType)
         {
             var response = HttpContext.Current.Response;
+            if (mimeType.IsEmpty())
+                mimeType = attachName.GetMimeType();
             if (mimeType.IsNotEmpty())
                 response.ContentType = mimeType;
             if (attachName.IsNotEmpty())
-                response.AddHeader("Content-Disposition", "attachment; filename=" + attachName);
+                //response.AddHeader("Content-Disposition", "attachment; filename=" + attachName.UrlEncode());  // online
+                response.AddHeader("Content-Disposition", "online; filename=" + attachName.UrlEncode());  // online
             response.Cache.SetCacheability(HttpCacheability.NoCache);
             response.BinaryWrite(bytes);
             response.End();  // 结束请求，跳到ApplicationEndRequest事件
@@ -235,8 +250,8 @@ namespace App.Core
         //------------------------------------------------------------
         // 输出错误
         //------------------------------------------------------------
-        /// <summary>输出 HTTP 错误</summary>
-        public static void WriteError(int errorCode, string info)
+        /// <summary>输出 HTTP 错误并截止输出</summary>
+        public static void Error(int errorCode, string info)
         {
             HttpContext context = HttpContext.Current;
             context.Response.StatusCode = errorCode;
@@ -244,6 +259,13 @@ namespace App.Core
             context.Response.End();
         }
 
+        /// <summary>输出文本错误并截止输出</summary>
+        public static void Fail(string format, params object[] args)
+        {
+            var text = Utils.GetText(format, args);
+            Asp.Response.Write(text);
+            Asp.Response.End();
+        }
 
         /// <summary>输出错误调试页面</summary>
         public static void WriteErrorHtml(Exception ex)

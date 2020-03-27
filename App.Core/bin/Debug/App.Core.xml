@@ -4,16 +4,25 @@
         <name>App.Core</name>
     </assembly>
     <members>
-        <member name="T:App.Core.AppCoreConfig">
+        <member name="T:App.Core.CoreConfig">
             <summary>
-            配置信息
+            App.Core 类库配置信息
             </summary>
         </member>
-        <member name="P:App.Core.AppCoreConfig.UseGlobal">
-            <summary>是否启用本地化字符串</summary>
+        <member name="P:App.Core.CoreConfig.UseGlobal">
+            <summary>是否启用国际化支持（使用资源文件获取文本）</summary>
         </member>
-        <member name="P:App.Core.AppCoreConfig.ResType">
-            <summary>资源名称</summary>
+        <member name="P:App.Core.CoreConfig.ResType">
+            <summary>资源类型名称</summary>
+        </member>
+        <member name="P:App.Core.CoreConfig.MachineId">
+            <summary>机器ID（用于SnowflakerID生成）</summary>
+        </member>
+        <member name="E:App.Core.CoreConfig.OnLog">
+            <summary>日志事件</summary>
+        </member>
+        <member name="M:App.Core.CoreConfig.Log(System.String,System.String,System.Int32)">
+            <summary>做日志（需配置 OnLog 事件)</summary>
         </member>
         <member name="T:App.Core.ScopeAttribute">
             <summary>
@@ -219,6 +228,9 @@
             汉语拼音相关
             </summary>
         </member>
+        <member name="M:App.Core.PinYin.ToPinYinCap(System.String)">
+            <summary>汉字转换成拼音首字母</summary>
+        </member>
         <member name="M:App.Core.PinYin.ToPinYin(System.String)">
             <summary>汉字转换成全拼的拼音</summary>
             <param name="chineseText">汉字字符串</param>
@@ -266,10 +278,11 @@
         <member name="M:App.Core.Convertor.ToBytes(System.IO.Stream)">
             <summary> 将 Stream 转成 byte[] </summary> 
         </member>
-        <member name="M:App.Core.Convertor.UrlEncode(System.String)">
+        <member name="M:App.Core.Convertor.UrlEncode(System.String,System.Text.Encoding)">
             <summary> url编码</summary> 
+            <param name="enc">编码。默认为 UTF-8</param>
         </member>
-        <member name="M:App.Core.Convertor.UrlDecode(System.String)">
+        <member name="M:App.Core.Convertor.UrlDecode(System.String,System.Text.Encoding)">
             <summary> url解码</summary> 
         </member>
         <member name="M:App.Core.Convertor.HtmlEncode(System.String)">
@@ -427,8 +440,8 @@
         <member name="M:App.Core.ListHelper.IndexOf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
             <summary>找到第一个匹配的位置</summary>
         </member>
-        <member name="M:App.Core.ListHelper.Merge``1(System.Collections.Generic.List{``0},System.Collections.Generic.List{``0})">
-            <summary>合并两个集合（会排除重复项）</summary>
+        <member name="M:App.Core.ListHelper.Union``1(System.Collections.Generic.List{``0},System.Collections.Generic.List{``0})">
+            <summary>合并两个集合（会排除重复项）。功能同Union，返回值不一样</summary>
         </member>
         <member name="M:App.Core.ListHelper.Search``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
             <summary>遍历过滤（同Where，但名字会冲突; 可考虑用 Query; Search; Filter）</summary>
@@ -491,6 +504,9 @@
         </member>
         <member name="T:App.Core.PageMode">
             <summary>页面访问模式</summary>
+        </member>
+        <member name="T:App.Core.ViewType">
+            <summary>视图类别</summary>
         </member>
         <member name="T:App.Core.IParam">
             <summary>
@@ -637,6 +653,22 @@
             <summary>
             反射相关静态方法和属性
             </summary>
+            <summary>
+            反射相关静态方法和属性
+            </summary>
+        </member>
+        <member name="M:App.Core.Reflector.GetMethods(System.Type,System.String,System.Boolean)">
+            <summary>获取类的所有公共方法（包括祖先的）。注意 Type.GetMethods()只能获取当前类下的方法。</summary>
+            <param name="searchAncestors">是否检索祖先的同名方法</param>
+        </member>
+        <member name="M:App.Core.Reflector.GetMethod(System.Type,System.String,System.Boolean)">
+            <summary>获取类的公共方法（包括祖先的），若有重名取第一个。</summary>
+        </member>
+        <member name="M:App.Core.Reflector.GetCurrentMethod">
+            <summary>获取当前方法信息</summary>
+        </member>
+        <member name="M:App.Core.Reflector.GetCurrentType">
+            <summary>获取当前类信息</summary>
         </member>
         <member name="M:App.Core.Reflector.GetValue(System.Object,System.String)">
             <summary>获取对象的属性值。也可考虑用dynamic实现。</summary>
@@ -670,6 +702,10 @@
         <member name="M:App.Core.Reflector.GetProperty(System.Linq.Expressions.Expression)">
             <summary>获取表达式属性信息(t.Dept.Name => Name)</summary>
         </member>
+        <member name="M:App.Core.Reflector.AsGeneric(System.Type,System.Type[])">
+            <summary>转化为泛型类型。如 typeof(EntityBase).GetGenericType(typeof(Role)) </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:App.Core.Reflector.AsGeneric(System.Reflection.MethodInfo,System.Type[])" -->
         <member name="M:App.Core.Reflector.GetItemType``1(System.Collections.Generic.IList{``0})">
             <summary>获取列表元素的数据类型（尝试返回第一个元素的数据类型）</summary>
         </member>
@@ -740,13 +776,6 @@
         <member name="M:App.Core.Reflector.GetGenericDataType(System.Type)">
             <summary>获取泛型中的数据类型</summary>
         </member>
-        <member name="M:App.Core.Reflector.GetMethods(System.Type,System.String,System.Boolean)">
-            <summary>获取类的所有公共方法（包括祖先的）。注意 Type.GetMethods()只能获取当前类下的方法。</summary>
-            <param name="searchAncestors">是否检索祖先的同名方法</param>
-        </member>
-        <member name="M:App.Core.Reflector.GetMethod(System.Type,System.String,System.Boolean)">
-            <summary>获取类的公共方法（包括祖先的），若有重名取第一个。</summary>
-        </member>
         <member name="M:App.Core.Reflector.GetAttributes``1(System.Reflection.MemberInfo)">
             <summary>获取指定特性列表（支持Type、Property、Method等）</summary>
         </member>
@@ -761,9 +790,6 @@
         </member>
         <member name="M:App.Core.Reflector.GetEventSubscribers(System.Object,System.String)">
             <summary>获取事件调用者列表</summary>
-        </member>
-        <member name="M:App.Core.Reflector.GetCurrentMethod">
-            <summary>获取当前方法信息</summary>
         </member>
         <member name="M:App.Core.Reflector.CombineObject(System.Object[])">
             <summary>组合各个对象的属性，输出为字典</summary>
@@ -910,6 +936,9 @@
         </member>
         <member name="M:App.Core.SnowflakeID.New">
             <summary>生成</summary>
+        </member>
+        <member name="P:App.Core.SnowflakeID.Instance">
+            <summary>SnowflakeID 生成器单例</summary>
         </member>
         <member name="T:App.Core.ByteHelper">
             <summary>
@@ -1111,9 +1140,9 @@
         </member>
         <member name="M:App.Core.IO.PrepareDirectory(System.String)">
             <summary>准备文件路径（不存在则创建）</summary>
-            <param name="filePath">文件的物理路径</param>
+            <param name="fileOrFolderPath">文件或目录的物理路径</param>
         </member>
-        <member name="M:App.Core.IO.DeleteDir(System.String)">
+        <member name="M:App.Core.IO.DeleteDirectory(System.String)">
             <summary>删除目录及子文件</summary>
         </member>
         <member name="M:App.Core.IO.GetBytes(System.String)">
@@ -1368,30 +1397,30 @@
             验证码图片
             </summary>
         </member>
-        <member name="T:App.Core.VerifyImageDrawer">
+        <member name="T:App.Core.VerifyPainter">
             <summary>
             校验码绘制器。更复杂的验证码可参考：
             三维验证码：https://www.cnblogs.com/Aimeast/archive/2011/05/02/2034525.html
             空心字验证码：http://blog.51cto.com/xclub/1597200
             </summary>
         </member>
-        <member name="T:App.Core.VerifyImageDrawer.VerifyCodeConfig">
+        <member name="T:App.Core.VerifyPainter.VerifyCodeConfig">
             <summary>
             验证码配置
             </summary>
         </member>
-        <member name="M:App.Core.VerifyImageDrawer.Draw(System.Int32,System.Int32)">
+        <member name="M:App.Core.VerifyPainter.Draw(System.Int32,System.Int32)">
             <summary>生成验证码图片</summary>
             <returns>验证码和图片元组对象</returns>
         </member>
-        <member name="M:App.Core.VerifyImageDrawer.DrawChar(System.Drawing.Graphics,System.Char,System.Single,System.Single,System.Drawing.Font,System.Drawing.Color,System.Int32)">
+        <member name="M:App.Core.VerifyPainter.DrawChar(System.Drawing.Graphics,System.Char,System.Single,System.Single,System.Drawing.Font,System.Drawing.Color,System.Int32)">
             <summary>在指定位置绘制字符</summary>
             <param name="angle">旋转角度（以度为单位）</param>
         </member>
-        <member name="M:App.Core.VerifyImageDrawer.GetTextPath(System.Drawing.Graphics,System.String,System.Drawing.Font)">
+        <member name="M:App.Core.VerifyPainter.GetTextPath(System.Drawing.Graphics,System.String,System.Drawing.Font)">
             <summary>获取文字轮廓路径</summary>
         </member>
-        <member name="M:App.Core.VerifyImageDrawer.GetTextRegion(System.Drawing.Graphics,System.String,System.Drawing.Font)">
+        <member name="M:App.Core.VerifyPainter.GetTextRegion(System.Drawing.Graphics,System.String,System.Drawing.Font)">
             <summary>获取文字区域</summary>
         </member>
         <member name="T:App.Core.Utils">
@@ -1692,6 +1721,9 @@
             ASP.NET 网页相关辅助方法
             </summary>
         </member>
+        <member name="M:App.Core.Asp.RebootSite">
+            <summary>重启网站</summary>
+        </member>
         <member name="M:App.Core.Asp.ToVirtualPath(System.String)">
             <summary>将物理路径转化为虚拟路径</summary>
         </member>
@@ -1748,8 +1780,11 @@
             <param name="mimeType">文件Mime类型。若为空，则尝试根据文件名扩展名解析。</param>
             <param name="attachName">附件名。若不为空，则启动附件下载方式。</param>
         </member>
-        <member name="M:App.Core.Asp.WriteError(System.Int32,System.String)">
-            <summary>输出 HTTP 错误</summary>
+        <member name="M:App.Core.Asp.Error(System.Int32,System.String)">
+            <summary>输出 HTTP 错误并截止输出</summary>
+        </member>
+        <member name="M:App.Core.Asp.Fail(System.String,System.Object[])">
+            <summary>输出文本错误并截止输出</summary>
         </member>
         <member name="M:App.Core.Asp.WriteErrorHtml(System.Exception)">
             <summary>输出错误调试页面</summary>
@@ -1815,11 +1850,27 @@
         <member name="P:App.Core.Asp.IsRequestOk">
             <summary>请求是否有效（避免触发“HttpRequest在上下文中不可用”的异常）</summary>
         </member>
-        <member name="P:App.Core.Asp.Root">
+        <member name="P:App.Core.Asp.Host">
             <summary>主机根路径（如http://www.abc.com/）</summary>
+        </member>
+        <member name="P:App.Core.Asp.HostFolder">
+            <summary>主机根物理路径</summary>
         </member>
         <member name="P:App.Core.Asp.ClientIP">
             <summary>获取客户端真实IP</summary>
+        </member>
+        <member name="M:App.Core.Asp.End">
+            <summary>
+            结束对客户端的输出。
+            由于.NET 设计原因，Response.End()在WebForm框架下可以终止代码执行，不再处理End()之后的代码。
+            在MVC框架下则只是返回响应流，不会中止代码执行。
+            </summary>
+        </member>
+        <member name="M:App.Core.Asp.Close">
+            <summary>
+            强行断开与客户端的socket连接。
+            只有代码发生错误（恶意的攻击），希望终止对于客户端的响应/连接时才可以使用Response.Close()
+            </summary>
         </member>
         <member name="M:App.Core.Asp.RegistMobileMeta">
             <summary>在页面头部注册移动端适配的meta语句</summary>
@@ -2029,43 +2080,43 @@
             <param name="key">解密密钥,要求为8位,和加密密钥相同</param>  
             <returns>解密成功返回解密后的字符串，失败返空字符串</returns>  
         </member>
-        <member name="T:App.Core.Drawer">
+        <member name="T:App.Core.Painter">
             <summary>
             绘图相关辅助方法
             </summary>
         </member>
-        <member name="M:App.Core.Drawer.DrawIcon(System.Drawing.Image,System.String)">
+        <member name="M:App.Core.Painter.DrawIcon(System.Drawing.Image,System.String)">
             <summary>叠加绘制图标</summary>
         </member>
-        <member name="M:App.Core.Drawer.LoadImage(System.String)">
+        <member name="M:App.Core.Painter.LoadImage(System.String)">
             <summary>加载图片。如果用Image.FromFile()方法的话会锁定图片，无法编辑、移动、删除。</summary>
         </member>
-        <member name="M:App.Core.Drawer.CreateThumbnail(System.String,System.String,System.Int32,System.Nullable{System.Int32})">
+        <member name="M:App.Core.Painter.Thumbnail(System.String,System.String,System.Int32,System.Nullable{System.Int32})">
             <summary>绘制缩略图</summary>
         </member>
-        <member name="M:App.Core.Drawer.CreateThumbnail(System.String,System.Int32,System.Nullable{System.Int32})">
+        <member name="M:App.Core.Painter.Thumbnail(System.String,System.Int32,System.Nullable{System.Int32})">
             <summary>创建缩略图</summary>
         </member>
-        <member name="M:App.Core.Drawer.CreateThumbnail(System.Drawing.Image,System.Int32,System.Nullable{System.Int32})">
+        <member name="M:App.Core.Painter.Thumbnail(System.Drawing.Image,System.Int32,System.Nullable{System.Int32})">
             <summary>创建缩略图</summary>
         </member>
-        <member name="M:App.Core.Drawer.MergeImage(System.Drawing.Image,System.Drawing.Image,System.Single,System.Drawing.Point[])">
+        <member name="M:App.Core.Painter.Merge(System.Drawing.Image,System.Drawing.Image,System.Single,System.Drawing.Point[])">
             <summary>
             合并两张图片。第二张图片可指定不透明度以及粘贴位置。
             注意 img 和 img2 在本函数中都没有释放，请自行Dispose。
             </summary>
         </member>
-        <member name="M:App.Core.Drawer.ReverseImage(System.Drawing.Bitmap,System.Drawing.Bitmap,System.Drawing.Point[])">
+        <member name="M:App.Core.Painter.Reverse(System.Drawing.Bitmap,System.Drawing.Bitmap,System.Drawing.Point[])">
             <summary>图片颜色反相叠加（未完成）</summary>
         </member>
-        <member name="M:App.Core.Drawer.RotateImage(System.Drawing.Bitmap,System.Single)">
+        <member name="M:App.Core.Painter.Rotate(System.Drawing.Bitmap,System.Single)">
             <summary>旋转图片</summary>
             <param name="angle">角度（-360 到 360）</param>
         </member>
-        <member name="M:App.Core.Drawer.TwistImage3D(System.Drawing.Bitmap,System.String)">
+        <member name="M:App.Core.Painter.Twist3D(System.Drawing.Bitmap,System.String)">
             <summary>TODO:三维贴图扭曲图片（未完成）</summary>
         </member>
-        <member name="M:App.Core.Drawer.TwistImage(System.Drawing.Bitmap,System.Double,System.Double,System.Boolean)">
+        <member name="M:App.Core.Painter.Twist(System.Drawing.Bitmap,System.Double,System.Double,System.Boolean)">
             <summary>正弦扭曲图片</summary>  
             <param name="img">图片路径</param>  
             <param name="range">波形的幅度倍数，越大扭曲的程度越高，一般为3</param>  
@@ -2073,13 +2124,13 @@
             <param name="direction">扭曲方向</param>  
             <remarks>现在只能实现0度和90度扭曲，难的验证码是三维曲面扭曲，字体完全变形粘连才难破解（容后）</remarks>
         </member>
-        <member name="M:App.Core.Drawer.ToBase64(System.Drawing.Image)">
+        <member name="M:App.Core.Painter.ToBase64(System.Drawing.Image)">
             <summary>将图片转化为 Base64 字符串</summary>
         </member>
-        <member name="M:App.Core.Drawer.IsBase64Image(System.String)">
+        <member name="M:App.Core.Painter.IsBase64Image(System.String)">
             <summary>判断字符串是否是base64编码的图片</summary>
         </member>
-        <member name="M:App.Core.Drawer.ToImage(System.String)">
+        <member name="M:App.Core.Painter.ParseImage(System.String)">
             <summary>从 Base64 字符串中创建图像</summary>
         </member>
         <member name="T:App.Core.EFHelper">
@@ -2681,7 +2732,13 @@
             <summary>转化为逗号分隔的字符串</summary>
         </member>
         <member name="M:App.Core.StringHelper.Split``1(System.String)">
-            <summary>拆分字符串并转化为对象列表</summary>
+            <summary>拆分字符串并转化为对象列表（可处理 , ; tab space）</summary>
+        </member>
+        <member name="M:App.Core.StringHelper.SplitString(System.String)">
+            <summary>拆分字符串并转化为字符串列表（可处理 , ; tab space）</summary>
+        </member>
+        <member name="M:App.Core.StringHelper.SplitLong(System.String)">
+            <summary>拆分字符串并转化为长整型列表（可处理 , ; tab space）</summary>
         </member>
         <member name="M:App.Core.StringHelper.Quote(System.String)">
             <summary>给字符串加上双引号。Qoutes string and escapes fishy('\',"') chars.</summary>
@@ -2859,6 +2916,28 @@
                 }
             }
             </example>
+        </member>
+        <member name="T:App.BLL.SizeConverter">
+            <summary>
+            Size 和 String 互转
+            </summary>
+        </member>
+        <member name="M:App.BLL.SizeConverter.ParseSize(System.String)">
+            <summary>将文本解析为 Size 对象</summary>
+            <param name="txt">格式如：20,20</param>
+        </member>
+        <member name="T:App.BLL.SizeExtensions">
+            <summary>
+            辅助方法
+            </summary>
+        </member>
+        <member name="M:App.BLL.SizeExtensions.ParseSize(System.String)">
+            <summary>将文本解析为 Size 对象</summary>
+            <param name="txt">格式如：20,20</param>
+        </member>
+        <member name="M:App.BLL.SizeExtensions.ToText(System.Drawing.Size)">
+            <summary>将 Size 对象转化为文本</summary>
+            <returns>格式如：20,20</returns>
         </member>
         <member name="T:App.Interop.EvaluatorItem">
             <summary>

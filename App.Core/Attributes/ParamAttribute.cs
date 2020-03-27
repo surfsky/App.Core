@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace App.Core
 {
     /// <summary>导出模式</summary>
-    [Flags]
+    [Flags, UI("数据导出方式")]
     public enum ExportMode : int
     {
         [UI("不导出")] None = 0,
@@ -20,7 +20,7 @@ namespace App.Core
     }
 
     /// <summary>页面访问模式</summary>
-    [Flags]
+    [Flags, UI("页面访问模式")]
     public enum PageMode : int
     {
         [UI("查看")] View = 1,
@@ -31,6 +31,15 @@ namespace App.Core
         [UI("无")]   None = 0,
         [UI("全部")] All = View | New | Edit | Select,
     }
+
+    /// <summary>视图类别</summary>
+    [Flags, UI("视图类别")]
+    public enum ViewType
+    {
+        [UI("网格")] Grid,
+        [UI("表单")] Form,
+    }
+
 
 
 

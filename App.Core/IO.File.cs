@@ -53,16 +53,26 @@ namespace App.Core
         // 路径
         //------------------------------------------------
         /// <summary>准备文件路径（不存在则创建）</summary>
-        /// <param name="filePath">文件的物理路径</param>
-        public static void PrepareDirectory(string filePath)
+        /// <param name="fileOrFolderPath">文件或目录的物理路径</param>
+        public static void PrepareDirectory(string fileOrFolderPath)
         {
-            var fi = new FileInfo(filePath);
-            if (!Directory.Exists(fi.Directory.FullName))
-                Directory.CreateDirectory(fi.Directory.FullName);
+            var folder = fileOrFolderPath;
+
+            // 如果参数是文件，则尝试获取目录
+            var ext = fileOrFolderPath.GetFileExtension();
+            if (ext.IsNotEmpty())
+            {
+                var fi = new FileInfo(fileOrFolderPath);
+                folder = fi.Directory.FullName;
+            }
+
+            //
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
         }
 
         /// <summary>删除目录及子文件</summary>
-        public static bool DeleteDir(string folder)
+        public static bool DeleteDirectory(string folder)
         {
             try
             {
@@ -76,7 +86,7 @@ namespace App.Core
                         if (File.Exists(f))
                             File.Delete(f);
                         else
-                            DeleteDir(f);
+                            DeleteDirectory(f);
                     }
                     Directory.Delete(folder);
                 }
@@ -99,7 +109,7 @@ namespace App.Core
         /// <returns>十六进制字符串</returns>
         public static string GetFileMD5(string filePath)
         {
-            using (var file = new FileStream(filePath, FileMode.Open))
+            using (var file = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 MD5 md5 = new MD5CryptoServiceProvider();
                 byte[] bytes = md5.ComputeHash(file);
@@ -305,6 +315,8 @@ namespace App.Core
         /// <summary>获取文件 MimeType</summary>
         public static string GetMimeType(this string fileName)
         {
+            if (fileName.IsEmpty())
+                return "";
             var ext = GetFileExtension(fileName);
             if (ext.IsEmpty())
                 return "application/octet-stream";

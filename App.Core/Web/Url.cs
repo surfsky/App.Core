@@ -157,6 +157,10 @@ namespace App.Core
                     this.Port = m.Result("${port}")?.TrimStart(':');
                     this.AbsolutePath = m.Result("${path}");
                 }
+                else
+                {
+                    this.AbsolutePath = PurePath.AddQueryString(this.QueryString);
+                }
             }
             catch { }
         }

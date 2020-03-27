@@ -204,7 +204,7 @@ namespace App.Core
         /// <summary>获取文件的Md5散列值</summary>
         public static string FileHash(string filePath)
         {
-            using (FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            using (FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 byte[] buffer = null;
                 BinaryReader reader = new BinaryReader(stream);

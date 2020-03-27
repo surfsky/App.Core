@@ -69,11 +69,11 @@ namespace App.Core.Tests
             Assert.AreEqual(text, "名称");
 
             // 全局化开关测试
-            AppCoreConfig.Instance.UseGlobal = true;
-            AppCoreConfig.Instance.ResType = typeof(App.CoreTests.Properties.Resources);
+            CoreConfig.Instance.UseGlobal = true;
+            CoreConfig.Instance.ResType = typeof(App.CoreTests.Properties.Resources);
             Assert.AreEqual(key.GetResText(), "名称");
 
-            AppCoreConfig.Instance.UseGlobal = false;
+            CoreConfig.Instance.UseGlobal = false;
             Assert.AreEqual(key.GetResText(), "Name");
         }
 

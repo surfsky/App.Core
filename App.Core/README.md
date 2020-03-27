@@ -292,3 +292,15 @@
 
 2.1.1
 + StringHelper.TrimLines()
+
+2.2
++ App.DAL.EntityBase etc
+* Drawer -> Painter
+* VerifyImageDrawer -> VerifyPainter
+* Painter api simplied and make to extension function
+* IO.PrepareDirectory support file and folder
+* IO.DeleteDir -> DeleteDirectory
+* EntityBase + OnDeleteReference()
+* Asp.riteError -> Error()
++ Asp.Fail()
++ Asp.Host, Asp.HostFolder

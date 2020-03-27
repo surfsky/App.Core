@@ -136,7 +136,7 @@ namespace App.Core
         /// <summary>Post 文件</summary>
         public static string PostFile(string url, string filePath, CookieContainer cookieContainer = null, Dictionary<string, string> headers = null)
         {
-            var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Read);
+            var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.Read);
             return Post(url, fileStream, null, cookieContainer, headers).ToText();
         }
 
@@ -264,7 +264,7 @@ namespace App.Core
         public static Image GetThumbnail(string url, int w, int? h = null)
         {
             Image img = HttpHelper.GetServerOrNetworkImage(url);
-            return Drawer.CreateThumbnail(img, w, h);
+            return Painter.Thumbnail(img, w, h);
         }
 
         /// <summary>获取服务器或网络图片</summary>
@@ -274,7 +274,7 @@ namespace App.Core
             if (url.StartsWith("~/") || url.StartsWith(".") || url.StartsWith("/"))
             {
                 if (Asp.IsWeb)
-                    return Drawer.LoadImage(Asp.Server.MapPath(url));
+                    return Painter.LoadImage(Asp.Server.MapPath(url));
             }
             else
                 return HttpHelper.GetNetworkImage(url);

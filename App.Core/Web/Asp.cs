@@ -47,7 +47,7 @@ namespace App.Core
         public static bool IsRequestOk                  => Request != null;
 
         /// <summary>主机根路径（如http://www.abc.com/）</summary>
-        public static string Root
+        public static string Host
         {
             get
             {
@@ -58,6 +58,10 @@ namespace App.Core
                     ;
             }
         }
+
+        /// <summary>主机根物理路径</summary>
+        public static string HostFolder => HttpRuntime.AppDomainAppPath;
+
 
         /// <summary>获取客户端真实IP</summary>
         public static string ClientIP
@@ -80,6 +84,24 @@ namespace App.Core
             }
         }
 
+        /// <summary>
+        /// 结束对客户端的输出。
+        /// 由于.NET 设计原因，Response.End()在WebForm框架下可以终止代码执行，不再处理End()之后的代码。
+        /// 在MVC框架下则只是返回响应流，不会中止代码执行。
+        /// </summary>
+        public static void End()
+        {
+            Response.End();
+        }
+
+        /// <summary>
+        /// 强行断开与客户端的socket连接。
+        /// 只有代码发生错误（恶意的攻击），希望终止对于客户端的响应/连接时才可以使用Response.Close()
+        /// </summary>
+        public static void Close()
+        {
+            Response.Close();
+        }
         
 
         //-------------------------------------
@@ -157,7 +179,11 @@ namespace App.Core
         /// <summary>将虚拟路径转化为物理路径。等同于Server.MapPath()</summary>
         public static string MapPath(this string virtualPath)
         {
-            return Server.MapPath(virtualPath);
+            if (virtualPath.IsEmpty())
+                return virtualPath;
+            if (virtualPath.Contains("/"))
+                return Request.MapPath(virtualPath);
+            return virtualPath;
         }
 
 
@@ -174,7 +200,7 @@ namespace App.Core
             if (relativeUrl.ToLower().StartsWith("http"))
                 return relativeUrl;
             var url = new Control().ResolveUrl(relativeUrl);
-            return Asp.Root + url;
+            return Asp.Host + url;
         }
 
         /// <summary>
@@ -257,7 +283,8 @@ namespace App.Core
         {
             if (url.IsEmpty()) 
                 return null;
-            url = new Url(url).AbsolutePath.TrimQuery().ToLower();  // 只保留绝对路径，且去除查询字符串
+            var u = new Url(url);
+            url = u.PurePath.ToLower();  // 只保留绝对路径，且去除查询字符串
             var key = url.MD5();
             return IO.GetDict<Type>(key, () =>
             {
