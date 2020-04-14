@@ -41,7 +41,7 @@ namespace App.Entities
         // 缓存
         //-----------------------------------------------
         /// <summary>所有（有缓存）</summary>
-        public new static List<XUI> All => IO.GetCache(CacheAllName, () =>
+        public new static List<XUI> All => IO.GetCache(AllCacheName, () =>
         {
             var items = Set.OrderBy(m => m.Name).ToList();
             foreach (var item in items)
@@ -63,7 +63,7 @@ namespace App.Entities
             try
             {
                 this.Setting = this.SettingText.ParseJson<UISetting>();
-                this.EntityType = Reflector.TryGetType(this.EntityTypeName);
+                this.EntityType = Reflector.GetType(this.EntityTypeName);
                 this.Error = "";
                 if (this.Setting.EntityType == null)
                     this.Error = "EntityType 为空";

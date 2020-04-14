@@ -21,7 +21,8 @@ namespace App.Entities
 
     /// <summary>
     /// 数据操作基类。实现了数据访问的一些基础CRUD操作。
-    /// 请用子类继承之，并实现扩展逻辑，如Search(), GetDetail(), DeleteBatch(), DeleteRecursive()
+    /// 请用子类继承之，并实现扩展逻辑，如Search(), GetDetail()
+    /// 详见 Doc 相关文档
     /// </summary>
     /// <example>
     /// public class User : EntityBase&lt;User&gt;
@@ -128,17 +129,17 @@ namespace App.Entities
         public static T Instance => IO.GetCache(typeof(T).Name, () => Set.FirstOrDefault());
 
         /// <summary>所有数据的缓存</summary>
-        public static List<T> All => IO.GetCache(CacheAllName, () => ValidSet.ToList());
+        public static List<T> All => IO.GetCache(AllCacheName, () => ValidSet.ToList());
 
         /// <summary>所有数据缓存名称</summary>
-        public static string CacheAllName => string.Format("All{0}s", typeof(T).Name);
+        public static string AllCacheName => string.Format("All{0}s", typeof(T).Name);
 
 
         /// <summary>清除该实体的全部数据缓存</summary>
         public static void ClearCache()
         {
             IO.RemoveCache(typeof(T).Name);
-            IO.RemoveCache(CacheAllName);
+            IO.RemoveCache(AllCacheName);
         }
         /// <summary>加载该实体的全部数据缓存</summary>
         public static void LoadCache()

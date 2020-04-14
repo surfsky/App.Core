@@ -137,6 +137,16 @@ namespace App.Core
         void BuildItems()
         {
             this.Items = typeof(T).GetUIAttributes();
+            // 如果该类有ID字段，放到第一位
+            if (typeof(T).IsInterface(typeof(IID)))
+            {
+                var idItem = Items.FirstOrDefault(t => t.Name == "ID");
+                if (idItem != null)
+                {
+                    Items.Remove(idItem);
+                    Items.Insert(0, idItem);
+                }
+            }
         }
 
         /// <summary>获取成员</summary>

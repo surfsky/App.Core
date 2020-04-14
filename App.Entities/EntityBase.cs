@@ -96,12 +96,8 @@ namespace App.Entities
         //---------------------------------------------
         // 数据库
         //---------------------------------------------
-        /// <summary>数据上下文。默认采用Common.Db。如需定制，请调用SetDb(),ReleaseDb()方法设置和取消。</summary>
-        public static DbContext Db
-        {
-            //get { return AppContext.Current; }
-            get { return EntityConfig.Db; }
-        }
+        /// <summary>数据上下文</summary>
+        public static DbContext Db => EntityConfig.Db;
 
         /// <summary>设置状态为已修改</summary>
         public void SetModified()

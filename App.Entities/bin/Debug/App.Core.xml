@@ -709,17 +709,24 @@
         <member name="M:App.Core.Reflector.GetItemType``1(System.Collections.Generic.IList{``0})">
             <summary>获取列表元素的数据类型（尝试返回第一个元素的数据类型）</summary>
         </member>
-        <member name="M:App.Core.Reflector.TryGetType(System.String,System.String,System.Boolean)">
+        <member name="M:App.Core.Reflector.GetTypes(System.Type,System.String,System.Boolean,System.Boolean)">
+            <summary>尝试遍历获取类型（根据类型名、数据集名称）</summary>
+            <param name="type">要查找的类型或接口</param>
+            <param name="assemblyName">若不为空，则在指定的程序集中寻找。</param>
+            <param name="ignoreSystemType">是否忽略系统类型</param>
+            <param name="onlyClass">只查找类（忽略接口和值类型）</param>
+        </member>
+        <member name="M:App.Core.Reflector.GetType(System.String,System.String,System.Boolean)">
             <summary>尝试遍历获取类型（根据类型名、数据集名称）</summary>
         </member>
-        <member name="M:App.Core.Reflector.TryCreateObject(System.String,System.String)">
+        <member name="M:App.Core.Reflector.Create(System.Type,System.Object[])">
+            <summary>创建对象（根据类型）</summary>
+        </member>
+        <member name="M:App.Core.Reflector.Create(System.String,System.String,System.Object[])">
             <summary>尝试创建对象（根据类型名、数据集名称）</summary>
         </member>
         <member name="M:App.Core.Reflector.GetRealType(System.Type)">
             <summary>获取（可空类型的）真实类型</summary>
-        </member>
-        <member name="M:App.Core.Reflector.GetEntityType(System.Type)">
-            <summary>获取实体的真实类型（而不是临时的代理类型）</summary>
         </member>
         <!-- Badly formed XML comment ignored for member "M:App.Core.Reflector.GetShortName(System.Type)" -->
         <member name="M:App.Core.Reflector.GetTypeString(System.Type,System.Boolean)">

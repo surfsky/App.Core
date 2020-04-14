@@ -13,6 +13,15 @@ namespace App.Entities
     /// </summary>
     public static class EntityHelper
     {
+
+        /// <summary>获取实体的真实类型（而不是临时的代理类型）</summary>
+        public static Type GetEntityType(this Type type)
+        {
+            if (type.FullName.StartsWith("System.Data.Entity.DynamicProxies"))
+                return type.BaseType;
+            return type;
+        }
+
         //---------------------------------------------
         // ITree
         //---------------------------------------------
@@ -26,7 +35,7 @@ namespace App.Entities
         }
         /// <summary>构建树结构</summary>
         static int DoBuildTree<T>(List<T> items, long? rootId, int level, ref List<T> result)
-            where T : ITree
+            where T : class, ITree
         {
             int count = 0;
             var root = items.FirstOrDefault(d => d.ID == rootId);
@@ -52,7 +61,7 @@ namespace App.Entities
 
         /// <summary>拷贝树结构列表（并构造父子结构）</summary>
         public static List<T> CloneTree<T>(this List<T> items)
-            where T : ITree<T>
+            where T : class, ITree<T>
         {
             // 先拷贝一份
             var result = new List<T>();
@@ -67,6 +76,7 @@ namespace App.Entities
             }
 
             //
+            result = result.BuildTree();
             return result;
         }
 

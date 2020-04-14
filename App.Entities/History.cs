@@ -14,14 +14,26 @@ namespace App.Entities
     [UI("系统", "处理历史")]
     public class History : EntityBase<History>
     {
-        [UI("健值")]       public string Key { get; set; }                // 如Order-123
-        [UI("状态")]       public string Status { get; set; }
-        [UI("状态ID")]     public int? StatusId { get; set; }
-        [UI("备注")]       public string Remark { get; set; }
+        [UI("健值")]           public string Key { get; set; }                // 如Order-123
+        [UI("状态ID")]         public int? StatusId { get; set; }
+        [UI("状态")]           public string Status { get; set; }
+        [UI("备注")]           public string Remark { get; set; }
+                               
+        [UI("经手人ID")]       public long? UserId { get; set; }
+        [UI("经手人")]         public string UserName { get; set; }
+        [UI("经手人手机")]     public string UserMobile { get; set; }
 
-        [UI("经手人ID")]   public long? UserId { get; set; }
-        [UI("经手人")]     public string UserName { get; set; }
-        [UI("经手人手机")] public string UserMobile { get; set; }
+
+        //
+        [UI("限制时间")]       public DateTime? RequirDt { get; set; }
+        [UI("接收时间")]       public DateTime? AcceptDt { get; set; }
+        [UI("完成时间")]       public DateTime? FinishDt { get; set; }
+
+        // 指派逻辑（单独
+        [UI("后继处理人ID")]   public long? NextUserId { get; set; }
+        [UI("后继处理人")]     public string NextUserName { get; set; }
+        [UI("后继处理人手机")] public string NextUserMobile { get; set; }
+        [UI("后继处理时限")]   public DateTime? NextRequirDt { get; set; }
 
         //public virtual User User { get; set; }
 
@@ -105,6 +117,16 @@ namespace App.Entities
         public static void DeleteBatch(string key)
         {
             Set.Where(t => t.Key == key).Delete();
+        }
+
+        /// <summary>指派后继处理人</summary>
+        public void AssignNextUser(long? userId, string userName, string userMobile, DateTime? requirDt)
+        {
+            this.NextUserId = UserId;
+            this.NextUserName = userName;
+            this.NextUserMobile = userMobile;
+            this.NextRequirDt = requirDt;
+            this.Save();
         }
     }
 }

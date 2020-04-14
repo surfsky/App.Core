@@ -30,18 +30,10 @@ namespace App.Entities
         //---------------------------------------------
         // 事件
         //---------------------------------------------
-        /// <summary>获取数据库上下文</summary>
+        /// <summary>获取数据库上下文事件</summary>
         public event Func<DbContext> OnGetDb;
 
-        /// <summary>获取数据库上下文（需配置 OnGetDb事件）</summary>
-        public static DbContext Db
-        {
-            get
-            {
-                if (Instance.OnGetDb != null)
-                    return Instance.OnGetDb();
-                return null;
-            }
-        }
+        /// <summary>数据库上下文（需配置 OnGetDb事件）</summary>
+        public static DbContext Db => Instance.OnGetDb();
     }
 }

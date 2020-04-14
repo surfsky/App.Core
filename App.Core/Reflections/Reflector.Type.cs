@@ -41,7 +41,40 @@ namespace App.Core
         // 类型相关
         //------------------------------------------------
         /// <summary>尝试遍历获取类型（根据类型名、数据集名称）</summary>
-        public static Type TryGetType(string typeName, string assemblyName = "", bool ignoreSystemType = true)
+        /// <param name="type">要查找的类型或接口</param>
+        /// <param name="assemblyName">若不为空，则在指定的程序集中寻找。</param>
+        /// <param name="ignoreSystemType">是否忽略系统类型</param>
+        /// <param name="onlyClass">只查找类（忽略接口和值类型）</param>
+        public static List<Type> GetTypes(Type type, string assemblyName = "", bool ignoreSystemType = true, bool onlyClass=true)
+        {
+            List<Type> types = new List<Type>();
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (Assembly assembly in assemblies)
+            {
+                string name = assembly.FullName;
+
+                // 过滤掉系统自带的程序集
+                if (ignoreSystemType)
+                    if (name.StartsWith("System") || name.StartsWith("Microsoft") || name.StartsWith("mscorlib"))
+                        continue;
+
+                // 获取类型或子类型，并过滤掉接口
+                var assemTypes = assembly.GetTypes();
+                var matchTypes = type.IsInterface ? assemTypes.Search(t => t.IsInterface(type)) : assemTypes.Search(t => t.IsType(type));
+                if (matchTypes.Count > 0)
+                {
+                    if (onlyClass)
+                        matchTypes = matchTypes.Search(t => t.IsClass);
+                    if (name == assemblyName)
+                        return matchTypes;
+                    types.AddRange(matchTypes);
+                }
+            }
+            return types;
+        }
+
+        /// <summary>尝试遍历获取类型（根据类型名、数据集名称）</summary>
+        public static Type GetType(string typeName, string assemblyName = "", bool ignoreSystemType = true)
         {
             if (typeName.IsEmpty())
                 return null;
@@ -70,12 +103,19 @@ namespace App.Core
             return null;
         }
 
-        /// <summary>尝试创建对象（根据类型名、数据集名称）</summary>
-        public static object TryCreateObject(string typeName, string assemblyName = "")
+        /// <summary>创建对象（根据类型）</summary>
+        public static object Create(Type type, params object[] args)
         {
-            var type = TryGetType(typeName, assemblyName);
+            return Activator.CreateInstance(type, args);
+        }
+
+        /// <summary>尝试创建对象（根据类型名、数据集名称）</summary>
+        public static object Create(string typeName, string assemblyName, params object[] args)
+        {
+            var type = GetType(typeName, assemblyName);
             if (type != null)
-                return type.Assembly.CreateInstance(type.Name, true);
+                return Create(type, args);
+                //return type.Assembly.CreateInstance(type.Name, true);
             return null;
         }
 
@@ -84,14 +124,6 @@ namespace App.Core
         {
             if (type.IsNullable())
                 return GetRealType(type.GetNullableDataType());
-            return type;
-        }
-
-        /// <summary>获取实体的真实类型（而不是临时的代理类型）</summary>
-        public static Type GetEntityType(this Type type)
-        {
-            if (type.FullName.StartsWith("System.Data.Entity.DynamicProxies"))
-                return type.BaseType;
             return type;
         }
 
