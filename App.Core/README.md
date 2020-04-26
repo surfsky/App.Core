@@ -305,3 +305,4 @@
 + Asp.Fail()
 + Asp.Host, Asp.HostFolder
 * Reflector.TryXXX -> XXX
+* Net.Ping() not throw exception
