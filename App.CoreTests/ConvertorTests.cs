@@ -162,9 +162,11 @@ namespace App.Core.Tests
         public void ToBinaryStringTest()
         {
             int n = 99;
-            var text = n.ToBitString();
-            var bytes = text.ToBitBytes();
-            var m = bytes.ToInt32();
+            var text = n.ToBitString();         // 00000000 00000000 00000000 01100011
+            var bytes = text.ToBitBytes();      // 0 0 0 99
+            var bytes2 = bytes.ReverseBytes();  // 99 0 0 0
+            var m = bytes2.ToInt32();           // 99
+            Assert.AreEqual(m, n);
         }
 
         [TestMethod()]

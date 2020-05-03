@@ -285,14 +285,38 @@ namespace App.Core
         }
 
         /// <summary>二进制文本转化为字节数组</summary>
+        //public static byte[] ToBitBytes(this string str)
+        //{
+        //    var items = Regex.Match(str, @"([01]{8})+").Groups[1].Captures;
+        //    byte[] bytes = new byte[items.Count];
+        //    for (int i = 0; i < items.Count; i++)
+        //        bytes[i] = Convert.ToByte(items[i].Value, 2);
+        //    return bytes;
+        //}
+
+
+        /// <summary>二进制文本转化为字节数组</summary>
         public static byte[] ToBitBytes(this string str)
         {
-            var items = Regex.Match(str, @"([01]{8})+").Groups[1].Captures;
+            var items = Regex.Matches(str, @"([01]{8})");
             byte[] bytes = new byte[items.Count];
             for (int i = 0; i < items.Count; i++)
                 bytes[i] = Convert.ToByte(items[i].Value, 2);
             return bytes;
         }
+
+        /// <summary>反转字节数组顺序</summary>
+        public static byte[] ReverseBytes(this byte[] bytes)
+        {
+            if (bytes == null)
+                return null;
+            var bs = new byte[bytes.Length];
+            var n = bytes.Length;
+            for (int i = 0; i < n; i++)
+                bs[i] = bytes[n - i - 1];
+            return bs;
+        }
+
 
 
         //--------------------------------------------------

@@ -176,60 +176,6 @@ namespace App.Core.Tests
             Assert.AreEqual(RegexHelper.MMDDYY2YYMMDD("03/01/2019"), "2019-03-01");
         }
 
-        [TestMethod()]
-        public void ParseHyperlinkTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void ParseTitleTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void ClearScriptTest()
-        {
-            Assert.Fail();
-        }
-
-
-
-        [TestMethod()]
-        public void ParseFileExtensionTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void ParseHtmlUrlTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void LikeTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void GetXmlTagsTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void GetXmlTagTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
-        public void GetXmlTagAttributeTest()
-        {
-            Assert.Fail();
-        }
+        
     }
 }

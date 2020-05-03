@@ -1,5 +1,7 @@
 ﻿# Description
 
+This project has moved to App.Utils that is using netstandard.
+
 AppPlat Core utility library (ui-independent, platform-independent)
 
 This library supports many useful convinient extensions and methods, such as:

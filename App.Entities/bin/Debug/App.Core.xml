@@ -327,6 +327,9 @@
         <member name="M:App.Core.Convertor.ToBitBytes(System.String)">
             <summary>二进制文本转化为字节数组</summary>
         </member>
+        <member name="M:App.Core.Convertor.ReverseBytes(System.Byte[])">
+            <summary>反转字节数组顺序</summary>
+        </member>
         <member name="M:App.Core.Convertor.UnicodeEncode(System.String)">
             <summary>Unicode编码（如将“亲爱的”编码为\u4eb2\u7231\u7684）</summary>
         </member>

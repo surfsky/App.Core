@@ -26,7 +26,7 @@ namespace App.Core.Tests
         public void GetCurrentMethodTest()
         {
             var method = Reflector.GetCurrentMethod();
-            Assert.AreEqual(method.Name, "GetCurrentMethodNameTest");
+            Assert.AreEqual(method.Name, "GetCurrentMethodTest");
         }
 
 
@@ -79,16 +79,16 @@ namespace App.Core.Tests
         {
             var m = typeof(Person).GetMethod(nameof(Person.Speek));
             var t = m.GetMethodString();
-            Assert.AreEqual(t, "Void Cry(String msg, Int32 times)");
+            Assert.AreEqual(t, "Void Speek(String msg, Int32 times)");
         }
 
         [TestMethod()]
         public void GetMethodsTest()
         {
             var methods = typeof(Giant).GetMethods("ToString");
-            Assert.AreEqual(methods[0].DeclaringType, typeof(Giant));
-            Assert.AreEqual(methods[1].DeclaringType, typeof(Person));
-            Assert.AreEqual(methods[2].DeclaringType, typeof(Object));
+            Assert.AreEqual(methods[0].ReflectedType, typeof(Giant));
+            Assert.AreEqual(methods[1].ReflectedType, typeof(Person));
+            Assert.AreEqual(methods[2].ReflectedType, typeof(Object));
 
             var ms = typeof(Giant).GetMethods("ToString", false);
             Assert.AreEqual(ms.Count, 1);
@@ -174,7 +174,7 @@ namespace App.Core.Tests
             Expression<Func<Person, object>> exp1 = t => t.Name;
             Assert.AreEqual(exp1.GetName(), "Name");
             Assert.AreEqual(Reflector.GetName<Person>(t=> t.Name), "Name");
-            Assert.AreEqual(Reflector.GetName<Person>(t => t.Father.Name), "Name");
+            Assert.AreEqual(Reflector.GetName<Person>(t => t.Father.Name), "Father.Name");
         }
 
         [TestMethod()]

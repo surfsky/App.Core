@@ -62,8 +62,8 @@ namespace App.Core.Tests
 
             Assert.AreEqual(url1.GetMimeType(), @"image/jpeg");
             Assert.AreEqual(url2.GetMimeType(), @"application/msword");
-            Assert.AreEqual(url3.GetMimeType(), "");
-            Assert.AreEqual(url4.GetMimeType(), "");
+            Assert.AreEqual(url3.GetMimeType(), @"application/octet-stream");
+            Assert.AreEqual(url4.GetMimeType(), @"application/octet-stream");
         }
 
         [TestMethod()]

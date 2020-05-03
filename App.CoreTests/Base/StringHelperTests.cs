@@ -15,7 +15,7 @@ namespace App.Core.Tests
         public void TrimEndTest()
         {
             Assert.AreEqual("ProductNameID".TrimEnd("ID"), "ProductName");
-            Assert.AreEqual("ProductNameID".TrimEnd("Name"), "ProductNameID");
+            Assert.AreEqual("ProductNameID".TrimEnd("Name"), "Product");
             Assert.AreEqual("Product$".TrimEnd("$"), "Product");
         }
 

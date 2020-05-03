@@ -17,7 +17,7 @@ namespace App.Core.Tests
             var now = DateTime.Now;
             var stamp = now.ToTimeStamp();
             var dt = stamp.ParseTimeStamp();
-            Assert.AreEqual(now, dt);
+            Assert.AreEqual(now.ToString(), dt.ToString());
         }
 
         [TestMethod()]

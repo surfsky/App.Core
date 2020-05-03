@@ -306,3 +306,4 @@
 + Asp.Host, Asp.HostFolder
 * Reflector.TryXXX -> XXX
 * Net.Ping() not throw exception
+* Reflector.GetCurrentType fix bug

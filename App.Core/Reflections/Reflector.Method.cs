@@ -54,7 +54,7 @@ namespace App.Core
         /// <summary>获取当前类信息</summary>
         public static Type GetCurrentType()
         {
-            return GetCurrentMethod().DeclaringType;
+            return new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().DeclaringType;
         }
 
         /*
