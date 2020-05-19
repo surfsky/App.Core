@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// GZip压缩解压辅助类

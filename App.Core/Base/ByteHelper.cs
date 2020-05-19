@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 字节数组辅助方法

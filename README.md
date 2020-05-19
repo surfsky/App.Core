@@ -1,6 +1,6 @@
 # Description
 
-This project has moved to App.Utils which is basing netstandard.
+This project is not maintained, and moved to App.Utils which is basing netstandard.
 
 AppPlat Core utility library (ui-independent, platform-independent)
 

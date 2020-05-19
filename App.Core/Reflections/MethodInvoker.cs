@@ -1,4 +1,4 @@
-﻿using App.Utils;
+﻿using App.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 方法调用器

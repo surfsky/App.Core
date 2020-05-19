@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Utils
+namespace App.Core
 {
     // 访问频率检测
     // 假设实现：1分钟内超过200次访问就判定是攻击

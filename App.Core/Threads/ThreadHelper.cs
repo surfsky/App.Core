@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 进程线程相关辅助方法

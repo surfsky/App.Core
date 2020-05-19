@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace App.Interop
+namespace App.Utils
 {
     /// <summary>
     /// 表达式计算器基类

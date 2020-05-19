@@ -8,7 +8,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Collections;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// EntityFramework 相关方法。

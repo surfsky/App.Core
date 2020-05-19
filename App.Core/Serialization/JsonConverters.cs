@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace App.Utils
+namespace App.Core
 {
     //-------------------------------------------------
     // Json 序列化转换器

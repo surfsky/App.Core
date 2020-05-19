@@ -6,7 +6,7 @@ using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 资源

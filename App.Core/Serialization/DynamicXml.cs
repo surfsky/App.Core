@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 动态XML操作。可用A.B[2]的方式访问XML数据

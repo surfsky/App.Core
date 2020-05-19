@@ -1,12 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using App.Interop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using App.Utils;
 
-namespace App.Interop.Tests
+namespace App.Core.Tests
 {
     [TestClass()]
     public class CsEvaluatorTests

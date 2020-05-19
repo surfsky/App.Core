@@ -10,7 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 
-namespace App.Utils
+namespace App.Core
 {
 
 

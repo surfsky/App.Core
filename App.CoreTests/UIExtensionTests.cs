@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using App.Utils;
+using App.Core;
 
 
-namespace App.Utils.Tests
+namespace App.Core.Tests
 {
     [TestClass()]
     public class UIExtensionTests

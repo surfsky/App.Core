@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Security;
 using System.Security.Principal;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>存储用户名及角色列表的Principal</summary>
     public class UserRolePrincipal : GenericPrincipal

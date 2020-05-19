@@ -1,12 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using App.Utils;
+using App.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Utils.Tests
+namespace App.Core.Tests
 {
     [TestClass()]
     public class UtilsTests
@@ -64,13 +64,13 @@ namespace App.Utils.Tests
         {
             // 简单测试
             var key = "Name";
-            var resType = typeof(App.UtilsTests.Properties.Resources);
+            var resType = typeof(App.CoreTests.Properties.Resources);
             var text = key.GetResText(resType);
             Assert.AreEqual(text, "名称");
 
             // 全局化开关测试
             CoreConfig.Instance.UseGlobal = true;
-            CoreConfig.Instance.ResType = typeof(App.UtilsTests.Properties.Resources);
+            CoreConfig.Instance.ResType = typeof(App.CoreTests.Properties.Resources);
             Assert.AreEqual(key.GetResText(), "名称");
 
             CoreConfig.Instance.UseGlobal = false;

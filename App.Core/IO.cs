@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Caching;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// IO 辅助方法（文件、路径、程序集）

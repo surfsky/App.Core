@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.IO;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// DES加密/解密类（EncryptHelper已经实现，本类将废除）

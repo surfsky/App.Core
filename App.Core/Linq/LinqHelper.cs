@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// Linq 的一些扩展方法

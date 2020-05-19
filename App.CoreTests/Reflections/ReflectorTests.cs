@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using App.Utils;
+using App.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.ComponentModel;
 
-namespace App.Utils.Tests
+namespace App.Core.Tests
 {
     [TestClass()]
     public class ReflectorTests

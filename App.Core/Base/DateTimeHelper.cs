@@ -1,10 +1,10 @@
-﻿using App.Utils;
+﻿using App.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 星期几。数据同DayOfWeek，添加了中文注释。

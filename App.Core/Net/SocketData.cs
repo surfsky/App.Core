@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using App.Utils;
+using App.Core;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 通讯数据基类

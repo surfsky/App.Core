@@ -3,7 +3,7 @@ using System.CodeDom.Compiler;
 using System.Reflection;
 using Microsoft.JScript;
 
-namespace App.Interop
+namespace App.Utils
 {
     /// <summary>
     /// 使用动态编译＋Js.Eval＋Invoke技术实现Eval函数

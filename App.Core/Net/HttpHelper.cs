@@ -10,7 +10,7 @@ using System.Threading;
 using System.Web;
 using System.Web.UI;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 要上传的文件信息

@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 汉语拼音相关

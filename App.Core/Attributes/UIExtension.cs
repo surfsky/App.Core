@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Resources;
 using System.Xml.Serialization;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// UI Attribute 辅助扩展方法

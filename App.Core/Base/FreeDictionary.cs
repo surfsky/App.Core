@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 可安全访问的字典。对于dict["key"], 如果键不存在则返回null，而不报异常

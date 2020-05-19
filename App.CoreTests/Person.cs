@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Utils.Tests
+namespace App.Core.Tests
 {
     /// <summary>
     /// 性别枚举

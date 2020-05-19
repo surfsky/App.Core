@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 枚举值相关信息

@@ -1433,30 +1433,30 @@
         <member name="M:App.Core.VerifyPainter.GetTextRegion(System.Drawing.Graphics,System.String,System.Drawing.Font)">
             <summary>获取文字区域</summary>
         </member>
-        <member name="T:App.Core.Utils">
+        <member name="T:App.Core.Util">
             <summary>
             常用扩展方法
             </summary>
         </member>
-        <member name="M:App.Core.Utils.GetText(System.String,System.Object[])">
+        <member name="M:App.Core.Util.GetText(System.String,System.Object[])">
             <summary>获取文本</summary>
         </member>
-        <member name="M:App.Core.Utils.IsNotEmpty(System.Object)">
+        <member name="M:App.Core.Util.IsNotEmpty(System.Object)">
             <summary>判断对象是否不为空、空字符串、空列表</summary>
         </member>
-        <member name="M:App.Core.Utils.IsEmpty(System.Object)">
+        <member name="M:App.Core.Util.IsEmpty(System.Object)">
             <summary>判断对象是否为空、空字符串、空列表</summary>
         </member>
-        <member name="M:App.Core.Utils.Count(System.Collections.IEnumerable)">
+        <member name="M:App.Core.Util.Count(System.Collections.IEnumerable)">
             <summary>获取列表的长度</summary>
         </member>
-        <member name="M:App.Core.Utils.AsList``1(``0)">
+        <member name="M:App.Core.Util.AsList``1(``0)">
             <summary>将对象转化为数组，以简化列表初始化代码</summary>
         </member>
-        <member name="M:App.Core.Utils.Assert(System.Boolean,System.String)">
+        <member name="M:App.Core.Util.Assert(System.Boolean,System.String)">
             <summary>断言（如果逻辑表达式不成立，则抛出异常）</summary>
         </member>
-        <member name="M:App.Core.Utils.IIF``2(``0,System.Func{``0,System.Boolean},``1,``1)">
+        <member name="M:App.Core.Util.IIF``2(``0,System.Func{``0,System.Boolean},``1,``1)">
             <summary>模拟VBA的 IIF 函数。逻辑如 var result = o.IIF(t=>t>0, "Positive", "Nagetive");</summary>
         </member>
         <member name="T:App.Core.Properties.Resources">
@@ -1471,7 +1471,7 @@
         </member>
         <member name="P:App.Core.Properties.Resources.Culture">
             <summary>
-              使用此强类型资源类，为所有资源查找
+              重写当前线程的 CurrentUICulture 属性
               重写当前线程的 CurrentUICulture 属性。
             </summary>
         </member>
@@ -2949,12 +2949,12 @@
             <summary>将 Size 对象转化为文本</summary>
             <returns>格式如：20,20</returns>
         </member>
-        <member name="T:App.Interop.EvaluatorItem">
+        <member name="T:App.Utils.EvaluatorItem">
             <summary>
             表达式项
             </summary>
         </member>
-        <member name="T:App.Interop.CsEvaluator">
+        <member name="T:App.Utils.CsEvaluator">
              <summary>
              C# 表达式计算器
              From: http://www.codeproject.com/csharp/runtime_eval.asp
@@ -2981,41 +2981,41 @@
             		Console.WriteLine("TestStatic3: {0}", eval.Evaluate("GetDataSet"));
              </example>
         </member>
-        <member name="T:App.Interop.Evaluator">
+        <member name="T:App.Utils.Evaluator">
             <summary>
             表达式计算器基类
             </summary>
         </member>
-        <member name="M:App.Interop.Evaluator.Eval(System.String)">
+        <member name="M:App.Utils.Evaluator.Eval(System.String)">
             <summary>表达式求值</summary>
         </member>
-        <member name="M:App.Interop.Evaluator.EvalDateTime(System.String)">
+        <member name="M:App.Utils.Evaluator.EvalDateTime(System.String)">
             <summary>字符串表达式求值</summary>
         </member>
-        <member name="M:App.Interop.Evaluator.EvalInteger(System.String)">
+        <member name="M:App.Utils.Evaluator.EvalInteger(System.String)">
             <summary>整型值表达式求值</summary>
         </member>
-        <member name="M:App.Interop.Evaluator.EvalDouble(System.String)">
+        <member name="M:App.Utils.Evaluator.EvalDouble(System.String)">
             <summary>Double表达式求值</summary>
         </member>
-        <member name="M:App.Interop.Evaluator.EvalDecimal(System.String)">
+        <member name="M:App.Utils.Evaluator.EvalDecimal(System.String)">
             <summary>Decimal表达式求值</summary>
         </member>
-        <member name="M:App.Interop.Evaluator.EvalString(System.String)">
+        <member name="M:App.Utils.Evaluator.EvalString(System.String)">
             <summary>字符串表达式求值</summary>
         </member>
-        <member name="M:App.Interop.Evaluator.EvalBool(System.String)">
+        <member name="M:App.Utils.Evaluator.EvalBool(System.String)">
             <summary>Bool表达式求值</summary>
         </member>
-        <member name="T:App.Interop.JsEvaluator">
+        <member name="T:App.Utils.JsEvaluator">
             <summary>
             使用动态编译＋Js.Eval＋Invoke技术实现Eval函数
             </summary>
         </member>
-        <member name="M:App.Interop.JsEvaluator.Eval(System.String)">
+        <member name="M:App.Utils.JsEvaluator.Eval(System.String)">
             <summary>解析表达式值</summary>
         </member>
-        <member name="M:App.Interop.JsEvaluator.EvalDateTime(System.String)">
+        <member name="M:App.Utils.JsEvaluator.EvalDateTime(System.String)">
             <summary>
             转化为日期时间必须用这个函数。格式如：new Date('2018/01/01 12:00:00')
             </summary>

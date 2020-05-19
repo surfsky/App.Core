@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 数学相关辅助方法

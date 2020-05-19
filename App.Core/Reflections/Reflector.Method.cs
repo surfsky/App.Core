@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Web;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 反射相关静态方法和属性

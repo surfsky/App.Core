@@ -4,7 +4,7 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Collections.Generic;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 负责安全、加密、解密等内容

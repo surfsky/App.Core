@@ -8,7 +8,7 @@ using System.IO;
 using System.Drawing.Drawing2D;
 using System.Text;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 绘图相关辅助方法

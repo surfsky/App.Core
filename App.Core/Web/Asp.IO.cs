@@ -13,7 +13,7 @@ using System.Web.SessionState;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// ASP.NET 网页相关辅助方法（IO相关）

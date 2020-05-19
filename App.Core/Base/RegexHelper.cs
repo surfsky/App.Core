@@ -79,7 +79,7 @@ using System.Text.RegularExpressions;
         (\w)                \1           $1
         (?<name>\w)         \k<name>     ${name}
 */
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// 正则表达式辅助类。包含常用的正则表达式字符串和正则表达式使用示例

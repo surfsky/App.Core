@@ -18,7 +18,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 
-namespace App.Utils
+namespace App.Core
 {
     /// <summary>
     /// Json 相关的操作
