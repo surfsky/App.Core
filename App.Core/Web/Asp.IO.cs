@@ -13,7 +13,7 @@ using System.Web.SessionState;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// ASP.NET 网页相关辅助方法（IO相关）
@@ -91,7 +91,7 @@ namespace App.Core
         /// <summary>输出一段文本</summary>
         public static void Write(string format, params object[] args)
         {
-            var text = Utils.GetText(format, args);
+            var text = Util.GetText(format, args);
             Asp.Response.Write(text);
         }
 
@@ -262,7 +262,7 @@ namespace App.Core
         /// <summary>输出文本错误并截止输出</summary>
         public static void Fail(string format, params object[] args)
         {
-            var text = Utils.GetText(format, args);
+            var text = Util.GetText(format, args);
             Asp.Response.Write(text);
             Asp.Response.End();
         }

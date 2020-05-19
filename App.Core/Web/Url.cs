@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// URL 辅助操作类，可以自由修改 QueryString 各部分。

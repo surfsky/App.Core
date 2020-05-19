@@ -14,7 +14,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// XML 相关的辅助类

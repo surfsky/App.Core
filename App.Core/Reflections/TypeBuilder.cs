@@ -4,7 +4,7 @@ using System.Reflection.Emit;
 using System.Reflection;
 using System.Threading;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>  
     /// 类帮助器,可以动态对类,类成员进行控制(添加,删除),目前只支持属性控制。  

@@ -9,7 +9,7 @@ using System.Web;
 using System.Web.SessionState;
 using System.Web.Caching;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// ASP.NET 网页相关辅助方法（数据存储）

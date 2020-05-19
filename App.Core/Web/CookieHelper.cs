@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Web;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// Cookie 辅助处理方式

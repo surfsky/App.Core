@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>导出模式</summary>
     [Flags, UI("数据导出方式")]

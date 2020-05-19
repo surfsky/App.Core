@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// 正则表达式验证标注

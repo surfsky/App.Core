@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// 服务范围标签

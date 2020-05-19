@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Xml.Serialization;
 
-namespace App.Core
+namespace App.Utils
 {
     //========================================================
     // UISetting

@@ -7,7 +7,7 @@ using System.Data.Common;
 using System.Collections;
 
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// 简单的json序列化类。

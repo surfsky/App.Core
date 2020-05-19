@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// 文件相关辅助操作

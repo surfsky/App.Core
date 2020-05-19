@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// Excel 操作辅助类

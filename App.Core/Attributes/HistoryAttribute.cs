@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// 历史版本信息

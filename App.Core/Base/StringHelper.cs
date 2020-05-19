@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// 字符串操作辅助类

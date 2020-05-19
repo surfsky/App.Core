@@ -7,8 +7,8 @@
     <ProjectGuid>{34E85233-EF91-49EA-9EAA-05E86EFDFA5B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>App.CoreTests</RootNamespace>
-    <AssemblyName>App.CoreTests</AssemblyName>
+    <RootNamespace>App.UtilsTests</RootNamespace>
+    <AssemblyName>App.UtilsTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -111,7 +111,7 @@
   <ItemGroup>
     <ProjectReference Include="..\App.Core\App.Core.csproj">
       <Project>{c887d0a1-20f6-44da-87df-ea8d45ace744}</Project>
-      <Name>App.Core</Name>
+      <Name>App.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

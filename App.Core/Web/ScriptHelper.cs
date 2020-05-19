@@ -6,7 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Text.RegularExpressions;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// Javascript 相关的辅助类

@@ -14,7 +14,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// 负责各种类型转换、列表类型转换

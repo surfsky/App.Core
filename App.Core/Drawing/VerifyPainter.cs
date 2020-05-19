@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// 验证码图片
@@ -55,7 +55,7 @@ namespace App.Core
         /// <returns>验证码和图片元组对象</returns>
         public static VerifyImage Draw(int w = 80, int h = 40)
         {
-            var fontStencil = FontHelper.GetFont(App.Core.Properties.Resources.Stencil_ICG, 36, FontStyle.Bold);
+            var fontStencil = FontHelper.GetFont(App.Utils.Properties.Resources.Stencil_ICG, 36, FontStyle.Bold);
             //var fontPledg = FontHelper.GetFont(App.Properties.Resources.PLEDG_KI, 36, FontStyle.Italic);  // 注意样式要匹配，否则会报异常
             //var fontAgent = FontHelper.GetFont(App.Properties.Resources.Agent_Red, 26, FontStyle.Regular);
 
@@ -125,7 +125,7 @@ namespace App.Core
             }
 
             // 扭曲
-            bmp = Core.Painter.Twist(bmp);
+            bmp = Utils.Painter.Twist(bmp);
 
             // 反相部分区域（未完成）
             /*
@@ -176,7 +176,7 @@ namespace App.Core
             g2.FillRegion(brush, region);     // 填充一半底部
 
             // 旋转
-            bitmap = Core.Painter.Rotate(bitmap, angle);
+            bitmap = Utils.Painter.Rotate(bitmap, angle);
 
             // 绘制到目标位置
             g.DrawImageUnscaled(bitmap, (int)x, (int)y);

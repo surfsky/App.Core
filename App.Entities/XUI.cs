@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using App.Core;
+using App.Utils;
 //using EntityFramework.Extensions;
 using Newtonsoft.Json;
 

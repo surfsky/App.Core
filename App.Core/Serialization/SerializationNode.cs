@@ -1,4 +1,4 @@
-﻿using App.Core;
+﻿using App.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>序列化节点信息（可供 Xmlizer, Jsonlizer 使用）</summary>
     public class SerializationNode

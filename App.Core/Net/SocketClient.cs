@@ -7,7 +7,7 @@ using System.Text;
 using System.Web;
 using System.IO;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// Socket 客户端

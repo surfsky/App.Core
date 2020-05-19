@@ -9,7 +9,7 @@ using System.Text;
 //using System.Web.UI;
 //using EntityFramework.Extensions;
 using Newtonsoft.Json;
-using App.Core;
+using App.Utils;
 using Z.EntityFramework.Plus;
 //using App.Components;
 

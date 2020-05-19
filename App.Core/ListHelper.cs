@@ -15,7 +15,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// 列表操作（遍历、转换、过滤）

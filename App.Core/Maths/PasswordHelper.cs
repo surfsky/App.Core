@@ -1,7 +1,7 @@
 using System;
 using System.Security.Cryptography;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// 密码加密校验类。

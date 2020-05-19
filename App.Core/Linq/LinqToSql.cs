@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// 表达式转化为SQL（Linq to sql 基本原理）（未测试)

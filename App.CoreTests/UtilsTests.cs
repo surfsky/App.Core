@@ -1,12 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using App.Core;
+using App.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Core.Tests
+namespace App.Utils.Tests
 {
     [TestClass()]
     public class UtilsTests
@@ -55,8 +55,8 @@ namespace App.Core.Tests
         [TestMethod()]
         public void GetTextTest()
         {
-            Assert.AreEqual(Utils.GetText("hello world"), "hello world");
-            Assert.AreEqual(Utils.GetText("hello {0}", "world"), "hello world");
+            Assert.AreEqual(Util.GetText("hello world"), "hello world");
+            Assert.AreEqual(Util.GetText("hello {0}", "world"), "hello world");
         }
 
         [TestMethod()]
@@ -64,13 +64,13 @@ namespace App.Core.Tests
         {
             // 简单测试
             var key = "Name";
-            var resType = typeof(App.CoreTests.Properties.Resources);
+            var resType = typeof(App.UtilsTests.Properties.Resources);
             var text = key.GetResText(resType);
             Assert.AreEqual(text, "名称");
 
             // 全局化开关测试
             CoreConfig.Instance.UseGlobal = true;
-            CoreConfig.Instance.ResType = typeof(App.CoreTests.Properties.Resources);
+            CoreConfig.Instance.ResType = typeof(App.UtilsTests.Properties.Resources);
             Assert.AreEqual(key.GetResText(), "名称");
 
             CoreConfig.Instance.UseGlobal = false;

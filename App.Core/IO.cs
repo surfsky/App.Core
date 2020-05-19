@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Caching;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// IO 辅助方法（文件、路径、程序集）
@@ -51,20 +51,20 @@ namespace App.Core
         /// <summary>打印到调试窗口</summary>
         public static void Trace(string format, params object[] args)
         {
-            System.Diagnostics.Trace.WriteLine(Utils.GetText(format, args));
+            System.Diagnostics.Trace.WriteLine(Util.GetText(format, args));
         }
 
 
         /// <summary>打印到控制台窗口</summary>
         public static void Console(string format, params object[] args)
         {
-            System.Console.WriteLine(Utils.GetText(format, args));
+            System.Console.WriteLine(Util.GetText(format, args));
         }
 
         /// <summary>打印到调试窗口</summary>
         public static void Debug(string format, params object[] args)
         {
-            System.Diagnostics.Debug.WriteLine(Utils.GetText(format, args));
+            System.Diagnostics.Debug.WriteLine(Util.GetText(format, args));
         }
 
         /// <summary>打印到所有输出窗口</summary>

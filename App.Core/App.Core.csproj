@@ -7,8 +7,8 @@
     <ProjectGuid>{C887D0A1-20F6-44DA-87DF-EA8D45ACE744}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>App.Core</RootNamespace>
-    <AssemblyName>App.Core</AssemblyName>
+    <RootNamespace>App.Utils</RootNamespace>
+    <AssemblyName>App.Utils</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -22,7 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\Debug\App.Core.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\App.Utils.xml</DocumentationFile>
     <NoWarn>CS1591,CS1570,CS1571,CS1572,CS1573</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -98,7 +98,7 @@
     <Compile Include="Serialization\Xmlizer.cs" />
     <Compile Include="Drawing\FontHelper.cs" />
     <Compile Include="Drawing\VerifyPainter.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="Util.cs" />
     <Compile Include="Interop\CsEvaluator.cs" />
     <Compile Include="Interop\Evaluator.cs" />
     <Compile Include="Interop\JsEvaluator.cs" />

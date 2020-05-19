@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
  
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// 通用易用的线程池管理器

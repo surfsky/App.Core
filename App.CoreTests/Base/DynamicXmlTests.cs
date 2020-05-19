@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using App.Core;
+using App.Utils;
 
-namespace App.Core.Tests
+namespace App.Utils.Tests
 {
     [TestClass()]
     public class DynamicXmlTests

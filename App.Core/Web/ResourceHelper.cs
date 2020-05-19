@@ -9,7 +9,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Collections;
 
-namespace App.Core
+namespace App.Utils
 {
     /// <summary>
     /// 获取Web内嵌资源的辅助函数
