@@ -99,9 +99,21 @@ namespace App.Core
         // 文件存取
         //------------------------------------------------
         /// <summary>读取文件到字节数组</summary>
-        public static byte[] GetBytes(string filePath)
+        public static byte[] ReadFileBytes(string filePath)
         {
             return File.ReadAllBytes(filePath);
+        }
+
+        /// <summary>读取文件文本</summary>
+        public static string ReadFileText(string filePath)
+        {
+            return File.ReadAllText(filePath);
+        }
+
+        /// <summary>删除文件</summary>
+        public static void DeleteFile(string filePath)
+        {
+            File.Delete(filePath);
         }
 
         /// <summary>获取文件的MD5哈希信息</summary>
@@ -122,18 +134,31 @@ namespace App.Core
             }
         }
 
-        /// <summary>写文件（附加）</summary>
+        /// <summary>写文件（新建或附加）</summary>
         /// <param name="filePath">文件的物理路径</param>
-        public static void WriteFile(string filePath, string data)
+        /// <param name="append">是否附加再末尾，还是新建文件</param>
+        public static void WriteFile(string filePath, string data, bool append=true)
         {
-            var fileinfo = new FileInfo(filePath);
-            using (FileStream fs = fileinfo.OpenWrite())
+            if (append)
             {
-                var sw = new StreamWriter(fs);
-                sw.BaseStream.Seek(0, SeekOrigin.End);
-                sw.Write(data);
-                sw.Flush();
-                sw.Close();
+                using (FileStream fs = File.Open(filePath, FileMode.OpenOrCreate))
+                {
+                    var sw = new StreamWriter(fs);
+                    sw.BaseStream.Seek(0, SeekOrigin.End);
+                    sw.Write(data);
+                    sw.Flush();
+                    sw.Close();
+                }
+            }
+            else
+            {
+                using (FileStream fs = File.Open(filePath, FileMode.Create))
+                {
+                    var sw = new StreamWriter(fs);
+                    sw.Write(data);
+                    sw.Flush();
+                    sw.Close();
+                }
             }
         }
 

@@ -154,5 +154,25 @@ namespace App.Core.Tests
             Assert.AreEqual(System.IO.Directory.Exists(@"c:\test2\"), true);
             Assert.AreEqual(System.IO.Directory.Exists(@"c:\test3\"), true);
         }
+
+        [TestMethod()]
+        public void WriteFileTest()
+        {
+            var path = string.Format("{0}\\log.txt", Environment.CurrentDirectory);
+            var txt1 = "_text_";
+            IO.DeleteFile(path);
+            IO.DeleteFile(path);
+
+            // 附加文件
+            IO.WriteFile(path, txt1, true);
+            IO.WriteFile(path, txt1, true);
+            var txt3 = IO.ReadFileText(path);
+            Assert.AreEqual(txt1+txt1, txt3);
+
+            // 新建文件
+            IO.WriteFile(path, txt1, false);
+            var txt2 = IO.ReadFileText(path);
+            Assert.AreEqual(txt1, txt2);
+        }
     }
 }

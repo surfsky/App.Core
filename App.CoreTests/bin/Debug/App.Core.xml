@@ -1155,17 +1155,24 @@
         <member name="M:App.Core.IO.DeleteDirectory(System.String)">
             <summary>删除目录及子文件</summary>
         </member>
-        <member name="M:App.Core.IO.GetBytes(System.String)">
+        <member name="M:App.Core.IO.ReadFileBytes(System.String)">
             <summary>读取文件到字节数组</summary>
+        </member>
+        <member name="M:App.Core.IO.ReadFileText(System.String)">
+            <summary>读取文件文本</summary>
+        </member>
+        <member name="M:App.Core.IO.DeleteFile(System.String)">
+            <summary>删除文件</summary>
         </member>
         <member name="M:App.Core.IO.GetFileMD5(System.String)">
             <summary>获取文件的MD5哈希信息</summary>
             <param name="filePath"></param>
             <returns>十六进制字符串</returns>
         </member>
-        <member name="M:App.Core.IO.WriteFile(System.String,System.String)">
-            <summary>写文件（附加）</summary>
+        <member name="M:App.Core.IO.WriteFile(System.String,System.String,System.Boolean)">
+            <summary>写文件（新建或附加）</summary>
             <param name="filePath">文件的物理路径</param>
+            <param name="append">是否附加再末尾，还是新建文件</param>
         </member>
         <member name="M:App.Core.IO.MergeFiles(System.Collections.Generic.List{System.String},System.String,System.Boolean)">
             <summary>合并文件</summary>
