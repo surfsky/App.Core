@@ -16,5 +16,17 @@ namespace App.Core.Tests
         {
             var info = SexType.Male.GetEnumInfo();
         }
+
+        [TestMethod()]
+        public void ToDictTest()
+        {
+            List<WeekDay> list = typeof(WeekDay).GetEnums<WeekDay>();
+            var dict = list.ToDict();
+            var name = WeekDay.Monday.ToString();
+            Assert.AreEqual(dict[WeekDay.Monday], "星期一");
+        }
+
+
+
     }
 }

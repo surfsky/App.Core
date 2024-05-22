@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>App.CoreTests</RootNamespace>
     <AssemblyName>App.CoreTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -19,6 +19,7 @@
     <TestProjectType>UnitTest</TestProjectType>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -72,13 +73,14 @@
     <Compile Include="Base\RegexHelperTests.cs" />
     <Compile Include="Base\SerializeHelperTests.cs" />
     <Compile Include="Base\StringHelperTests.cs" />
-    <Compile Include="EncryptHelperTests.cs" />
+    <Compile Include="Maths\EncryptHelperTests.cs" />
     <Compile Include="Database\IDGeneratorTests.cs" />
     <Compile Include="Interop\CsEvaluatorTests.cs" />
     <Compile Include="Interop\JsEvaluatorTests.cs" />
     <Compile Include="IOTests.cs" />
     <Compile Include="Linq\EFExtensionTests.cs" />
     <Compile Include="ListHelperTests.cs" />
+    <Compile Include="Maths\SNGeneratorTests.cs" />
     <Compile Include="Math\GZiperTests.cs" />
     <Compile Include="Math\MathHelperTests.cs" />
     <Compile Include="Model\ParamAttributeTests.cs" />

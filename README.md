@@ -14,6 +14,7 @@ This library supports many useful convinient extensions and methods, such as:
     - Encode/Decode
     - Interop
     - EF extensions
+    - IO (Res, Embed)
     - ...
 
 # Nuget Install

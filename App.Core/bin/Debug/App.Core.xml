@@ -4,6 +4,100 @@
         <name>App.Core</name>
     </assembly>
     <members>
+        <member name="T:App.Core.RegexHelper">
+            <summary>
+            正则表达式辅助类（HTML/XML 相关）
+            </summary>
+            <summary>
+            正则表达式辅助类。包含常用的正则表达式字符串和正则表达式使用示例
+            </summary>
+        </member>
+        <member name="M:App.Core.RegexHelper.ParseUrl(System.String,System.String@,System.String@,System.String@)">
+            <summary>解析url，获取协议、主机、端口号</summary>
+        </member>
+        <member name="M:App.Core.RegexHelper.ParseHyperlink(System.String)">
+            <summary>解析&lt;a&gt;标签</summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:App.Core.RegexHelper.ParseTitle(System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:App.Core.RegexHelper.ClearScript(System.String)" -->
+        <member name="M:App.Core.RegexHelper.ParseHtmlUrl(System.String)">
+            <summary>解析url和email用超链接替代</summary>
+        </member>
+        <member name="M:App.Core.RegexHelper.GetXmlTags(System.String,System.String,System.Boolean)">
+            <summary>获取标签列表</summary>
+            <param name="tagOrContent">获取整个标签还是内容部分</param>
+            <remarks>有问题：应该获取直接下属标签，而不必返回子级标签；否则若顺序错乱一下，就会取错标签了；</remarks>
+        </member>
+        <member name="M:App.Core.RegexHelper.GetXmlTag(System.String,System.String,System.Boolean)">
+            <summary>获取标签</summary>
+        </member>
+        <member name="M:App.Core.RegexHelper.GetXmlTagAttribute(System.String,System.String,System.String)">
+            <summary>获取指定特性的值（如 Name="Kevin"）</summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:App.Core.RegexHelper.GetXmlCDATAText(System.String)" -->
+        <member name="M:App.Core.RegexHelper.IsMatch(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+            <summary>判断指定字符串和正则表达式是否匹配</summary>
+            <param name="text">输入字符串</param>
+            <param name="regex">正则表达式</param>
+        </member>
+        <member name="M:App.Core.RegexHelper.IsLike(System.String,System.String)">
+            <summary>
+            Like 语法（类似数据库的like语法，支持* % _ 符号）
+            eg. Like("HelloWorld", "*Wor*"); Like("HelloWorld", "_____Wor__");
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:App.Core.RegexHelper.FindFirst(System.String,System.String,System.String)" -->
+        <member name="M:App.Core.RegexHelper.Find(System.String,System.String)">
+            <summary>用正则表达式解析获取所有匹配结果</summary>
+        </member>
+        <member name="M:App.Core.RegexHelper.FindJoin(System.String,System.String)">
+            <summary>解析所有匹配的字符串，并拼接合并起来</summary>
+        </member>
+        <member name="M:App.Core.RegexHelper.FindWords(System.String)">
+            <summary>查找所有中英文单词（由分隔符隔开）</summary>
+            <example>
+            var text = "hello world,你好+世界, '测试+System'";
+            var list = RegexHelper.FindWords(text);  // hello,world,你好,世界,测试,System
+            </example>
+        </member>
+        <member name="M:App.Core.RegexHelper.FindRepeatWords(System.String)">
+            <summary>查找重复的单词（请求文本必须用空格或逗号隔开）</summary>
+        </member>
+        <member name="T:App.Core.RegexHelper.Word">
+            <summary>
+            单词信息（名称、个数）
+            </summary>
+        </member>
+        <member name="M:App.Core.RegexHelper.FindMobile(System.String)">
+            <summary>查找文本中的手机号码</summary>
+        </member>
+        <member name="M:App.Core.RegexHelper.FindNumber(System.String)">
+            <summary>查找文本中的数字</summary>
+        </member>
+        <member name="M:App.Core.RegexHelper.FindChars(System.String)">
+            <summary>查找所有中英文字符</summary>
+        </member>
+        <member name="M:App.Core.RegexHelper.FindEnglishChars(System.String)">
+            <summary>查找文本中的数字</summary>
+        </member>
+        <member name="M:App.Core.RegexHelper.FindChineseChars(System.String)">
+            <summary>查找文本中的汉字并拼起来</summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:App.Core.RegexHelper.ReplaceRegex(System.String,System.String,System.String,System.Text.RegularExpressions.RegexOptions)" -->
+        <member name="M:App.Core.RegexHelper.ReplaceRegex(System.String,System.String,System.Func{System.Text.RegularExpressions.Match,System.String})">
+            <summary>查找匹配字符串，并自行替换</summary>
+            <param name="text"></param>
+            <param name="matchRegex"></param>
+            <param name="callback">替换方法</param>
+            <example>
+            var text1 = "world wororld worororld";
+            var text2 = text1.ReplaceRegex(@"wor\w*ld", (m) => m.Length.ToString());
+            Assert.AreEqual(text2, "5 7 9"); 
+            </example>
+        </member>
+        <member name="M:App.Core.RegexHelper.MMDDYY2YYMMDD(System.String)">
+            <summary>将 mm/dd/yy 的日期形式更换为 yy-mm-dd 的日期形式代替 。 </summary>
+        </member>
         <member name="T:App.Core.CoreConfig">
             <summary>
             App.Core 类库配置信息
@@ -434,17 +528,32 @@
             列表操作（遍历、转换、过滤）
             </summary>
         </member>
+        <member name="M:App.Core.ListHelper.ToJoinString(System.Collections.IEnumerable)">
+            <summary>获取列表成员字符串并拼合</summary>
+        </member>
         <member name="M:App.Core.ListHelper.GetItem``1(System.Collections.Generic.Dictionary{System.String,``0},System.String,System.Boolean)">
             <summary>查找匹配的字典值（关键字可忽略大小写）</summary>
         </member>
-        <member name="M:App.Core.ListHelper.ToDict``1(System.Collections.Generic.List{``0})">
-            <summary>将枚举列表转化为字典</summary>
-        </member>
         <member name="M:App.Core.ListHelper.IndexOf``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
-            <summary>找到第一个匹配的位置</summary>
+            <summary>找到第一个匹配的位置（类似 Exists，但会返回位置信息）</summary>
         </member>
         <member name="M:App.Core.ListHelper.Union``1(System.Collections.Generic.List{``0},System.Collections.Generic.List{``0})">
             <summary>合并两个集合（会排除重复项）。功能同Union，返回值不一样</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.MoveItem``1(System.Collections.Generic.List{``0},System.Int32,System.Int32)">
+            <summary>移动元素</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.MoveItemHead``1(System.Collections.Generic.List{``0},System.Int32)">
+            <summary>移动元素到首位</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.MoveItemTail``1(System.Collections.Generic.List{``0},System.Int32)">
+            <summary>移动元素到尾部</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.MoveItemUp``1(System.Collections.Generic.List{``0},System.Int32)">
+            <summary>上移元素</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.MoveItemDown``1(System.Collections.Generic.List{``0},System.Int32)">
+            <summary>下移元素</summary>
         </member>
         <member name="M:App.Core.ListHelper.Search``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
             <summary>遍历过滤（同Where，但名字会冲突; 可考虑用 Query; Search; Filter）</summary>
@@ -456,7 +565,7 @@
             <summary>遍历并处理（替代ForEach，有返回值）</summary>
             <param name="action">参数1为当前元素；参数2为前一个元素（可能为空）</param>
         </member>
-        <member name="M:App.Core.ListHelper.Cast``1(System.Collections.IEnumerable)">
+        <member name="M:App.Core.ListHelper.CastList``1(System.Collections.IEnumerable)">
             <summary>遍历并转换</summary>
         </member>
         <member name="M:App.Core.ListHelper.Cast``1(System.Collections.IEnumerable,System.Func{System.Object,``0})">
@@ -464,6 +573,9 @@
         </member>
         <member name="M:App.Core.ListHelper.Cast``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Object})">
             <summary>遍历并转换</summary>
+        </member>
+        <member name="M:App.Core.ListHelper.Clone``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>遍历并浅克隆</summary>
         </member>
         <member name="M:App.Core.ListHelper.Cast``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
             <summary>遍历并转换</summary>
@@ -479,6 +591,31 @@
         </member>
         <member name="M:App.Core.ListHelper.CastEnum``1(System.Collections.IEnumerable)">
             <summary>转化为枚举列表</summary>
+        </member>
+        <member name="T:App.Core.EmbedHelper">
+            <summary>
+            嵌入资源读取辅助类
+            注意：如果资源目录以数字打头，编译成资源时会加一个下划线 _，如/res/2.9.3 会编译成  /res/_2._9._3
+            所以要么完善该类，要么资源目录不要以数字打头
+            </summary>
+        </member>
+        <member name="M:App.Core.EmbedHelper.GetResNames(System.Reflection.Assembly)">
+            <summary>获取数据集中的资源名称列表</summary>
+        </member>
+        <member name="M:App.Core.EmbedHelper.GetStream(System.Reflection.Assembly,System.String,System.Boolean)">
+            <summary>获取数据集中的资源流</summary>
+            <param name="assembly">数据集</param>
+            <param name="resName">资源名称</param>
+            <param name="caseSensitive">是否大小写敏感</param>
+        </member>
+        <member name="M:App.Core.EmbedHelper.GetBytes(System.Reflection.Assembly,System.String,System.Boolean)">
+            <summary>获取数据集中的字节数组</summary>
+        </member>
+        <member name="M:App.Core.EmbedHelper.GetText(System.Reflection.Assembly,System.String,System.Boolean)">
+            <summary>获取数据集中的文本文件</summary>
+        </member>
+        <member name="M:App.Core.EmbedHelper.GetImage(System.Reflection.Assembly,System.String,System.Boolean)">
+            <summary>获取数据集中的图片文件</summary>
         </member>
         <member name="T:App.Core.GZiper">
             <summary>
@@ -634,6 +771,17 @@
         </member>
         <member name="M:App.Core.ParamAttribute.ToString">
             <summary>格式化为文本</summary>
+        </member>
+        <member name="T:App.Core.SNGenerator">
+            <summary>
+            序列号生成器
+            </summary>
+        </member>
+        <member name="M:App.Core.SNGenerator.Generate(System.String)">
+            <summary>生成序列号。结果是30位的字符串，如：arW5OyJKgqz6DfQKB/A0uQ==C6D999</summary>
+        </member>
+        <member name="M:App.Core.SNGenerator.Validate(System.String,System.String)">
+            <summary>校验序列号</summary>
         </member>
         <member name="T:App.Core.Net">
             <summary>
@@ -1019,6 +1167,9 @@
         <member name="M:App.Core.EncryptHelper.SHA1(System.String,System.Text.Encoding)">
             <summary>获取字符串 SHA1 哈希值（40字符）,如：D3486AE9136E7856BC42212385EA797094475802</summary>
         </member>
+        <member name="M:App.Core.EncryptHelper.SHA256(System.String,System.Text.Encoding)">
+            <summary>获取字符串 SHA256 哈希值（64字符），如：C0535E4BE2B79FFD93291305436BF889314E4A3FAEC05ECFFCBB7DF31AD9E51A</summary>
+        </member>
         <member name="M:App.Core.EncryptHelper.HmacSHA256(System.String,System.String,System.Text.Encoding)">
             <summary>获取字符串 HmacSHA256 哈希值（64字符），如：852D2FEC4BDA6ADD8F12C5C1DFF8420510AC5B85EF432140C7097AAEE3C270CA</summary>
         </member>
@@ -1035,13 +1186,22 @@
             <param name="key">密钥字节数组</param>
             <returns>加密后的字节数组（长度和源字节数组相同）</returns>
         </member>
+        <member name="M:App.Core.EncryptHelper.AESEncrypt(System.String,System.String)">
+            -------------------------------------------------------------------------
+             使用 AES 算法加密解密（对称算法）
+            ------------------------------------------------------------------------- 
+            <summary>AES加密（对称算法）。返回结果如：yIk4/SaPv97MxWt4QurYBw==</summary>
+            <param name="key">密钥。长度为16字节,24字节,32字节(128位,192位,256位)</param>
+        </member>
+        <member name="M:App.Core.EncryptHelper.AESDecrypt(System.String,System.String)">
+            <summary>AES解密（对称算法）</summary>
+        </member>
         <member name="M:App.Core.EncryptHelper.DesEncrypt(System.String,System.String,System.Text.Encoding)">
             -------------------------------------------------------------------------
              使用 DES 算法加密解密（对称算法）
             -------------------------------------------------------------------------
              <summary>
-             用 DES 算法加密字符串。
-             DES 是私钥加密又称为对称加密，因为同一密钥既用于加密又用于解密
+             DES 加密字符串（对称密钥），返回结果如：el5rMqH9gkJgQtrr+lloeg==
              速度快，特别适用于对较大的数据流执行加密转换
              </summary>
              <param name="text">要加密的文本</param>
@@ -1478,8 +1638,8 @@
         </member>
         <member name="P:App.Core.Properties.Resources.Culture">
             <summary>
-              重写当前线程的 CurrentUICulture 属性
-              重写当前线程的 CurrentUICulture 属性。
+              重写当前线程的 CurrentUICulture 属性，对
+              使用此强类型资源类的所有资源查找执行重写。
             </summary>
         </member>
         <member name="P:App.Core.Properties.Resources.Agent_Red">
@@ -2226,6 +2386,11 @@
         <member name="M:App.Core.EFHelper.LessEqual``2(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},``1)">
             <summary>小等于</summary>
         </member>
+        <member name="T:App.Core.EnumDisplayType">
+            <summary>
+            枚举展示方式
+            </summary>
+        </member>
         <member name="T:App.Core.EnumInfo">
             <summary>
             枚举值相关信息
@@ -2245,6 +2410,9 @@
         </member>
         <member name="P:App.Core.EnumInfo.FullName">
             <summary>概述</summary>
+        </member>
+        <member name="P:App.Core.EnumInfo.Display">
+            <summary>展示方式</summary>
         </member>
         <member name="M:App.Core.EnumInfo.ToString">
             <summary>显示文本：英文（分组/名称）</summary>
@@ -2275,6 +2443,9 @@
         </member>
         <member name="M:App.Core.EnumHelper.GetEnums``1(System.Type)">
             <summary>获取枚举的值列表</summary>
+        </member>
+        <member name="M:App.Core.EnumHelper.ToDict``1(System.Collections.Generic.List{``0})">
+            <summary>将枚举列表转化为字典（枚举值、枚举文本）</summary>
         </member>
         <member name="M:App.Core.EnumHelper.ToEnumInfos(System.Collections.IList)">
             <summary>获取一组枚举值的详细信息</summary>
@@ -2552,77 +2723,6 @@
             创建数据库密码（加密）
             </summary>
         </member>
-        <member name="T:App.Core.RegexHelper">
-            <summary>
-            正则表达式辅助类。包含常用的正则表达式字符串和正则表达式使用示例
-            </summary>
-        </member>
-        <member name="M:App.Core.RegexHelper.IsMatch(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
-            <summary>判断指定字符串和正则表达式是否匹配</summary>
-            <param name="text">输入字符串</param>
-            <param name="regex">正则表达式</param>
-            <returns></returns>
-        </member>
-        <!-- Badly formed XML comment ignored for member "M:App.Core.RegexHelper.Search(System.String,System.String,System.String)" -->
-        <!-- Badly formed XML comment ignored for member "M:App.Core.RegexHelper.ReplaceRegex(System.String,System.String,System.String,System.Text.RegularExpressions.RegexOptions)" -->
-        <member name="M:App.Core.RegexHelper.ReplaceRegex(System.String,System.String,System.Func{System.Text.RegularExpressions.Match,System.String})">
-            <summary>查找匹配字符串，并自行替换</summary>
-            <param name="text"></param>
-            <param name="matchRegex"></param>
-            <param name="callback">替换方法</param>
-            <example>
-            var text1 = "world wororld worororld";
-            var text2 = text1.ReplaceRegex(@"wor\w*ld", (m) => m.Length.ToString());
-            Assert.AreEqual(text2, "5 7 9"); 
-            </example>
-        </member>
-        <member name="M:App.Core.RegexHelper.ParseUrl(System.String,System.String@,System.String@,System.String@)">
-            <summary>解析url，获取协议、主机、端口号</summary>
-        </member>
-        <member name="M:App.Core.RegexHelper.MMDDYY2YYMMDD(System.String)">
-            <summary>将 mm/dd/yy 的日期形式更换为 yy-mm-dd 的日期形式代替 。 </summary>
-        </member>
-        <member name="M:App.Core.RegexHelper.ParseHyperlink(System.String)">
-            <summary>解析&lt;a&gt;标签</summary>
-        </member>
-        <!-- Badly formed XML comment ignored for member "M:App.Core.RegexHelper.ParseTitle(System.String)" -->
-        <!-- Badly formed XML comment ignored for member "M:App.Core.RegexHelper.ClearScript(System.String)" -->
-        <member name="M:App.Core.RegexHelper.FindWords(System.String)">
-            <summary>查找所有单词</summary>
-            <example>
-            var text = "hello world,你好+世界, '测试+System'";
-            var list = RegexHelper.FindWords(text);  // hello,world,你好,世界,测试,System
-            </example>
-        </member>
-        <member name="M:App.Core.RegexHelper.FindReplicatedWord(System.String)">
-            <summary>查找重复的单词（请求文本必须用空格或逗号隔开）</summary>
-        </member>
-        <member name="T:App.Core.RegexHelper.Word">
-            <summary>
-            单词（名称、位置、个数）
-            </summary>
-        </member>
-        <member name="M:App.Core.RegexHelper.ParseHtmlUrl(System.String)">
-            <summary>解析url和email用超链接替代</summary>
-        </member>
-        <member name="M:App.Core.RegexHelper.Like(System.String,System.String)">
-            <summary>
-            Like 语法（类似数据库的like语法）
-            注：不支持换行字符串
-            </summary>
-        </member>
-        <member name="M:App.Core.RegexHelper.GetXmlTags(System.String,System.String,System.Boolean)">
-            <summary>获取标签列表</summary>
-            <param name="tagOrContent">获取整个标签还是内容部分</param>
-            <remarks>有问题：应该获取直接下属标签，而不必返回子级标签；否则若顺序错乱一下，就会取错标签了；</remarks>
-        </member>
-        <member name="M:App.Core.RegexHelper.GetXmlTag(System.String,System.String,System.Boolean)">
-            <summary>获取标签</summary>
-        </member>
-        <member name="M:App.Core.RegexHelper.GetXmlTagAttribute(System.String,System.String,System.String)">
-            <summary>获取指定特性的值（如 Name="Kevin"）</summary>
-        </member>
-        <!-- Badly formed XML comment ignored for member "M:App.Core.RegexHelper.GetXmlCDATAText(System.String)" -->
         <member name="T:App.Core.ResourceHelper">
             <summary>
             获取Web内嵌资源的辅助函数

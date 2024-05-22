@@ -31,6 +31,86 @@ namespace App.Core.Tests
     [TestClass()]
     public class RegexHelperTests
     {
+        //--------------------------------------------------
+        // Match like
+        //--------------------------------------------------
+        [TestMethod()]
+        public void IsMatchTest()
+        {
+            Assert.IsTrue(RegexHelper.IsMatch("AABB", RegexHelper.AABB));
+            Assert.IsTrue(RegexHelper.IsMatch("开开心心", RegexHelper.AABB));
+            Assert.IsTrue(RegexHelper.IsMatch("ABAB", RegexHelper.ABAB));
+            Assert.IsTrue(RegexHelper.IsMatch("快活快活", RegexHelper.ABAB));
+            Assert.IsTrue(RegexHelper.IsMatch("0", RegexHelper.Int));
+            Assert.IsTrue(RegexHelper.IsMatch("90", RegexHelper.Int));
+            Assert.IsTrue(RegexHelper.IsMatch("90.8", RegexHelper.Float));
+            Assert.IsTrue(RegexHelper.IsMatch("-0", RegexHelper.Int));
+            Assert.IsTrue(RegexHelper.IsMatch("-1", RegexHelper.NegativeInt));
+        }
+
+        [TestMethod()]
+        public void LikeTest()
+        {
+            Assert.IsTrue("HelloWorld".IsLike("*Wor*"));
+            Assert.IsTrue("HelloWorld".IsLike("%Wor%"));
+            Assert.IsTrue("HelloWorld".IsLike("_____Wor*"));
+            Assert.IsTrue("HelloWorld".Contains("Wor"));
+        }
+
+
+
+        //--------------------------------------------------
+        // Find
+        //--------------------------------------------------
+        [TestMethod()]
+        public void FindFirstTest()
+        {
+            string result1 = RegexHelper.FindFirst(@"<html><title>This is title</title></html>", @"<title>(?<title>.*?)</title>", "$1");
+            string result2 = RegexHelper.FindFirst(@"<html><title>This is title</title></html>", @"<title>(?<title>.*?)</title>", "title");
+            string result3 = RegexHelper.FindFirst(@"<html><title>This is title</title></html>", @"<title>(?<title>.*?)</title>", "${title}");
+            string result4 = RegexHelper.FindFirst(@"<html><title>This is title</title></html>", @"<title>.*</title>", "");
+            string result6 = RegexHelper.FindFirst(@"World1 Hello World2", @"Wor\S*");
+            Assert.AreEqual(result1, "This is title");
+            Assert.AreEqual(result2, "This is title");
+            Assert.AreEqual(result3, "This is title");
+            Assert.AreEqual(result4, "<title>This is title</title>");
+            Assert.AreEqual(result6, "World1");
+        }
+
+
+        [TestMethod()]
+        public void FindTest()
+        {
+            var result = RegexHelper.Find(@"World1 Hello World2", @"Wor\S*");
+            Assert.AreEqual(result.Count, 2);
+        }
+
+        [TestMethod()]
+        public void FindJoinTest()
+        {
+            var result = RegexHelper.FindJoin(@"World1 Hello World2", @"Wor\S*");
+            Assert.AreEqual(result, "World1World2");
+        }
+
+
+        [TestMethod()]
+        public void FindWordsTest()
+        {
+            var text = "hello world,你好+世界, '测试+System'";
+            var list = RegexHelper.FindWords(text);
+            Assert.AreEqual(list.Count, 6);
+        }
+
+        [TestMethod()]
+        public void FindRepeatWordTest()
+        {
+            var txt = "Test  Apple Test Apple,Test Kitty Apple Test Apple";
+            var list = RegexHelper.FindRepeatWords(txt);
+            Assert.AreEqual(list.Count, 2);
+        }
+
+
+
         [TestMethod()]
         public void ParseViewTest()
         {
@@ -48,6 +128,9 @@ namespace App.Core.Tests
             Console.Write(items.ToJson());
         }
 
+        //--------------------------------------------------
+        // Replace
+        //--------------------------------------------------
         // 除了img标签以外，所有的标签都清空
         public static string ReplaceMatch(Match m)
         {
@@ -92,30 +175,6 @@ namespace App.Core.Tests
         }
 
 
-        [TestMethod()]
-        public void IsMatchTest()
-        {
-            Assert.IsTrue(RegexHelper.IsMatch("AABB", RegexHelper.AABB));
-            Assert.IsTrue(RegexHelper.IsMatch("开开心心", RegexHelper.AABB));
-            Assert.IsTrue(RegexHelper.IsMatch("ABAB", RegexHelper.ABAB));
-            Assert.IsTrue(RegexHelper.IsMatch("快活快活", RegexHelper.ABAB));
-            Assert.IsTrue(RegexHelper.IsMatch("0", RegexHelper.Int));
-            Assert.IsTrue(RegexHelper.IsMatch("90", RegexHelper.Int));
-            Assert.IsTrue(RegexHelper.IsMatch("90.8", RegexHelper.Float));
-            Assert.IsTrue(RegexHelper.IsMatch("-0", RegexHelper.Int));
-            Assert.IsTrue(RegexHelper.IsMatch("-1", RegexHelper.NegativeInt));
-        }
-
-        [TestMethod()]
-        public void SearchTest()
-        {
-            var text = @"<html><title>title</title></html>";
-            var reg = @"<title>(?<title>.*?)</title>";
-            Assert.AreEqual(text.Search(reg, "title"), "title");
-            Assert.AreEqual(text.Search(reg, "${title}"), "title");
-            Assert.AreEqual(text.Search(reg, "$1"), "title");
-            Assert.AreEqual(text.Search(reg), "<title>title</title>");
-        }
 
 
         [TestMethod()]
@@ -140,22 +199,6 @@ namespace App.Core.Tests
             Assert.AreEqual(text2, "5 7 9");
         }
 
-        [TestMethod()]
-        public void FindWordsTest()
-        {
-            var text = "hello world,你好+世界, '测试+System'";
-            var list = RegexHelper.FindWords(text);
-            Assert.AreEqual(list.Count, 6);
-        }
-
-        [TestMethod()]
-        public void FindReplicatedWordTest()
-        {
-            var txt = "Test  Apple Test Apple,Test Kitty Apple Test Apple";
-            var list = RegexHelper.FindReplicatedWord(txt);
-            Assert.AreEqual(list.Count, 2);
-        }
-
 
         [TestMethod()]
         public void ParseUrlTest()
@@ -176,6 +219,37 @@ namespace App.Core.Tests
             Assert.AreEqual(RegexHelper.MMDDYY2YYMMDD("03/01/2019"), "2019-03-01");
         }
 
-        
+        //-----------------------------------------------------
+        // 获取特殊规则字符串
+        //-----------------------------------------------------
+        [TestMethod()]
+        public void FindMobileTest()
+        {
+            Assert.AreEqual(RegexHelper.FindMobile("Hello15305770001"), "15305770001");
+        }
+
+        [TestMethod()]
+        public void FindNumberTest()
+        {
+            Assert.AreEqual(RegexHelper.FindNumber("Hello2000.04中国"), "2000.04");
+        }
+
+        [TestMethod()]
+        public void FindCharsTest()
+        {
+            Assert.AreEqual(RegexHelper.FindChars("Hello2000中国"), "Hello中国");
+        }
+
+        [TestMethod()]
+        public void FindEnglishCharsTest()
+        {
+            Assert.AreEqual(RegexHelper.FindEnglishChars("Hello2000中国"), "Hello");
+        }
+
+        [TestMethod()]
+        public void FindChineseCharsTest()
+        {
+            Assert.AreEqual(RegexHelper.FindChineseChars("Hello2000中国"), "中国");
+        }
     }
 }

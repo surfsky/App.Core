@@ -81,13 +81,29 @@ using System.Text.RegularExpressions;
 */
 namespace App.Core
 {
+
     /// <summary>
     /// 正则表达式辅助类。包含常用的正则表达式字符串和正则表达式使用示例
     /// </summary>
-    public static class RegexHelper
+    public static partial class RegexHelper
     {
         //------------------------------
-        // Replicate
+        // Special Char
+        //------------------------------
+        public static string EnglishChar = @"^[A-Za-z]+$";          // 英文字母字符串
+        public static string EnglishUpper = @"^[A-Z]+$";            // 大写英文字母字符串
+        public static string EnglishLower = @"^[a-z]+$";            // 小写英文字母字符串
+        public static string EnglishAndNumber = @"^[A-Za-z0-9]+$";  // 英文字母和数字组成的字符串
+        public static string EnglishWord = @"^\w+$";                // 英文字母、数字、下划线组成的字符串
+        public static string ChineseChar = @"[\u4e00-\u9fa5]+";         // 中文字符串
+        public static string ChineseSymbol = @"[^\uFF00-\uFFFF]+";      // 全角字符
+        public static string BiByteChar = @"[\x00-\xff]+";              // 双字节字符（包括中文字符）
+        public static string BlankLine = @"\n\s*\r";                    // 空白行
+        public static string PreAndFixBlank = @"^\s*|\s*$";             // 首尾空白字符
+
+
+        //------------------------------
+        // Replicate detect IsMatch()
         //------------------------------
         public static string AA = @"(\w)\1";
         public static string AAA = @"(\w)\1\1";
@@ -125,15 +141,6 @@ namespace App.Core
         public static string DateTime = @"(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})"; // 如：2003-12-05 13:04:06
 
         //------------------------------
-        // Special string
-        //------------------------------
-        public static string EnglishChar = @"^[A-Za-z]+$";          // 英文字母字符串
-        public static string EnglishUpper = @"^[A-Z]+$";            // 大写英文字母字符串
-        public static string EnglishLower = @"^[a-z]+$";            // 小写英文字母字符串
-        public static string EnglishAndNumber = @"^[A-Za-z0-9]+$";  // 英文字母和数字组成的字符串
-        public static string EnglishWord = @"^\w+$";                // 英文字母、数字、下划线组成的字符串
-
-        //------------------------------
         // Web
         //------------------------------
         public static string Email = @"(\w+)@(\w+)\.([a-zA-Z]{2,5})";
@@ -142,34 +149,22 @@ namespace App.Core
         public static string HtmlTag = @"<(\S*?)[^>]*>.*?</\1>|<.*? />";
 
         //------------------------------
-        // Chinese
+        // Cultcure string
         //------------------------------
         public static string ChineseTel = @"\d{3}-\d{8}|\d{4}-\d{7}";   // 国内电话号码。3或4位区号
         public static string ChinesePost = @"^[1-9]\d{5}";              // 中国邮编
         public static string ChineseIdCard = @"\d{15}|\d{18}";          // 身份证号码
-
-        //------------------------------
-        // English
-        //------------------------------
         public static string EnglishTel = @"^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})$"; // (425)-555-0123 425-555-0123 425 555 0123
         public static string EnglishPost = @"^(\d{5}-\d{4}|\d{5}|\d{9})$|^([a-zA-Z]\d[a-zA-Z] \d[a-zA-Z]\d)$";  // 5 个或 9 个数字的美国邮政编码
 
-        //------------------------------
-        // Char
-        //------------------------------
-        public static string ChineseChar = @"[\u4e00-\u9fa5]+";         // 中文字符串
-        public static string ChineseSymbol = @"[^\uFF00-\uFFFF]+";      // 全角字符
-        public static string BiByteChar = @"[\x00-\xff]+";              // 双字节字符（包括中文字符）
-        public static string BlankLine = @"\n\s*\r";                    // 空白行
-        public static string PreAndFixBlank = @"^\s*|\s*$";             // 首尾空白字符
 
         //------------------------------
         // Special
         //------------------------------
         public static string Account = @"^[a-zA-Z][a-zA-Z0-9\-]{4,19}$";    // 字母打头，包括字母数字横杠，5到20个字节
         public static string EnglishUserName = @"[a-zA-Z'\-\s]{1,40}";      // 英文姓名名称，包括字母引号横杠，最多40个字节
-        public static string QQ = @"^[1-9][0-9]{4,}";                   // QQ号码
-        public static string Password = @"^[\w~!@#$%&: \^\*\(\)\[\]\{\}\-\+]{6,20}$"; // 密码：英文字符、特殊字符，6到20位？
+        public static string QQ = @"^[1-9][0-9]{4,}";                       // QQ号码
+        public static string Password = @"^[\w~!@#$%&: \^\*\(\)\[\]\{\}\-\+]{6,20}$";             // 密码：英文字符、特殊字符，6到20位？
         public static string StrongPassword1 = @"^.*(?=.{8,})(?=.*\d)(?=.*[a-zA-Z]).*$";          // 长度大于8，必须包含字母、数字
         public static string StrongPassword2 = @"^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$";  // 长度大于8，必须包含大小写字母、数字
         public static string StrongPassword3 = @"^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%&: \^\*\(\)\[\]\{\}\-\+]).*$";  // 长度大于6，必须包含大小写字母、数字、符号
@@ -177,38 +172,176 @@ namespace App.Core
         public static string StrongPassword5 = @"^(?!(?:[^a-zA-Z]|\D|[a-zA-Z0-9])$).{8,}$";       // http://www.cnblogs.com/symbol441/articles/978515.html
 
 
-        //------------------------------
-        // Basic
-        //------------------------------
+        //---------------------------------------------------------
+        // Match utils
+        //---------------------------------------------------------
         /// <summary>判断指定字符串和正则表达式是否匹配</summary>
         /// <param name="text">输入字符串</param>
         /// <param name="regex">正则表达式</param>
-        /// <returns></returns>
         public static bool IsMatch(string text, string regex, RegexOptions options=RegexOptions.IgnoreCase)
         {
             return new Regex(regex, options).IsMatch(text);
         }
 
-        /// <summary>按照指定正则表达式搜索字符串，并输出匹配的结果字符串</summary>
-        /// <param name="text">输入字符串</param>
-        /// <param name="regex">供匹配的正则表达式</param>
-        /// <param name="part">供输出的匹配部件名称（不填写则返回一个匹配结果）, eg: $1, ${title}</param>
-        /// <returns></returns>
-        /// <example>
-        /// string result = RegexHelper.Search("@<html><title>fdsfdsfds</title></html>", @"<title>(?<title>.*?)</title>", "title");
-        /// </example>
-        public static string Search(this string text, string regex, string part = null)
+        /// <summary>
+        /// Like 语法（类似数据库的like语法，支持* % _ 符号）
+        /// eg. Like("HelloWorld", "*Wor*"); Like("HelloWorld", "_____Wor__");
+        /// </summary>
+        public static bool IsLike(this string text, string likeExpression)
         {
-            Regex r = new Regex(regex);
-            Match m = r.Match(text);
-            if (part != null && !part.StartsWith("$"))
-                part = "${" + part + "}";
-            if (m.Success)
-                return (part != null) ? m.Result(part) : m.Value;
-            else
-                return "";
+            // 将%*替换为.* 将_替换为.{1}
+            if (likeExpression != null)
+            {
+                likeExpression = likeExpression.Replace("*", ".*");
+                likeExpression = likeExpression.Replace("%", ".*");
+                likeExpression = likeExpression.Replace("_", ".{1}");
+
+                Regex regex = new Regex(likeExpression, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                return regex.Match(text).Success;
+            }
+            return false;
         }
 
+
+        //---------------------------------------------------------
+        // Find utils
+        //---------------------------------------------------------
+        /// <summary>用正则表达式解析获取第一个匹配结果（的匹配部件）</summary>
+        /// <param name="text">输入字符串</param>
+        /// <param name="pattern">供匹配的正则表达式</param>
+        /// <param name="part">供输出的匹配部件名称（为空则返回一个匹配结果）, eg: $1, ${title}</param>
+        /// <example>
+        /// string result = RegexHelper.Find("@<html><title>fdsfdsfds</title></html>", @"<title>(?<title>.*?)</title>", "title");
+        /// string result = RegexHelper.Find("@<html><title>fdsfdsfds</title></html>", @"<title>(?<title>.*?)</title>", "$1");
+        /// string result = RegexHelper.Find("@<html><title>fdsfdsfds</title></html>", @"<title>(?<title>.*?)</title>", "${title}");
+        /// </example>
+        public static string FindFirst(this string text, string pattern, string part="")
+        {
+            if (text.IsEmpty())
+                return "";
+            var m = Regex.Match(text, pattern);
+            if (!m.Success)
+                return "";
+            else
+            {
+                // 如果part为空，直接返回匹配结果
+                if (part.IsEmpty())
+                    return m.Value;
+
+                // 如果不为空，则返回匹配部分
+                if (!part.StartsWith("$"))
+                    part = "${" + part + "}";
+                return m.Result(part);
+            }
+        }
+
+        /// <summary>用正则表达式解析获取所有匹配结果</summary>
+        public static List<string> Find(this string text, string pattern)
+        {
+            var list = new List<string>();
+            if (text.IsNotEmpty())
+            {
+                var matches = Regex.Matches(text, pattern);
+                foreach (Match match in matches)
+                    list.Add(match.Value);
+            }
+            return list;
+        }
+
+
+        /// <summary>解析所有匹配的字符串，并拼接合并起来</summary>
+        public static string FindJoin(this string text, string pattern)
+        {
+            return Find(text, pattern).ToJoinString();
+        }
+
+
+        /// <summary>查找所有中英文单词（由分隔符隔开）</summary>
+        /// <example>
+        /// var text = "hello world,你好+世界, '测试+System'";
+        /// var list = RegexHelper.FindWords(text);  // hello,world,你好,世界,测试,System
+        /// </example>
+        public static List<Word> FindWords(this string text)
+        {
+            var words = new List<Word>();
+            var pattern = @"\w+";
+            var r = new Regex(pattern);
+            for (Match m = r.Match(text); m.Success; m = m.NextMatch())
+            {
+                var txt = m.Value;
+                var word = words.FirstOrDefault(t => t.Text == txt);
+                if (word != null)
+                    word.Count++;
+                else
+                    words.Add(new Word(txt, 1));
+            }
+            return words;
+        }
+
+        /// <summary>查找重复的单词（请求文本必须用空格或逗号隔开）</summary>
+        public static List<Word> FindRepeatWords(this string text)
+        {
+            return FindWords(text).Search(t => t.Count > 1);
+        }
+
+        
+        /// <summary>
+        /// 单词信息（名称、个数）
+        /// </summary>
+        public class Word
+        {
+            public string Text { get; set; }
+            public int Count { get; set; } = 0;
+            public Word(string text, int count)
+            {
+                this.Text = text;
+                this.Count = count;
+            }
+            public override string ToString()
+            {
+                return string.Format("{0}({1})", Text, Count);
+            }
+        }
+
+
+        //----------------------------------------------
+        // 查找特定规则字符串
+        //----------------------------------------------
+        /// <summary>查找文本中的手机号码</summary>
+        public static string FindMobile(this string text)
+        {
+            return FindFirst(text, "\\d{11}");
+        }
+
+        /// <summary>查找文本中的数字</summary>
+        public static string FindNumber(this string text)
+        {
+            return FindFirst(text, @"(-)?\d+(\.\d+)?");
+        }
+
+        /// <summary>查找所有中英文字符</summary>
+        public static string FindChars(this string text)
+        {
+            //return FindJoin(text, @"\w*");
+            return FindJoin(text, @"[A-Za-z\u4e00-\u9fa5]");
+        }
+
+        /// <summary>查找文本中的数字</summary>
+        public static string FindEnglishChars(this string text)
+        {
+            return FindJoin(text, @"[A-Za-z]");
+        }
+
+        /// <summary>查找文本中的汉字并拼起来</summary>
+        public static string FindChineseChars(this string text)
+        {
+            return FindJoin(text, @"[\u4e00-\u9fa5]");
+        }
+
+
+        //---------------------------------------------------------
+        // Replace utils
+        //---------------------------------------------------------
         /// <summary>将定字符串用匹配正则表达式解析，并用替代正则表达式转换</summary>
         /// <param name="text">输入字符串</param>
         /// <param name="matchRegex">匹配表达式</param>
@@ -244,19 +377,11 @@ namespace App.Core
             return Regex.Replace(text, matchRegex, new MatchEvaluator(callback), RegexOptions.IgnoreCase);
         }
 
-        //------------------------------
-        // Misc
-        //------------------------------
-        /// <summary>解析url，获取协议、主机、端口号</summary>
-        public static void ParseUrl(string url, out string proto, out string host, out string port)
-        {
-            Regex r = new Regex(@"^(?<proto>\w+)://(?<host>[^/:]+):?(?<port>\d+)?/", RegexOptions.Compiled);
-            Match m = r.Match(url);
-            proto = m.Result("${proto}");
-            host = m.Result("${host}");
-            port = m.Result("${port}");
-        }
 
+
+        //---------------------------------------------------------
+        // Date utils
+        //---------------------------------------------------------
         /// <summary>将 mm/dd/yy 的日期形式更换为 yy-mm-dd 的日期形式代替 。 </summary>
         public static string MMDDYY2YYMMDD(string input)
         {
@@ -267,192 +392,6 @@ namespace App.Core
             );
         }
 
-        /// <summary>解析&lt;a&gt;标签</summary>
-        public static List<KeyValuePair<string, string>> ParseHyperlink(string html)
-        {
-            List<KeyValuePair<string, string>> coll = new List<KeyValuePair<string, string>>();
-            string pattern = @"<a[^>]*?href\s*=\s*(?([""'])(?<url>[^""']+)[""']+|(?<url>[^   ]+))[^>]*>(?<text>[^<]*)</a>";
-            Regex r = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-            foreach (Match m in r.Matches(html))
-            {
-                string s1 = m.Result("${url}");
-                string s2 = m.Result("${text}");
-                coll.Add(new KeyValuePair<string, string>(s1, s2));
-            }
-            return coll;
-        }
-
-        /// <summary>解析&lg;title&gt;标签</summary>
-        public static string ParseTitle(string html)
-        {
-            string pattern = @"<title>(?<title>.*?)</title>";
-            Regex r = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline);
-            return r.Match(html).Result("${title}");
-        }
-
-        /// <summary>清除输入文本中的&lg;script&gt;标签</summary>
-        public static string ClearScript(string html)
-        {
-            Regex r = new Regex("(?s)<script.*?>(.*?)</script>", RegexOptions.IgnoreCase);
-            return r.Match(html).Result("$1");
-        }
-
-
-        /// <summary>查找所有单词</summary>
-        /// <example>
-        /// var text = "hello world,你好+世界, '测试+System'";
-        /// var list = RegexHelper.FindWords(text);  // hello,world,你好,世界,测试,System
-        /// </example>
-        public static List<Word> FindWords(string text)
-        {
-            var words = new List<Word>();
-            var pattern = @"\w+";
-            var r = new Regex(pattern);
-            for (Match m = r.Match(text); m.Success; m = m.NextMatch())
-            {
-                var txt = m.Value;
-                var word = words.FirstOrDefault(t => t.Text == txt);
-                if (word != null)
-                    word.Count++;
-                else
-                    words.Add(new Word(txt, 1));
-            }
-            return words;
-        }
-
-        /// <summary>查找重复的单词（请求文本必须用空格或逗号隔开）</summary>
-        public static List<Word> FindReplicatedWord(string text)
-        {
-            /*
-            var words = new List<string>();
-            //var pattern = @"(?<word>\w+)[\s,]+(\k<word>)";
-            var pattern = @"(\w+)([\s,]*\w+)*\1";
-            var r = new Regex(pattern);
-            for (Match m = r.Match(text); m.Success; m = m.NextMatch())
-            {
-                var word = m.Result("${word}");
-                if (!words.Contains(word))
-                    words.Add(word);
-            }
-            return words;
-            */
-            return FindWords(text).Search(t => t.Count > 1);
-        }
-
-
-        /// <summary>
-        /// 单词（名称、位置、个数）
-        /// </summary>
-        public class Word
-        {
-            public string Text { get; set; }
-            public int Count { get; set; } = 0;
-            public Word(string text, int count)
-            {
-                this.Text = text;
-                this.Count = count;
-            }
-            public override string ToString()
-            {
-                return string.Format("{0}({1})", Text, Count);
-            }
-        }
-
-
-        /// <summary>解析url和email用超链接替代</summary>
-        public static string ParseHtmlUrl(string html)
-        {
-            // 匹配并填充http链接
-            Regex urlregex = new Regex(@"(http:\/\/([\w.]+\/?)\S*)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            //html = urlregex.Replace(html, "<a href=\"\" target=\"_blank\"></a>");
-            html = urlregex.Replace(html, new MatchEvaluator(BuildUrl));
-
-            // 匹配并填充email链接
-            Regex emailregex = new Regex(@"([a-zA-Z_0-9.-]+@[a-zA-Z_0-9.-]+\.\w+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            //html = emailregex.Replace(html, "<a href=mailto:></a>");
-            html = emailregex.Replace(html, new MatchEvaluator(BuildEmail));
-            return html;
-        }
-
-        static string BuildUrl(Match match)
-        {
-            return string.Format("<a href=\"{0}\" target=\"_blank\">{0}</a>", match.Groups[1].Value);
-        }
-
-        static string BuildEmail(Match match)
-        {
-            return string.Format("<a href=mailto:{0}>{0}</a>", match.Groups[1].Value);
-        }
-
-        /// <summary>
-        /// Like 语法（类似数据库的like语法）
-        /// 注：不支持换行字符串
-        /// </summary>
-        public static bool Like(string text, string likeExpression)
-        {
-            // 将%*替换为.* 将_替换为.{1}
-            if (likeExpression != null)
-            {
-                likeExpression = likeExpression.Replace("*", ".*");
-                likeExpression = likeExpression.Replace("%", ".*");
-                likeExpression = likeExpression.Replace("_", ".{1}");
-
-                Regex regex = new Regex(likeExpression, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-                return regex.Match(text).Success;
-            }
-            return false;
-        }
-
-        //-------------------------------------------
-        // 用正则表达式解析Xml标签（仅供参考本类并没有用到）
-        //-------------------------------------------
-        /// <summary>获取标签列表</summary>
-        /// <param name="tagOrContent">获取整个标签还是内容部分</param>
-        /// <remarks>有问题：应该获取直接下属标签，而不必返回子级标签；否则若顺序错乱一下，就会取错标签了；</remarks>
-        public static List<string> GetXmlTags(string content, string tagName, bool tagOrContent)
-        {
-            var values = new List<string>();
-            if (content.IsNotEmpty())
-            {
-                var tagRegex = string.Format(@"<{0}[^>]*>([\s\S]*?)</\s*{0}>", tagName);
-                var matches = Regex.Matches(content, tagRegex, RegexOptions.IgnoreCase);
-                foreach (Match match in matches)
-                {
-                    var value = tagOrContent ? match.Value : GetXmlCDATAText(match.Groups[1].Value);
-                    values.Add(value);
-                }
-            }
-            return values;
-        }
-
-        /// <summary>获取标签</summary>
-        public static string GetXmlTag(string content, string tagName, bool tagOrContent)
-        {
-            var tags = GetXmlTags(content, tagName, tagOrContent);
-            return tags.Count > 0 ? tags[0] : null;
-        }
-
-        /// <summary>获取指定特性的值（如 Name="Kevin"）</summary>
-        public static string GetXmlTagAttribute(string content, string tagName, string attributeName)
-        {
-            var tagRegex = string.Format(@"<{0}.*{1}\s*=\s*['""]([^'""]*)['""][^>]*>", tagName, attributeName);
-            var match = Regex.Match(content, tagRegex, RegexOptions.IgnoreCase);
-            if (match.Success)
-                return match.Groups[1].Value;
-            return null;
-        }
-
-
-        /// <summary>解析CDATA内容（以<![CDATA[开头)</summary>
-        private static string GetXmlCDATAText(string txt)
-        {
-            var tagRegex = @"^<!\[CDATA\[(.*)\]\]>";
-            var match = Regex.Match(txt.TrimStart(), tagRegex, RegexOptions.IgnoreCase);
-            if (match.Success)
-                return match.Groups[1].Value;
-            else
-                return txt;
-        }
 
 
     }

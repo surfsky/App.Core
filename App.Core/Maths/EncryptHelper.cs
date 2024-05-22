@@ -34,6 +34,18 @@ namespace App.Core
             return bytes.ToHexString();
         }
 
+        /// <summary>获取字符串 SHA256 哈希值（64字符），如：C0535E4BE2B79FFD93291305436BF889314E4A3FAEC05ECFFCBB7DF31AD9E51A</summary>
+        public static string SHA256(this string input, Encoding encoding = null)
+        {
+            encoding = encoding ?? Encoding.UTF8;
+            using (SHA256 sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                byte[] inputBytes = encoding.GetBytes(input);
+                byte[] hashedBytes = sha256.ComputeHash(inputBytes);
+                return hashedBytes.ToHexString();
+            }
+        }
+
         /// <summary>获取字符串 HmacSHA256 哈希值（64字符），如：852D2FEC4BDA6ADD8F12C5C1DFF8420510AC5B85EF432140C7097AAEE3C270CA</summary>
         public static string HmacSHA256(this string text, string secret="", Encoding encoding=null)
         {
@@ -42,6 +54,7 @@ namespace App.Core
             var bytes = hmacsha256.ComputeHash(encoding.GetBytes(text));
             return bytes.ToHexString();
         }
+
 
 
 
@@ -77,13 +90,64 @@ namespace App.Core
         }
 
 
+        ///-------------------------------------------------------------------------
+        /// 使用 AES 算法加密解密（对称算法）
+        ///------------------------------------------------------------------------- 
+        ///<summary>AES加密（对称算法）。返回结果如：yIk4/SaPv97MxWt4QurYBw==</summary>
+        ///<param name="key">密钥。长度为16字节,24字节,32字节(128位,192位,256位)</param>
+        public static string AESEncrypt(this string text, string key= "1234567890123456")
+        {
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = new byte[aes.BlockSize / 8];
+
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+                byte[] encryptedBytes;
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        byte[] plainTextBytes = Encoding.UTF8.GetBytes(text);
+                        csEncrypt.Write(plainTextBytes, 0, plainTextBytes.Length);
+                    }
+                    encryptedBytes = msEncrypt.ToArray();
+                }
+
+                return Convert.ToBase64String(encryptedBytes);
+            }
+        }
+
+        ///<summary>AES解密（对称算法）</summary>
+        public static string AESDecrypt(this string text, string key= "MySecretKey")
+        {
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = new byte[aes.BlockSize / 8];
+
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+                byte[] decryptedBytes;
+                using (MemoryStream msDecrypt = new MemoryStream())
+                {
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Write))
+                    {
+                        byte[] encryptedBytes = Convert.FromBase64String(text);
+                        csDecrypt.Write(encryptedBytes, 0, encryptedBytes.Length);
+                    }
+                    decryptedBytes = msDecrypt.ToArray();
+                }
+
+                return Encoding.UTF8.GetString(decryptedBytes);
+            }
+        }
+
 
         ///-------------------------------------------------------------------------
         /// 使用 DES 算法加密解密（对称算法）
         ///-------------------------------------------------------------------------
         /// <summary>
-        /// 用 DES 算法加密字符串。
-        /// DES 是私钥加密又称为对称加密，因为同一密钥既用于加密又用于解密
+        /// DES 加密字符串（对称密钥），返回结果如：el5rMqH9gkJgQtrr+lloeg==
         /// 速度快，特别适用于对较大的数据流执行加密转换
         /// </summary>
         /// <param name="text">要加密的文本</param>

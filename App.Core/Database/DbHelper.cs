@@ -21,7 +21,7 @@ namespace App.Core
 
             string sql = command.CommandText;
             return command.Parameters
-                .Cast<DbParameter>()
+                .CastList<DbParameter>()
                 .Aggregate(sql, (name, p) => name.Replace(p.ParameterName, p.Value.ToString()))
                 ;
         }

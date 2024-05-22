@@ -8,6 +8,16 @@ using System.Linq;
 namespace App.Core
 {
     /// <summary>
+    /// 枚举展示方式
+    /// </summary>
+    public enum EnumDisplayType
+    {
+        Value,
+        Title,
+        GroupTitle
+    }
+
+    /// <summary>
     /// 枚举值相关信息
     /// </summary>
     public class EnumInfo
@@ -27,13 +37,19 @@ namespace App.Core
         /// <summary>概述</summary>
         public string FullName => ToString();
 
+        /// <summary>展示方式</summary>
+        public EnumDisplayType Display { get; set; } = EnumDisplayType.Title;
+
         /// <summary>显示文本：英文（分组/名称）</summary>
         public override string ToString()
         {
-            return this.Group.IsEmpty()
-                    ? string.Format("{0}({1})", this.Value, this.Title)
-                    : string.Format("{0}({1}/{2})", this.Value, this.Group, this.Title)
-                    ;
+            switch(this.Display)
+            {
+                case EnumDisplayType.Value:      return this.Value.ToString();
+                case EnumDisplayType.Title:      return this.Title;
+                case EnumDisplayType.GroupTitle: return string.Format("{0}/{1}", Group, Title);
+                default:                         return this.Title;
+            }
         }
     }
 
@@ -76,6 +92,16 @@ namespace App.Core
                 values.Add((T)value);
             return values;
         }
+
+        /// <summary>将枚举列表转化为字典（枚举值、枚举文本）</summary>
+        public static Dictionary<TEnum, string> ToDict<TEnum>(this List<TEnum> enums) where TEnum : struct
+        {
+            var dict = new Dictionary<TEnum, string>();
+            foreach (var e in enums)
+                dict.Add(e, e.GetTitle());
+            return dict;
+        }
+
 
         //-------------------------------------------------
         // EnumInfo

@@ -213,3 +213,42 @@ c:\nuget.exe pack ${ProjectPath}
                 default:                   return bytes.ToHexString();
             }
         }
+
+            /*
+            var words = new List<string>();
+            //var pattern = @"(?<word>\w+)[\s,]+(\k<word>)";
+            var pattern = @"(\w+)([\s,]*\w+)*\1";
+            var r = new Regex(pattern);
+            for (Match m = r.Match(text); m.Success; m = m.NextMatch())
+            {
+                var word = m.Result("${word}");
+                if (!words.Contains(word))
+                    words.Add(word);
+            }
+            return words;
+            */
+            //if (text.IsEmpty())
+            //    return "";
+            //var sb = new StringBuilder();
+            //var matches = Regex.Matches(text, pattern);
+            //foreach (Match match in matches)
+            //    sb.Append(match.Value);
+            //return sb.ToString();
+
+
+                    /// <summary>用正则表达式解析获取第一个匹配结果</summary>
+        public static string FindFirst(this string text, string pattern)
+        {
+            if (text.IsEmpty())
+                return "";
+            var matche = Regex.Match(text, pattern);
+            if (matche.Success)
+                return matche.Value;
+            return "";
+        }
+
+
+                    return this.Group.IsEmpty()
+                    ? string.Format("{0} ({1})", this.Value, this.Title)
+                    : string.Format("{0} ({1}/{2})", this.Value, this.Group, this.Title)
+                    ;

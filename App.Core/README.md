@@ -1,5 +1,13 @@
 ﻿## History
 
+4.5.2.*
+
+* 重命名版本，前三位与支持的类库同名，最后一位为修正版本号
+* 修订 RegexHelper，增加若干 FindXXX(), MoveXXX() 方法，并将网页解析部分拆分为 partial 类
+* 修订 ListHelper，增加 ToJoinString() 方法
++ 增加 MathHelper.AESEncrypt(), AESEncrypt(), SHA256()
++ 增加 SNGenerator 30字符序列号生成类
+
 1.2.0
 
 * 重构Convertor类

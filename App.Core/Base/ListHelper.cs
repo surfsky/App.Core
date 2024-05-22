@@ -22,6 +22,18 @@ namespace App.Core
     /// </summary>
     public static partial class ListHelper
     {
+        /// <summary>获取列表成员字符串并拼合</summary>
+        public static string ToJoinString(this IEnumerable data)
+        {
+            var sb = new StringBuilder();
+            foreach (object o in data)
+                sb.Append(o.ToString());
+            return sb.ToString();
+        }
+
+        //---------------------------------------------------
+        // Dictionary -- List
+        //---------------------------------------------------
         /// <summary>查找匹配的字典值（关键字可忽略大小写）</summary>
         public static T GetItem<T>(this Dictionary<string, T> dict, string key, bool ignoreCase)
         {
@@ -42,16 +54,7 @@ namespace App.Core
         }
 
 
-        /// <summary>将枚举列表转化为字典</summary>
-        public static Dictionary<string, object> ToDict<TEnum>(this List<TEnum> enums) where TEnum : struct
-        {
-            var dict = new Dictionary<string, object>();
-            foreach (var e in enums)
-                dict.Add(e.ToString(), e.GetTitle());
-            return dict;
-        }
-
-        /// <summary>找到第一个匹配的位置</summary>
+        /// <summary>找到第一个匹配的位置（类似 Exists，但会返回位置信息）</summary>
         public static int IndexOf<T>(this IEnumerable<T> data, Func<T, bool> condition)
         {
             int n = -1;
@@ -64,6 +67,9 @@ namespace App.Core
             return n;
         }
 
+        //---------------------------------------------------
+        // 集合操作
+        //---------------------------------------------------
         /// <summary>合并两个集合（会排除重复项）。功能同Union，返回值不一样</summary>
         public static List<T> Union<T>(this List<T> list1, List<T> list2)
         {
@@ -76,6 +82,53 @@ namespace App.Core
             return data;
         }
 
+
+        //---------------------------------------------------
+        // 元素操作
+        //---------------------------------------------------
+        /// <summary>移动元素</summary>
+        public static int MoveItem<T>(this List<T> list, int index, int newIndex)
+        {
+            if (index != newIndex && (index >= 0 && index < list.Count) && (newIndex >= 0 && newIndex < list.Count))
+            {
+                T temp = list[index];
+                list.RemoveAt(index);
+                list.Insert(newIndex, temp);
+                return newIndex;
+            }
+            return index;
+        }
+
+        /// <summary>移动元素到首位</summary>
+        public static int MoveItemHead<T>(this List<T> list, int index)
+        {
+            return MoveItem(list, index, 0);
+        }
+
+        /// <summary>移动元素到尾部</summary>
+        public static int MoveItemTail<T>(this List<T> list, int index)
+        {
+            return MoveItem(list, index, list.Count-1);
+        }
+
+
+        /// <summary>上移元素</summary>
+        public static int MoveItemUp<T>(this List<T> list, int index)
+        {
+            return MoveItem(list, index, index - 1);
+        }
+
+        /// <summary>下移元素</summary>
+        public static int MoveItemDown<T>(this List<T> list, int index)
+        {
+            return MoveItem(list, index, index + 1);
+        }
+
+
+
+        //---------------------------------------------------
+        // 检索和遍历
+        //---------------------------------------------------
         /// <summary>遍历过滤（同Where，但名字会冲突; 可考虑用 Query; Search; Filter）</summary>
         public static List<T> Search<T>(this IEnumerable<T> source, Func<T, bool> func)
         {
@@ -123,8 +176,11 @@ namespace App.Core
             return result;
         }
 
+        //---------------------------------------------------
+        // 遍历转化（Cast）
+        //---------------------------------------------------
         /// <summary>遍历并转换</summary>
-        public static List<T> Cast<T>(this IEnumerable source)
+        public static List<T> CastList<T>(this IEnumerable source)
         {
             var result = new List<T>();
             if (source != null)
@@ -147,6 +203,12 @@ namespace App.Core
         public static List<object> Cast<T>(this IEnumerable<T> source, Func<T, object> func)
         {
             return Cast<T, object>(source, func);
+        }
+
+        /// <summary>遍历并浅克隆</summary>
+        public static List<T> Clone<T>(this IEnumerable<T> source)
+        {
+            return Cast(source, t => t);
         }
 
         /// <summary>遍历并转换</summary>
@@ -189,19 +251,5 @@ namespace App.Core
         {
             return source.Cast<T>(t => (T)Enum.ToObject(typeof(T), Convert.ToInt32(t)));
         }
-
-        /*
-        /// <summary>遍历并转换</summary>
-        public static List<T> CastList<TSource, T>(this IEnumerable<TSource> source, Func<TSource, object> func)
-        {
-            var result = new List<T>();
-            foreach (var item in source)
-            {
-                var o = func(item).To<T>();
-                result.Add(o);
-            }
-            return result;
-        }
-        */
     }
 }
